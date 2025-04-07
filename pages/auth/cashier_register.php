@@ -1,0 +1,295 @@
+<?php
+
+include '../../config/db.php';
+
+$usernameError = "";
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $username = $_POST['username'];
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Securely hash password
+    $firstName = $_POST['firstName'];
+    $middleName = $_POST['middleName'];
+    $lastName = $_POST['lastName'];
+    $gender = $_POST['gender'];
+    $birthDay = $_POST['day'];
+    $birthMonth = $_POST['month'];
+    $birthYear = $_POST['year'];
+    $role = "cashier";
+    
+
+    // Check if username already exists
+    $checkStmt = $conn->prepare("SELECT id FROM users WHERE username = ?");
+    $checkStmt->bind_param("s", $username);
+    $checkStmt->execute();
+    $checkStmt->store_result();
+
+    if ($checkStmt->num_rows > 0) {
+        $usernameError = "Username already exists.";
+    }
+
+    $checkStmt->close();
+
+    // Proceed only if username is unique
+    if (empty($usernameError)) {
+        // Handle image upload
+        $imagePath = null;
+        if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
+            $uploadDir = '../../assets/uploads/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+
+            $fileTmpPath = $_FILES['avatar']['tmp_name'];
+            $fileName = time() . '_' . basename($_FILES['avatar']['name']);
+            $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+            $allowedExtensions = ['jpg', 'jpeg', 'png'];
+
+            if (in_array($fileExtension, $allowedExtensions)) {
+                $targetPath = $uploadDir . $fileName;
+                if (move_uploaded_file($fileTmpPath, $targetPath)) {
+                    $imagePath = 'uploads/' . $fileName; // Save relative path
+                } else {
+                    die("Image upload failed.");
+                }
+            } else {
+                die("Invalid image type.");
+            }
+        } else {
+            die("Image is required.");
+        }
+
+        // Insert into database
+        $stmt = $conn->prepare("INSERT INTO users (username, password, firstname, lastname, middlename, gender, birth_day, birth_month, birth_year, image, role, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+        $stmt->bind_param("ssssssiiisss", $username, $password, $firstName, $lastName, $middleName, $gender, $birthDay, $birthMonth, $birthYear, $imagePath, $role);
+    
+        if ($stmt->execute()) {
+            header("Location: cashier_login.php");
+            exit(); // Always use exit() after header redirection
+        } else {
+            echo "Error: " . $stmt->error;
+        }
+    
+        $stmt->close();
+        $conn->close();
+    }
+}
+
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cashier Register | JoeBean</title>
+    <link rel="stylesheet" href="../../assets/css/index.css">
+    <link rel="stylesheet" href="../../assets/css/cashier/cashier_register.css">
+</head>
+
+<body>
+    <div class="CashierRegister__main-content">
+        <div class="CashierRegister__left-container">
+            <img src="../../assets/images/joebean-logo.png" alt="JoeBean Logo" class="CashierRegister__logo" />
+        </div>
+        <div class="CashierRegister__right-container">
+            <div class="CashierRegister__branding">
+                <img src="../../assets/images/joebean-logo.png" alt="JoeBean Logo" class="CashierRegister__logo" />
+                <div class="CashierRegister__system-name">
+                    <p class="CashierRegister__title">JoeBean</p>
+                    <p class="CashierRegister__subtitle">Point-of-Sale System with Inventory</p>
+                </div>
+            </div>
+
+
+            <div class="CashierRegister__registration-container">
+                <p>Cashier</p>
+                <h2>Register</h2>
+
+                <!-- <form class="CashierRegister__form-container" action="" method="POST" enctype="multipart/form-data">
+                    <div class="CashierRegister__left-form">
+                        <div class="CashierRegister__form-group">
+                            <label for="firstName">First Name</label>
+                            <input type="text" id="firstName" name="firstName" autocomplete="off" required>
+                        </div>
+
+                        <div class="CashierRegister__form-group">
+                            <label for="middleName">Middle Name</label>
+                            <input type="text" id="middleName" name="middleName" autocomplete="off" required>
+                        </div>
+
+                        <div class="CashierRegister__form-group">
+                            <label for="lastName">Last Name</label>
+                            <input type="text" id="lastName" name="lastName" autocomplete="off" required>
+                        </div>
+
+                        <div class="CashierRegister__form-group">
+                            <label>Gender</label>
+                            <div class="CashierRegister__gender-group">
+                                <div class="CashierRegister__gender-option">
+                                    <input type="radio" id="male" name="gender" value="male" required>
+                                    <label for="male">Male</label>
+                                </div>
+                                <div class="CashierRegister__gender-option">
+                                    <input type="radio" id="female" name="gender" value="female" required>
+                                    <label for="female">Female</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="CashierRegister__form-group">
+                            <label for="birthday">Birthday</label>
+                            <div class="CashierRegister__birthday-group">
+                                <input type="text" id="day" name="day" placeholder="Day" required>
+                                <input type="text" id="month" name="month" placeholder="Month" required>
+                                <input type="text" id="year" name="year" placeholder="Year" required>
+                                <span class="error-message">not match</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="CashierRegister__right-form">
+                        <div class="CashierRegister__avatar-container">
+                            <div class="CashierRegister__avatar-div">
+                                <img id="preview" src="../../assets/images/profile-icon.svg" alt="image avatar" class="avatar-icon" >
+                            </div>
+                            <input type="file" name="avatar" id="avatar" accept="image/*" style="display: none;">
+                            <button type="button" class="CashierRegister__select-image-btn" onclick="document.getElementById('avatar').click();">SELECT IMAGE</button>
+                           <span class="error-image-message"></span>
+                        </div>
+
+                        <div class="CashierRegister__form-group">
+                            <label for="username">Username</label>
+                            <input type="text" id="username" name="username" autocomplete="off" required>
+                            <span class="error-username-message">
+                                <?php if (!empty($usernameError)) echo $usernameError; ?>
+                            </span>
+                        </div>
+
+                        <div class="CashierRegister__form-group">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" name="password" autocomplete="off" required>
+                            <span class="error-message"></span>
+                        </div>
+
+                        <div class="CashierRegister__form-group remove-margin">
+                            <label for="confirmPassword">Confirm Password</label>
+                            <input type="password" id="confirmPassword" name="confirmPassword" autocomplete="off" required>
+                            <span class="error-confirm-message">
+                            </span>
+                        </div>
+
+                        <div class="CashierRegister__password-requirements">
+                            <p>Your password must include the following:</p>
+                            <ul>
+                            <li id="lengthRequirement"><span class="wrong">&#10005;</span> Be 8–100 characters long</li>
+                            <li id="caseRequirement"><span class="wrong">&#10005;</span> Contain at least one uppercase and one lowercase letter</li>
+                            <li id="specialRequirement"><span class="wrong">&#10005;</span> Contain at least one number or special character</li>
+                            </ul>
+                        </div>
+
+                        <button type="submit" class="CashierRegister__register-btn">Register</button>
+
+                        <div class="CashierRegister__login-link">
+                            Already have an account? <a href="cashier_login.php">Login here</a>
+                        </div>
+                    </div>
+                </form> -->
+                <form class="CashierRegister__form-container" action="" method="POST" enctype="multipart/form-data">
+                    <div class="CashierRegister__left-form">
+                        <div class="CashierRegister__form-group">
+                            <label for="firstName">First Name</label>
+                            <input type="text" id="firstName" name="firstName" value="<?php echo isset($_POST['firstName']) ? htmlspecialchars($_POST['firstName']) : ''; ?>" autocomplete="off" required>
+                        </div>
+
+                        <div class="CashierRegister__form-group">
+                            <label for="middleName">Middle Name</label>
+                            <input type="text" id="middleName" name="middleName" value="<?php echo isset($_POST['middleName']) ? htmlspecialchars($_POST['middleName']) : ''; ?>" autocomplete="off" required>
+                        </div>
+
+                        <div class="CashierRegister__form-group">
+                            <label for="lastName">Last Name</label>
+                            <input type="text" id="lastName" name="lastName" value="<?php echo isset($_POST['lastName']) ? htmlspecialchars($_POST['lastName']) : ''; ?>" autocomplete="off" required>
+                        </div>
+
+                        <div class="CashierRegister__form-group">
+                            <label>Gender</label>
+                            <div class="CashierRegister__gender-group">
+                                <div class="CashierRegister__gender-option">
+                                    <input type="radio" id="male" name="gender" value="male" <?php echo isset($_POST['gender']) && $_POST['gender'] == 'male' ? 'checked' : ''; ?> required>
+                                    <label for="male">Male</label>
+                                </div>
+                                <div class="CashierRegister__gender-option">
+                                    <input type="radio" id="female" name="gender" value="female" <?php echo isset($_POST['gender']) && $_POST['gender'] == 'female' ? 'checked' : ''; ?> required>
+                                    <label for="female">Female</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="CashierRegister__form-group">
+                            <label for="birthday">Birthday</label>
+                            <div class="CashierRegister__birthday-group">
+                                <input type="text" id="day" name="day" value="<?php echo isset($_POST['day']) ? htmlspecialchars($_POST['day']) : ''; ?>" placeholder="Day" required>
+                                <input type="text" id="month" name="month" value="<?php echo isset($_POST['month']) ? htmlspecialchars($_POST['month']) : ''; ?>" placeholder="Month" required>
+                                <input type="text" id="year" name="year" value="<?php echo isset($_POST['year']) ? htmlspecialchars($_POST['year']) : ''; ?>" placeholder="Year" required>
+                                <span class="error-message"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="CashierRegister__right-form">
+                        <div class="CashierRegister__avatar-container">
+                            <div class="CashierRegister__avatar-div">
+                                <img id="preview" src="../../assets/images/profile-icon.svg" alt="image avatar" class="avatar-icon">
+                            </div>
+                            <input type="file" name="avatar" id="avatar" accept="image/*" style="display: none;">
+                            <button type="button" class="CashierRegister__select-image-btn" onclick="document.getElementById('avatar').click();">SELECT IMAGE</button>
+                            <span class="error-image-message"></span>
+                        </div>
+
+                        <div class="CashierRegister__form-group">
+                            <label for="username">Username</label>
+                            <input type="text" id="username" name="username" value="<?php echo isset($_POST['username']) ? htmlspecialchars($_POST['username']) : ''; ?>" autocomplete="off" required>
+                            <span class="error-username-message">
+                                <?php if (!empty($usernameError)) echo $usernameError; ?>
+                            </span>
+                        </div>
+
+                        <div class="CashierRegister__form-group">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" name="password" autocomplete="off" required>
+                            <span class="error-message"></span>
+                        </div>
+
+                        <div class="CashierRegister__form-group remove-margin">
+                            <label for="confirmPassword">Confirm Password</label>
+                            <input type="password" id="confirmPassword" name="confirmPassword" autocomplete="off" required>
+                            <span class="error-confirm-message"></span>
+                        </div>
+
+                        <div class="CashierRegister__password-requirements">
+                            <p>Your password must include the following:</p>
+                            <ul>
+                                <li id="lengthRequirement"><span class="wrong">&#10005;</span> Be 8–100 characters long</li>
+                                <li id="caseRequirement"><span class="wrong">&#10005;</span> Contain at least one uppercase and one lowercase letter</li>
+                                <li id="specialRequirement"><span class="wrong">&#10005;</span> Contain at least one number or special character</li>
+                            </ul>
+                        </div>
+
+                        <button type="submit" class="CashierRegister__register-btn">Register</button>
+
+                        <div class="CashierRegister__login-link">
+                            Already have an account? <a href="cashier_login.php">Login here</a>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="../../assets/js/cashier/cashier_registerz.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,378 @@
+.CashierRegister__main-content{
+    display: flex;
+    height: 100vh;
+}
+
+
+/* left section */
+.CashierRegister__left-container{
+    flex: 0.9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.CashierRegister__left-container img{
+    width: 130%;
+    max-width: 750px;
+    /* animation: floatUpDown 4s ease-in-out infinite; */
+}
+
+
+/* right section */
+.CashierRegister__right-container{
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    padding: 20px 40px 10px;
+}
+
+
+
+.CashierRegister__branding{
+    display: flex;
+    align-items: center;
+    
+}
+
+.CashierRegister__logo {
+    width: 75px;
+    height: auto;
+}
+
+.CashierRegister__system-name {
+    display: flex;
+    flex-direction: column;
+    color: #656D4A;
+    /* background-color: #555; */
+    border-left: 4px solid #656D4A;
+    padding: 5px 20px 7px;
+}
+
+.CashierRegister__title {
+    font-size: 23px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.CashierRegister__subtitle {
+    font-size: 15px;
+    color: #555;
+    margin: 0;
+}
+
+
+
+/* register form */
+
+.CashierRegister__registration-container{
+    background-color: #eeeeeec6;
+    padding: 30px 60px 30px;
+    border-radius: 20px;
+    margin-top: 10px;
+}
+
+.CashierRegister__registration-container p{
+    color: #656D4A;
+    font-weight: 600;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+
+}
+
+.CashierRegister__registration-container h2 {
+    color: #656D4A;
+    font-size: 32px;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+}
+
+
+/* form section */
+
+.CashierRegister__form-container{
+    display: flex;  
+    gap: 50px; 
+}
+
+.CashierRegister__left-form{
+    flex: 1;
+}
+
+.CashierRegister__form-group {
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.CashierRegister__form-group label {
+    flex: 1;
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.CashierRegister__form-group input[type="text"],
+.CashierRegister__form-group input[type="password"] {
+    width: 70%;
+    padding: 8px;
+    border: 2px solid #656D4A;
+    border-radius: 3px;
+    font-size: 14px;
+}
+
+.CashierRegister__gender-group {
+    display: flex;
+    flex: 2.3;
+    gap: 40px;
+}
+
+.CashierRegister__gender-option {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+
+.CashierRegister__gender-option label {
+    font-size: 16px;
+    color: #55613D;
+    cursor: pointer;
+}
+
+.CashierRegister__gender-option input[type="radio"] {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #55613D;
+    border-radius: 50%;
+    outline: none;
+    cursor: pointer;
+    background-color: white;
+    transition: 0.2s ease-in-out;
+
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+/* Checked circle inside */
+.CashierRegister__gender-option input[type="radio"]:checked::before {
+    content: "";
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #55613D;
+    display: block;
+}
+
+
+/* birthday */
+.CashierRegister__birthday-group {
+    display: flex;
+    gap: 10px;
+}
+
+.CashierRegister__birthday-group input {
+    padding: 8px;
+    border: 2px solid #656D4A;
+    border-radius: 3px;
+    font-size: 14px;
+}
+
+
+.CashierRegister__birthday-group input:nth-child(1),
+.CashierRegister__birthday-group input:nth-child(2) {
+    width: 90px;
+}
+
+.CashierRegister__birthday-group input:nth-child(3) {
+    width: 110px;
+}
+
+
+
+
+
+
+
+
+.CashierRegister__right-form{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.CashierRegister__form-group.remove-margin {
+    margin-bottom: 15px;
+}
+
+
+.CashierRegister__avatar-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin:10px 0 30px;
+    position: relative;
+}
+
+.CashierRegister__avatar-div {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    position: absolute;
+    top: -110px;
+}
+
+.avatar-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 50%;
+
+}
+
+.CashierRegister__select-image-btn {
+    padding: 8px 20px;
+    background-color: transparent;
+    border: 2px solid #656D4A;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #656D4A;
+    width: 100%;
+    max-width: 250px;
+    transition: background-color 1s, color 1s;
+}
+
+.CashierRegister__select-image-btn:hover {
+    color: #fff;
+    background-color: #656D4A;
+}
+
+.CashierRegister__select-image-btn:active{
+    opacity: 0.8;
+}
+
+/* password requirements */
+.CashierRegister__password-requirements{
+    margin: 0 0 18px;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: #7272721c;
+    width: 100%;
+}
+
+.CashierRegister__password-requirements p {
+    font-size: 11px;
+    font-weight: bold;
+    color: #565252;
+    margin: 0;
+}
+
+.CashierRegister__password-requirements ul{
+    margin: 0;
+    margin-bottom: 10px;
+    padding:2px 0px;
+    list-style: none;
+}
+  
+.CashierRegister__password-requirements li{
+    font-size: 10px;
+    font-weight: 500;
+    color: #565252;
+    margin: 0;
+}
+
+.wrong{
+    color: red;
+    font-weight: bolder;
+    font-size: 1.2em;
+    margin-right: 3px;
+}
+  
+.check{
+    color: rgb(9, 185, 9);
+    font-weight: bolder;
+    font-size: 1.2em;
+    margin-right: 3px;
+}
+
+
+.CashierRegister__register-btn {
+    padding: 12px;
+    background-color: #656D4A;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 16px;
+    flex: 1;
+}
+
+.CashierRegister__register-btn:active{
+    opacity: 0.8;
+}
+
+.CashierRegister__login-link {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 15px;
+    color: #555;
+}
+
+.CashierRegister__login-link a {
+    color: #656D4A;
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+
+.error-message{
+    position: absolute;
+    right: 1%;
+    top: -46%;
+    color: red;
+    font-size: 13px;
+    font-weight: 600;
+    display: none;
+
+}
+
+.error-username-message{
+    position: absolute;
+    right: 1%;
+    top: -46%;
+    color: red;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+.error-confirm-message{
+    position: absolute;
+    right: 1%;
+    top: -28%;
+    color: red;
+    font-size: 13px;
+    font-weight: 600;
+    display: none;
+}
+
+.error-image-message{
+    position: absolute;
+    right: 21%;
+    top: -46%;
+    color: red;
+    font-size: 13px;
+    font-weight: 600;
+    display: none;
+
+}

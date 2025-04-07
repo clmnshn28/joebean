@@ -1,0 +1,255 @@
+.CashierLogin__main-content{
+    display: flex;
+    height: 100vh;
+    padding: 40px;
+}
+
+/* left section */
+.CashierLogin__left-container{
+    flex: 1.05;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border-radius: 20px;
+    padding: 20px 40px;
+}
+
+.CashierLogin__branding{
+    display: flex;
+    align-items: center;
+    
+}
+
+.CashierLogin__logo {
+    width: 90px;
+    height: auto;
+}
+
+.CashierLogin__system-name {
+    display: flex;
+    flex-direction: column;
+    color: #656D4A;
+    /* background-color: #555; */
+    border-left: 4px solid #656D4A;
+    padding: 5px 20px 7px;
+}
+
+.CashierLogin__title {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.CashierLogin__subtitle {
+    font-size: 16px;
+    color: #555;
+    margin: 0;
+}
+
+
+
+/* header */
+.CashierLogin__form-container{
+    background-color: #eeeeeec6;
+    padding: 30px 60px 30px;
+    border-radius: 20px;
+    /* box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.1),
+    0 10px 20px rgba(0, 0, 0, 0.1); */
+
+}
+
+.CashierLogin__form-type{
+    color: #656D4A;
+    font-weight: 600;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+
+}
+
+.CashierLogin__form-container h2 {
+    color: #656D4A;
+    font-size: 32px;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+}
+
+.CashierLogin__desc{
+    margin-bottom: 50px;
+    font-size: 20px;
+    color: #555;
+}
+
+/* form */
+.CashierLogin__form{
+    /* background-color: #6a6a6a */
+    width: 93%;
+    margin-left: 20px;
+}
+
+.CashierLogin__input-group{
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.margin-none{
+    margin-bottom: 15px;
+}
+
+.CashierLogin__input-group input {
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 15px;
+    padding: 20px 15px 15px 62px;
+    background-color: #e9e7e7c4;
+    border: none;
+    border-bottom: 2px solid #656D4A;
+    font-family: "Poppins", sans-serif;
+}
+  
+.CashierLogin__input-group label {
+    position: absolute;
+    left: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #999;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.CashierLogin__username-icon {
+    width: 35px;
+    position: absolute;
+    left: 17px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.CashierLogin__password-icon {
+    width: 29px;
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%) rotate(47deg) scaleX(-1);
+}
+
+  
+.CashierLogin__input-group input:focus + label,
+.CashierLogin__input-group input:not(:placeholder-shown) + label {
+    top: 2px;
+    font-size: 13px;
+    color: #6a6a6a;
+    background-color: rgb(255, 255, 255);
+    font-weight: 500;
+    border-radius: 5px;
+    padding: 2px 5px;
+}
+
+input:focus {
+    background-color: #fff;
+    border-bottom: 2px solid #f7f7f7;
+}
+ 
+
+.CashierLogin__eye-icon{
+    width: 25px;
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+/* forgot pass */
+.CashierLogin__forgot-password {
+    color: #656D4A;
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 5px;
+    font-size: 14px;
+    opacity: 0;
+    pointer-events: none; 
+}
+
+
+
+/* login btn */
+.CashierLogin__home-button {
+    width: 100%;
+    padding: 15px;
+    background-color: #656D4A;
+    color: white;
+    border: none;
+    font-size: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: background-color 1s ease-in-out, color 1s ease-in-out;
+}
+  
+.CashierLogin__home-button:hover {
+    background-color: #4f5539;
+}
+
+.CashierLogin__home-button:active {
+    opacity: 0.8;
+}
+
+
+/* login btn */
+.CashierLogin__type-button {
+    width: 100%;
+    padding: 15px;
+    background-color: #fff;
+    color: #656D4A;
+    border: 3px solid #656D4A;
+    font-size: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    margin: 20px 0 0px;
+    text-transform: uppercase;
+    transition: background-color 1s ease-in-out, color 1s ease-in-out;
+}
+  
+.CashierLogin__type-button:hover {
+    background-color: #656D4A;
+    color: #fff;
+}
+
+.CashierLogin__type-button:active {
+    opacity: 0.8;
+}
+
+
+
+/* right section */
+.CashierLogin__right-container{
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.CashierLogin__right-container img{
+    width: 80%;
+    max-width: 750px;
+    /* animation: floatUpDown 4s ease-in-out infinite; */
+}
+
+
+
+.CashierLogin__redirect-text {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 15px;
+    color: #555;
+}
+
+.CashierLogin__register-link {
+    color: #656D4A;
+    font-weight: 500;
+    text-decoration: underline;
+    font-weight: bold;
+}
