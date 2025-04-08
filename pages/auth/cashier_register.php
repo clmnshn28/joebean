@@ -230,9 +230,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="CashierRegister__form-group">
                             <label for="birthday">Birthday</label>
                             <div class="CashierRegister__birthday-group">
-                                <input type="text" id="day" name="day" value="<?php echo isset($_POST['day']) ? htmlspecialchars($_POST['day']) : ''; ?>" placeholder="Day" required>
-                                <input type="text" id="month" name="month" value="<?php echo isset($_POST['month']) ? htmlspecialchars($_POST['month']) : ''; ?>" placeholder="Month" required>
-                                <input type="text" id="year" name="year" value="<?php echo isset($_POST['year']) ? htmlspecialchars($_POST['year']) : ''; ?>" placeholder="Year" required>
+                                <input type="text" id="day" name="day" value="<?php echo isset($_POST['day']) ? htmlspecialchars($_POST['day']) : ''; ?>" placeholder="Day" autocomplete="off" required>
+                                <input type="text" id="month" name="month" value="<?php echo isset($_POST['month']) ? htmlspecialchars($_POST['month']) : ''; ?>" placeholder="Month" autocomplete="off" required>
+                                <input type="text" id="year" name="year" value="<?php echo isset($_POST['year']) ? htmlspecialchars($_POST['year']) : ''; ?>" placeholder="Year" autocomplete="off" required>
                                 <span class="error-message"></span>
                             </div>
                         </div>

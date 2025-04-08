@@ -1,3 +1,51 @@
+<?php
+
+include '../../config/db.php';
+
+session_start();
+
+$error_message = "";
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    // Get the username and password from the form
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    $checkStmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
+    $checkStmt->bind_param("s", $username);
+    $checkStmt->execute();
+    $result = $checkStmt->get_result();
+
+    // Fetch the actual user data from the result
+    $user = $result->fetch_assoc();
+
+    // Check if the user exists
+    if ($user) {
+
+        // Check if the password is correct
+        if (password_verify($password, $user['password'])) {
+            // Check if the user's role is 'cashier'
+            if ($user['role'] === 'cashier') {
+                // Set session or cookie for logged-in user
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['username'] = $user['username'];
+                $_SESSION['role'] = $user['role'];
+
+                // Redirect to the cashier dashboard or home page
+                header("Location: cashier_dashboard.php");
+                exit;
+            } else {
+                $error_message = "You are not authorized as a cashier.";
+            }
+        } else {
+            $error_message = "Invalid username or password.";
+        }
+    } else {
+        $error_message = "Invalid username or password.";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,7 +54,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cashier Login | JoeBean</title>
     <link rel="stylesheet" href="../../assets/css/index.css">
-    <link rel="stylesheet" href="../../assets/css/cashier/cashier_logins.css">
+    <link rel="stylesheet" href="../../assets/css/cashier/cashier_login.css">
 </head>
 
 <body>
@@ -23,18 +71,21 @@
             <div class="CashierLogin__form-container">
                 <p class="CashierLogin__form-type">Cashier</p>
                 <h2>Login</h2>
-                <form class="CashierLogin__form">
+                <form class="CashierLogin__form" method="post">
                     <div class="CashierLogin__input-group">
-                        <input type="text" placeholder="" required />
-                        <label>Username</label>
+                        <input type="text" name="username" id="username" placeholder="" autocomplete="off" required />
+                        <label for="username">Username</label>
                         <img
                             class="CashierLogin__username-icon"
                             src="../../assets/images/username-icon.svg"
                             alt="username-icon" />
+                        <span class="error-message">
+                            <?= $error_message; ?>
+                        </span>
                     </div>
                     <div class="CashierLogin__input-group margin-none">
-                        <input type="password" placeholder="" required />
-                        <label>Password</label>
+                        <input type="password" name="password" id="password" placeholder="" autocomplete="off" required />
+                        <label for="password">Password</label>
                         <img
                             class="CashierLogin__password-icon"
                             src="../../assets/images/password-icon.svg"
@@ -45,7 +96,7 @@
                             alt="eye password" />
                     </div>
                     <a href="#" class="CashierLogin__forgot-password">Forgot Password?</a>
-                    <button type="button" class="CashierLogin__home-button">
+                    <button type="submit" class="CashierLogin__home-button">
                         Login
                     </button>
                     <button type="button" class="CashierLogin__type-button">

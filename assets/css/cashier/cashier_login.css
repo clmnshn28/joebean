@@ -253,3 +253,14 @@ input:focus {
     text-decoration: underline;
     font-weight: bold;
 }
+
+
+.error-message{
+    position: absolute;
+    right: 1%;
+    top: -33%;
+    color: red;
+    font-size: 13px;
+    font-weight: 600;
+    /* display: none; */
+}
