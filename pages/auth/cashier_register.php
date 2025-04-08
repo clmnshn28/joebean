@@ -17,7 +17,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $birthYear = $_POST['year'];
     $role = "cashier";
     
+    // Function to get user ID by username
+    function getUserId($conn, $username) {
+        $result = $conn->query("SELECT id FROM users WHERE username = '$username'");
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            return $row['id'];
+        }
+        return null;
+    }
+    $adminId = getUserId($conn, "admin");
 
+
+    
     // Check if username already exists
     $checkStmt = $conn->prepare("SELECT id FROM users WHERE username = ?");
     $checkStmt->bind_param("s", $username);
@@ -60,8 +72,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Insert into database
-        $stmt = $conn->prepare("INSERT INTO users (username, password, firstname, lastname, middlename, gender, birth_day, birth_month, birth_year, image, role, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
-        $stmt->bind_param("ssssssiiisss", $username, $password, $firstName, $lastName, $middleName, $gender, $birthDay, $birthMonth, $birthYear, $imagePath, $role);
+        $stmt = $conn->prepare("INSERT INTO users (username, password, firstname, lastname, middlename, gender, birth_day, birth_month, birth_year, image, role, admin_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+        $stmt->bind_param("ssssssiiisss", $username, $password, $firstName, $lastName, $middleName, $gender, $birthDay, $birthMonth, $birthYear, $imagePath, $role, $adminId);
     
         if ($stmt->execute()) {
             header("Location: cashier_login.php");
@@ -84,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cashier Register | JoeBean</title>
-    <link rel="stylesheet" href="../../assets/css/index.css">
+    <link rel="stylesheet" href="../../assets/css/indexs.css">
     <link rel="stylesheet" href="../../assets/css/cashier/cashier_register.css">
 </head>
 
@@ -199,22 +211,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <form class="CashierRegister__form-container" action="" method="POST" enctype="multipart/form-data">
                     <div class="CashierRegister__left-form">
                         <div class="CashierRegister__form-group">
-                            <label for="firstName">First Name</label>
+                            <label for="firstName">
+                                First Name
+                                <span class="required">*</span>
+                            </label>
                             <input type="text" id="firstName" name="firstName" value="<?php echo isset($_POST['firstName']) ? htmlspecialchars($_POST['firstName']) : ''; ?>" autocomplete="off" required>
                         </div>
 
                         <div class="CashierRegister__form-group">
-                            <label for="middleName">Middle Name</label>
+                            <label for="middleName">
+                                Middle Name
+                                <span class="required">*</span>
+                            </label>
                             <input type="text" id="middleName" name="middleName" value="<?php echo isset($_POST['middleName']) ? htmlspecialchars($_POST['middleName']) : ''; ?>" autocomplete="off" required>
                         </div>
 
                         <div class="CashierRegister__form-group">
-                            <label for="lastName">Last Name</label>
+                            <label for="lastName">
+                                Last Name
+                                <span class="required">*</span>
+                            </label>
                             <input type="text" id="lastName" name="lastName" value="<?php echo isset($_POST['lastName']) ? htmlspecialchars($_POST['lastName']) : ''; ?>" autocomplete="off" required>
                         </div>
 
                         <div class="CashierRegister__form-group">
-                            <label>Gender</label>
+                            <label>
+                                Gender
+                                <span class="required">*</span>
+                            </label>
                             <div class="CashierRegister__gender-group">
                                 <div class="CashierRegister__gender-option">
                                     <input type="radio" id="male" name="gender" value="male" <?php echo isset($_POST['gender']) && $_POST['gender'] == 'male' ? 'checked' : ''; ?> required>
@@ -228,7 +252,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
 
                         <div class="CashierRegister__form-group">
-                            <label for="birthday">Birthday</label>
+                            <label for="birthday">
+                                Birthday
+                                <span class="required">*</span>
+                            </label>
                             <div class="CashierRegister__birthday-group">
                                 <input type="text" id="day" name="day" value="<?php echo isset($_POST['day']) ? htmlspecialchars($_POST['day']) : ''; ?>" placeholder="Day" autocomplete="off" required>
                                 <input type="text" id="month" name="month" value="<?php echo isset($_POST['month']) ? htmlspecialchars($_POST['month']) : ''; ?>" placeholder="Month" autocomplete="off" required>
@@ -249,7 +276,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
 
                         <div class="CashierRegister__form-group">
-                            <label for="username">Username</label>
+                            <label for="username">
+                                Username
+                                <span class="required">*</span>
+                            </label>
                             <input type="text" id="username" name="username" value="<?php echo isset($_POST['username']) ? htmlspecialchars($_POST['username']) : ''; ?>" autocomplete="off" required>
                             <span class="error-username-message">
                                 <?php if (!empty($usernameError)) echo $usernameError; ?>
@@ -257,13 +287,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
 
                         <div class="CashierRegister__form-group">
-                            <label for="password">Password</label>
+                            <label for="password">
+                                Password
+                                <span class="required">*</span>
+                            </label>
                             <input type="password" id="password" name="password" autocomplete="off" required>
                             <span class="error-message"></span>
                         </div>
 
                         <div class="CashierRegister__form-group remove-margin">
-                            <label for="confirmPassword">Confirm Password</label>
+                            <label for="confirmPassword">
+                                Confirm Password
+                                <span class="required">*</span>
+                            </label>
                             <input type="password" id="confirmPassword" name="confirmPassword" autocomplete="off" required>
                             <span class="error-confirm-message"></span>
                         </div>

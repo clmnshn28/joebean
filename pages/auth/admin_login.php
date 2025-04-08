@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['role'] = $user['role'];
 
                 // Redirect to the cashier dashboard or home page
-                header("Location: admin_dashboard.php");
+                header("Location:  ../admin/admin_item_list.php");
                 exit;
             } else {
                 $error_message = "You are not authorized as an admin.";
@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Admin Login | JoeBean</title>
-        <link rel="stylesheet" href="../../assets/css/index.css">
+        <link rel="stylesheet" href="../../assets/css/indexs.css">
         <link rel="stylesheet" href="../../assets/css/admin/admin_login.css">
     </head>
     <body>

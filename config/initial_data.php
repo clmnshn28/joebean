@@ -8,6 +8,17 @@
         return $result->num_rows > 0;
     }
 
+    // Function to get user ID by username
+    function getUserId($conn, $username) {
+        $result = $conn->query("SELECT id FROM users WHERE username = '$username'");
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            return $row['id'];
+        }
+        return null;
+    }
+
+
     echo "<h2>Adding Default Users</h2>";
 
     // Default admin data
@@ -16,8 +27,8 @@
 
     // Only add admin if it doesn't exist
     if (!usernameExists($conn, $adminUsername)) {
-        $sql = "INSERT INTO users (username, password, firstname, lastname, middlename, gender, birth_day, birth_month, birth_year, image, role, created_at) 
-                VALUES ('$adminUsername', '$adminPassword', 'System', 'Administrator', 'AdSys', 'male', 1, 1, 2000, 'uploads/default.png', 'admin', NOW())";
+        $sql = "INSERT INTO users (username, password, firstname, lastname, middlename, gender, birth_day, birth_month, birth_year, image, role,admin_id, created_at) 
+                VALUES ('$adminUsername', '$adminPassword', 'System', 'Administrator', 'AdSys', 'male', 1, 1, 2000, 'uploads/default.png', 'admin', NULL, NOW())";
         
         if ($conn->query($sql) === TRUE) {
             echo "Admin user created successfully<br>";
@@ -34,10 +45,12 @@
     $cashierUsername = "cashier";
     $cashierPassword = password_hash("cashier123", PASSWORD_DEFAULT);
 
+    $adminId = getUserId($conn, $adminUsername);
+
     // Only add cashier if it doesn't exist
     if (!usernameExists($conn, $cashierUsername)) {
-        $sql = "INSERT INTO users (username, password, firstname, lastname, middlename, gender, birth_day, birth_month, birth_year, image, role, created_at) 
-                VALUES ('$cashierUsername', '$cashierPassword', 'Default', 'Cashier', 'CasSys', 'female', 1, 1, 2000, 'uploads/default.png', 'cashier', NOW())";
+        $sql = "INSERT INTO users (username, password, firstname, lastname, middlename, gender, birth_day, birth_month, birth_year, image, role,admin_id, created_at) 
+                VALUES ('$cashierUsername', '$cashierPassword', 'Default', 'Cashier', 'CasSys', 'female', 1, 1, 2000, 'uploads/default.png', 'cashier', $adminId, NOW())";
         
         if ($conn->query($sql) === TRUE) {
             echo "Cashier user created successfully<br>";
