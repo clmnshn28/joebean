@@ -1,0 +1,570 @@
+
+.AdminCashierList__table-content-item th{
+    text-align: left;
+    padding: 13px 5px 13px;
+    background-color: #767c63;
+    color: #fff;
+    text-transform: uppercase;
+}
+
+
+.AdminCashierList__table-content-item td {
+    text-align: left;
+    padding: 10px 5px 5px;
+    border-bottom: 1px solid #ddd;
+}
+
+.AdminCashierList__table-content-item th:nth-child(1), 
+.AdminCashierList__table-content-item td:nth-child(1) {
+    width: 10%;
+    text-align: center;
+}
+
+.AdminCashierList__table-content-item th:nth-child(2), 
+.AdminCashierList__table-content-item td:nth-child(2) {
+    width: 13%;
+}
+
+
+.AdminCashierList__table-content-item th:nth-child(3), 
+.AdminCashierList__table-content-item td:nth-child(3) {
+    width: 24%;
+}
+
+.AdminCashierList__table-content-item th:nth-child(4), 
+.AdminCashierList__table-content-item td:nth-child(4) {
+    width: 12%;
+    text-align: center;
+}
+
+.AdminCashierList__table-content-item th:nth-child(5), 
+.AdminCashierList__table-content-item td:nth-child(5) {
+    text-align: center;
+    width: 12%;
+}
+
+
+.AdminCashierList__table-content-item th:nth-child(6), 
+.AdminCashierList__table-content-item td:nth-child(6) {
+    text-align: center;
+    width: 10%;
+}
+
+
+
+.AdminCashierList__table-data-image{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #767c63;
+}
+
+
+.AdminCashierList__table-data-btn{
+    padding: 6px 18px;
+    background-color: #565b48;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.AdminCashierList__table-reactivate-data-btn{
+    padding: 6px 15px;
+    background-color: #9a4848;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.AdminCashierList__table-reactivate-data-btn:active,
+.AdminCashierList__table-data-btn:active{
+    opacity: 0.8;
+}
+
+
+
+
+
+
+
+/* modal content */
+.AdminCashierList__modal-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.AdminCashierList__modal-reset-password-button{
+    background-color: #565b48;
+    padding: 9px;
+    width: 160px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.AdminCashierList__modal-reset-password-button:active{
+    opacity: 0.8;
+}
+
+
+.AdminCashierList__modal-form-container{
+    display: flex;
+    gap: 16px;
+    padding: 20px 0;
+}
+
+.AdminCashierList__modal-left{
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* background-color: #c7c8ad; */
+    position: relative;
+}
+
+.AdminCashierList__item-image-icon {
+    width: 230px;
+    height: 230px;
+    border: 2px solid rgb(141, 141, 141);
+    border-radius: 7px;
+    object-fit: cover;
+}
+
+
+/* right section of modal */
+.AdminCashierList__modal-right{
+    flex: 1.7;
+    padding:40px 20px;
+    /* background-color: #c7c8ad; */
+}
+
+.AdminCashierList__fullname{
+    font-size: 33px;
+    font-weight: bold;
+    color: #565b48;
+    margin-bottom: 10px;
+}
+
+
+.AdminCashierList__details-list{
+    display: flex;
+    align-items: start;
+    margin-top: 23px;
+    font-size: 17px;
+}
+
+.AdminCashierList__detail-name{
+    flex: 1;
+    font-weight: bold;
+    color: #565b48;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-right: 30px;
+}
+
+
+.AdminCashierList__detail-value{
+    flex: 1.7;
+    color: rgb(87, 87, 87);
+}
+
+
+
+.AdminCashierList__relative-modal{
+    position: relative;
+}
+
+
+
+/* button group */
+.AdminCashierList__modal-footer-container{
+    border-top: 2px solid #aaa;
+    padding-top: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    position: absolute;
+    bottom: 5%;
+    left: 5%;
+    right: 5%;
+}
+
+
+.AdminCashierList__modal-cancel-button{
+    background-color: #c4c4c4;
+    padding: 11px;
+    width: 160px;
+    font-size: 18px;
+    font-weight: 500;
+    border: none;
+    border-radius: 5px;
+    color: #676767;
+    cursor: pointer;
+    transition: background-color 0.7s ease-in-out;
+}
+
+
+.AdminCashierList__modal-cancel-button:hover{
+    background-color: #bababa;
+}
+
+.AdminCashierList__modal-cancel-button:active{
+    opacity: 0.8;
+}
+
+
+
+
+
+
+/* reset password modal */
+
+.AdminCashierList__modal-reset-pass-content {
+    background-color: #fff;
+    padding: 30px 30px 40px;
+    border-radius: 30px;
+    width: 100%;
+    max-width: 430px;
+    min-height: 600px;
+    position: relative;
+}
+
+
+/* Close button */
+.AdminCashierList__modal-reset-pass-header-container h3 {
+    font-size: 25px;
+    color: #5e6343;
+    text-align: center;
+    
+}
+
+
+.AdminCashierList__modal-reset-pass-header-container{
+    border-bottom: 2px solid #aaa;
+    padding-bottom: 15px;
+}
+
+
+/* form container */
+.AdminCashierList__modal-reset-pass-form-container{
+    padding: 15px;
+}
+
+.AdminCashierList__modal-reset-pass-details-list{
+    display: flex;
+    align-items: start;
+    margin-top: 23px;
+    font-size: 17px;
+    margin-bottom: 30px;
+}
+
+.AdminCashierList__modal-reset-pass-detail-name{
+    flex: 1;
+    font-weight: 600;
+    color: #565b48;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-right: 30px;
+}
+
+
+.AdminCashierList__modal-reset-pass-detail-value{
+    flex: 1.7;
+}
+
+.AdminCashierList__modal-reset-pass-detail-value span{
+    padding: 3px 8px;
+    color: #fff;
+    background-color: #656D4A;
+    border-radius: 5px;
+}
+
+
+
+
+.AdminCashierList__modal-reset-pass-form-group {
+    margin-bottom: 20px;
+}
+
+.AdminCashierList__modal-reset-pass-form-group label {
+    display: block;
+    font-size: 16px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.AdminCashierList__modal-reset-pass-form-group input[type="text"],
+.AdminCashierList__modal-reset-pass-form-group input[type="password"] {
+    width: 100%;
+    padding: 10px 15px;
+    border: none;
+    color: #565252;
+    letter-spacing: 2px;
+    background-color: #C2C5AA3B;
+    border-bottom: 2px solid #656D4A;
+    font-size: 16px;
+}
+
+.AdminCashierList__modal-reset-pass-form-group input:focus {
+   outline-color: #656D4A;
+   border-bottom: 2px solid #C2C5AA3B;
+}
+ 
+.remove-margin{
+    margin-bottom: 25px;
+}
+
+
+/* errorr message */
+.AdminCashierList__modal-reset-pass-error-message{
+    background-color: #e3cdcd;
+    color: #c04040;
+    margin-bottom: 15px;
+    padding: 15px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    display: none;
+}
+
+.AdminCashierList__modal-reset-pass-error-message img{
+    width: 16px;
+}
+
+/* password requirements */
+.AdminCashierList__modal-reset-pass-password-requirements{
+    margin: 0 0 18px;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: #7272721c;
+    width: 100%;
+}
+
+.AdminCashierList__modal-reset-pass-password-requirements p {
+    font-size: 11px;
+    font-weight: bold;
+    color: #565252;
+    margin: 0;
+}
+
+.AdminCashierList__modal-reset-pass-password-requirements ul{
+    margin: 0;
+    margin-bottom: 10px;
+    padding:2px 0px;
+    list-style: none;
+}
+  
+.AdminCashierList__modal-reset-pass-password-requirements li{
+    font-size: 10px;
+    font-weight: 500;
+    color: #565252;
+    margin: 0;
+}
+
+.wrong{
+    color: red;
+    font-weight: bolder;
+    font-size: 1.2em;
+    margin-right: 3px;
+}
+  
+.check{
+    color: rgb(9, 185, 9);
+    font-weight: bolder;
+    font-size: 1.2em;
+    margin-right: 3px;
+}
+
+
+
+/* button */
+.AdminCashierList__modal-full-reset-pass-button{
+    background-color: #656D4A;
+    padding: 11px;
+    width: 100%;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.AdminCashierList__modal-cancel-pass-button{
+    background-color: #c4c4c4;
+    padding: 11px;
+    width: 100%;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    color: #676767;
+    cursor: pointer;
+}
+
+.AdminCashierList__modal-deact-pass-button{
+    background-color: #9a4848;
+    padding: 11px;
+    width: 100%;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.AdminCashierList__modal-cancel-pass-button:active,
+.AdminCashierList__modal-deact-pass-button:active,
+.AdminCashierList__modal-full-reset-pass-button:active{
+    opacity: 0.8;
+}
+
+
+.AdminCashierList__modal-reset-pass-button-inner-group{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* Deactivate modal */
+
+.AdminCashierList__modal-deactivate-content {
+    background-color: #fff;
+    padding: 30px 30px 40px;
+    border-radius: 30px;
+    width: 100%;
+    max-width: 500px;
+    min-height: 320px;
+    position: relative;
+}
+
+
+/* Close button */
+.AdminCashierList__modal-deactivate-header-container h3 {
+    font-size: 25px;
+    color: #5e6343;
+    text-align: center;
+    
+}
+
+
+.AdminCashierList__modal-deactivate-first-p{
+    text-align: center;
+    margin-top: 35px;
+}
+
+
+.AdminCashierList__modal-deactivate-second-p{
+    text-align: center;
+    padding: 0 40px;
+    margin-bottom: 60px;
+}
+
+/* .AdminCashierList__modal-deactivate-username{
+    margin-bottom: 50px;
+    text-align: center;
+    font-weight: 600;
+} */
+
+/* .AdminCashierList__modal-deactivate-username span{
+    padding: 3px 8px;
+    color: #fff;
+    background-color: #656D4A;
+    border-radius: 5px;
+} */
+
+.AdminCashierList__modal-deactivate-button-inner-group{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-top: 10px;
+    padding: 0 20px;
+}
+
+
+.AdminCashierList__modal-deactivate-cancel-pass-button{
+    background-color: #c4c4c4;
+    padding: 11px;
+    width: 100%;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    color: #676767;
+    cursor: pointer;
+}
+
+
+.AdminCashierList__modal-deactivate-confirm-pass-button{
+    background-color: #9a4848;
+    padding: 11px;
+    width: 100%;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.AdminCashierList__modal-deactivate-cancel-pass-button:active,
+.AdminCashierList__modal-deactivate-confirm-pass-button:active{
+    opacity: 0.8;
+}
+
+
+
+/* Reactivate Modal */
+
+
+
+.AdminCashierList__modal-reactivate-cancel-pass-button{
+    background-color: #c4c4c4;
+    padding: 11px;
+    width: 100%;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    color: #676767;
+    cursor: pointer;
+}
+
+
+.AdminCashierList__modal-reactivate-confirm-pass-button{
+    background-color: #656D4A;
+    padding: 11px;
+    width: 100%;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.AdminCashierList__modal-reactivate-cancel-pass-button:active,
+.AdminCashierList__modal-reactivate-confirm-pass-button:active{
+    opacity: 0.8;
+}

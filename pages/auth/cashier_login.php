@@ -21,9 +21,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Check if the user exists
     if ($user) {
-
-        // Check if the password is correct
-        if (password_verify($password, $user['password'])) {
+        // First check if the account is soft-deleted
+        if ($user['deleted_at'] !== null) {
+            $error_message = "This account has been deactivated.";
+        }
+        // If not soft-deleted, continue with password verification
+        else if (password_verify($password, $user['password'])) {
             // Check if the user's role is 'cashier'
             if ($user['role'] === 'cashier') {
                 // Set session or cookie for logged-in user

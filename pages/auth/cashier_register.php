@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Handle image upload
         $imagePath = null;
         if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
-            $uploadDir = '../../assets/uploads/';
+            $uploadDir = '../../assets/images/avatars/';
             if (!is_dir($uploadDir)) {
                 mkdir($uploadDir, 0777, true);
             }
@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (in_array($fileExtension, $allowedExtensions)) {
                 $targetPath = $uploadDir . $fileName;
                 if (move_uploaded_file($fileTmpPath, $targetPath)) {
-                    $imagePath = 'uploads/' . $fileName; // Save relative path
+                    $imagePath =  $fileName; 
                 } else {
                     die("Image upload failed.");
                 }

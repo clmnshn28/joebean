@@ -45,11 +45,12 @@ itemImageInput.addEventListener('change', function () {
 function allowNumbersOnly(event) {
   
     event.target.value = event.target.value.replace(/[^0-9]/g, '');
-
 }
 
 document.getElementById("item-price").addEventListener("input", allowNumbersOnly);
 document.getElementById("item-stock").addEventListener("input",allowNumbersOnly);
+document.getElementById("item-price1").addEventListener("input", allowNumbersOnly);
+document.getElementById("item-stock1").addEventListener("input",allowNumbersOnly);
 
 
 // =================================================================================
@@ -95,7 +96,12 @@ const addItemBtn = document.querySelector(".AdminItemList__modal-save-button");
 
 addItemBtn.addEventListener("click", function (event) {
     event.preventDefault(); // Prevent form submission for validation first
-
+ 
+    const form = document.querySelector('#itemModal form'); 
+    if (!form.checkValidity()) {
+        form.reportValidity();  // Triggers the browser's built-in validation UI
+        return;
+    }
  
     const avatarFile = itemImageInput.files[0];
     const imageError = document.querySelector('.error-image-message');
@@ -116,7 +122,6 @@ addItemBtn.addEventListener("click", function (event) {
     }
 
     if (isValid ) {
-        const form = document.querySelector('#itemModal form'); 
         form.submit(); // Manually submit form if all validations pass
         hideModal();
     }

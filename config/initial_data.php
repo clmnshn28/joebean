@@ -28,7 +28,7 @@
     // Only add admin if it doesn't exist
     if (!usernameExists($conn, $adminUsername)) {
         $sql = "INSERT INTO users (username, password, firstname, lastname, middlename, gender, birth_day, birth_month, birth_year, image, role,admin_id, created_at) 
-                VALUES ('$adminUsername', '$adminPassword', 'System', 'Administrator', 'AdSys', 'male', 1, 1, 2000, 'uploads/default.png', 'admin', NULL, NOW())";
+                VALUES ('$adminUsername', '$adminPassword', 'System', 'Administrator', 'AdSys', 'male', 1, 1, 2000, 'default.jpg', 'admin', NULL, NOW())";
         
         if ($conn->query($sql) === TRUE) {
             echo "Admin user created successfully<br>";
@@ -50,7 +50,7 @@
     // Only add cashier if it doesn't exist
     if (!usernameExists($conn, $cashierUsername)) {
         $sql = "INSERT INTO users (username, password, firstname, lastname, middlename, gender, birth_day, birth_month, birth_year, image, role,admin_id, created_at) 
-                VALUES ('$cashierUsername', '$cashierPassword', 'Default', 'Cashier', 'CasSys', 'female', 1, 1, 2000, 'uploads/default.png', 'cashier', $adminId, NOW())";
+                VALUES ('$cashierUsername', '$cashierPassword', 'Default', 'Cashier', 'CasSys', 'female', 1, 1, 2000, 'default.jpg', 'cashier', $adminId, NOW())";
         
         if ($conn->query($sql) === TRUE) {
             echo "Cashier user created successfully<br>";
@@ -60,6 +60,27 @@
     } else {
         echo "Cashier user already exists<br>";
     }
+
+
+    // // Default cashier data
+    // $cashier1Username = "clmnshn28";
+    // $cashier1Password = password_hash("Celmin28", PASSWORD_DEFAULT);
+
+    // $adminId = getUserId($conn, $adminUsername);
+
+    // // Only add cashier if it doesn't exist
+    // if (!usernameExists($conn, $cashier1Username)) {
+    //     $sql = "INSERT INTO users (username, password, firstname, lastname, middlename, gender, birth_day, birth_month, birth_year, image, role,admin_id, created_at) 
+    //             VALUES ('$cashier1Username', '$cashier1Password', 'Celmin Shane', 'Quizon', 'Arceo', 'male', 1, 1, 2000, 'uploads/default.png', 'cashier', $adminId, NOW())";
+        
+    //     if ($conn->query($sql) === TRUE) {
+    //         echo "Cashier user created successfully<br>";
+    //     } else {
+    //         echo "Error creating cashier user: " . $conn->error . "<br>";
+    //     }
+    // } else {
+    //     echo "Cashier user already exists<br>";
+    // }
 
     echo "<p>Database setup complete!</p>";
 
