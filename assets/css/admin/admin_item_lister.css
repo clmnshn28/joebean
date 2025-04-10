@@ -259,6 +259,10 @@
     width: 15%;
 }
 
+.AdminItemList__table-content-item th:nth-child(6), 
+.AdminItemList__table-content-item td:nth-child(6) {
+    width: 10%;
+}
 
 .no-data-message {
     text-align: center;
@@ -269,6 +273,60 @@
     justify-content: center;
     align-items: center;
 }
+
+
+
+/* button table */
+.AdminItemList__table-btn{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.AdminItemList__table-edit-data-btn{
+    background-color: #d5cece;
+    border: 1.5px solid rgba(68, 68, 68, 0.5);
+    border-radius: 5px;
+    border: none;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.AdminItemList__table-edit-icon-btn{
+    width: 25px;
+    height: 25px;
+}
+
+
+
+.AdminItemList__table-delete-data-btn{
+    background-color: rgb(214, 77, 77);
+    border: 1.5px solid rgba(68, 68, 68, 0.5);
+    border-radius: 5px;
+    border: none;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.AdminItemList__table-delete-icon-btn{
+    width: 26px;
+    height: 26px;
+}
+
+
+.AdminItemList__table-delete-data-btn:active,
+.AdminItemList__table-edit-data-btn:active{
+    opacity: 0.8;
+}
+
+
+
+
 
 
 

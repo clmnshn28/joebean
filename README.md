@@ -23,8 +23,8 @@
 ## 💡 Get Started
 ### 1️⃣ Clone the Repository
 ```bash
-https://github.com/clmnshn28/Jeongify.git
-cd Jeongify
+https://github.com/clmnshn28/jeobean.git
+cd jeobean
 ```
 ### 2️⃣ Set up your Database
 

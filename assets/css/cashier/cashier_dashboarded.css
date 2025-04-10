@@ -1,0 +1,581 @@
+.CashierDashboard__main-content{
+    display: flex;
+    height: 100vh;
+    padding: 30px;
+    gap: 20px;
+}
+
+
+
+
+
+
+/* main section */
+.CashierDashboard__main-section{
+    flex: 2.3;
+    background-color: white;
+    border-radius: 20px;
+    padding: 15px 20px;
+    display: flex;
+    flex-direction: column; 
+}
+
+
+
+.CashierDashboard__branding{
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.CashierDashboard__logo {
+    width: 80px;
+    height: auto;
+}
+
+.CashierDashboard__system-name {
+    display: flex;
+    flex-direction: column;
+    color: #656D4A;
+    /* background-color: #555; */
+    border-left: 4px solid #656D4A;
+    padding: 4px 0px 7px 10px;
+}
+
+.CashierDashboard__title {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.CashierDashboard__subtitle {
+    font-size: 15px;
+    color: #555;
+    margin: 0;
+}
+
+
+
+/* menu section */
+.CashierDashboard__menu-section{
+    /* background-color: azure; */
+    display: flex;
+    flex: 1; 
+    overflow: hidden;
+}
+
+
+/* sidebar */
+.CashierDashboard__menu-sidebar{
+    flex: 0.28;
+    background-color: rgb(232, 232, 232);
+    border-radius: 10px;
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 18px;
+    color: #656D4A;
+    position: relative; 
+    height: 100%;
+    margin-left: 5px;
+}
+
+.CashierDashboard__menu-sidebar p{
+    background-color: #60694e;
+    color: #fff;
+    padding: 3%;
+    padding: 5px 0;
+    border-radius: 4px;
+    position: absolute;
+    top: 4.2%;
+    left: -3%;
+    right: -3%;
+}
+
+.CashierDashboard__menu-button-wrapper{
+    margin: 75px 10px 10px;
+    height: calc(100% - 85px); 
+    display: flex;
+    flex-direction: column;
+}
+
+.CashierDashboard__menu-button-container{
+    /* background-color: #656D4A; */
+    background-color: rgb(245, 245, 245);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 15px 0; 
+    height: 100%;
+    overflow-y: auto;
+    cursor: ns-resize;
+}
+
+.CashierDashboard__menu-button-container::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
+}
+
+/* 
+.CashierDashboard__menu-button-container::before,
+.CashierDashboard__menu-button-container::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 30px;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.CashierDashboard__menu-button-container::before {
+    top: 0;
+    background: linear-gradient(to bottom, #656D4A, transparent);
+}
+
+.CashierDashboard__menu-button-container::after {
+    bottom: 0;
+    background: linear-gradient(to top, #656D4A, transparent);
+} */
+
+.CashierDashboard__category-button{
+    background-color: #C2C5AA;
+    flex-shrink: 0;
+    width: 70px;
+    height: 70px;
+    border: none;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.CashierDashboard__category-button.selected{
+    background-color: #414833;
+}
+
+.CashierDashboard__category-button-img{
+    width: 44px;
+}
+
+.CashierDashboard__category-button-imgs{
+    width: 52px;
+}
+
+.CashierDashboard__category-button:active{
+    opacity: 0.8;
+}
+
+
+
+
+
+
+
+
+/* menu items section */
+.CashierDashboard__menu-items-section{
+    flex: 2;
+    /* background-color: burlywood; */
+    padding: 0px 0 10px 20px;
+}
+
+.CashierDashboard__menu-items-wrapper{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    padding: 20px 5px 20px 30px;
+    /* background-color: #414833; */
+    border-radius: 20px;
+    height: 100%;
+    overflow-y: auto;
+    align-items: flex-start; 
+    align-content: flex-start; 
+    cursor: ns-resize;
+}
+
+/* Scrollbar customization */
+.CashierDashboard__menu-items-wrapper::-webkit-scrollbar {
+    width: 8px;
+}
+
+.CashierDashboard__menu-items-wrapper::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.CashierDashboard__menu-items-wrapper::-webkit-scrollbar-thumb {
+    background: #C2C5AA;
+    border-radius: 10px;
+}
+
+.CashierDashboard__menu-items-wrapper::-webkit-scrollbar-thumb:hover {
+    background: rgb(175, 177, 144);
+    cursor: pointer;
+}
+
+
+
+.CashierDashboard__product-item-container{
+    background-color: #D9D9D9;
+    width: 260px;
+    padding: 13px 15px;
+    border-radius: 10px;
+    color: #656D4A;
+    display: flex;
+    flex-direction: column;
+    cursor: default;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+
+
+.CashierDashboard__product-top-content{
+    display: flex;
+}
+
+.CashierDashboard__product-top-content h3{
+    font-size: 22px;
+}
+
+.CashierDashboard__product-top-content img{
+    width: 88px;
+    height: 88px;
+    object-fit: contain;
+    border: 2px solid #414833;
+    border-radius: 10px;
+}
+
+.CashierDashboard__product-bottom-content{
+    margin-top: 17px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+
+.CashierDashboard__product-size-container{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.CashierDashboard__product-price{
+    font-weight: bold;
+    flex: 0.8;
+    font-size: 23px;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.CashierDashboard__size-btn{
+    border: none;
+    background-color: #656D4A;
+    color: #fff;
+    flex: 1;
+    border-radius: 5px;
+    padding: 6px 5px;
+    font-size: 16px;
+    text-transform: uppercase;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.5s ease-in-out;
+}
+
+.CashierDashboard__size-btn:hover{
+    background-color: #50573a;
+}
+
+.CashierDashboard__size-btn:active{
+    opacity: 0.8;
+}
+
+.CashierDashboard__product-stock{
+    font-size: 13px;
+    font-weight: bold;
+    margin-left: 3px;
+}
+.CashierDashboard__product-stock span{
+    font-weight: 500;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* order section */
+.CashierDashboard__order-section{
+    flex: 0.75;
+    background-color: white;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+
+.CashierDashboard__cashier-details-container{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 35px 6px 15px;
+    margin: 0 20px;
+    border-bottom: 2px solid;
+    color: #656D4A;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.CashierDashboard__cashier-details-container img{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #656D4A;
+}
+
+.CashierDashboard__cashier-name{
+    font-weight: 600;
+    flex-direction: column;
+    display: flex;
+    gap: 2px;
+}
+
+.CashierDashboard__cashier-name span:first-child{
+    font-size: 16px;
+    font-weight: bold;
+    /* background-color: #414833; */
+    width:190px;         
+    white-space: nowrap;  
+    overflow: hidden;   
+    text-overflow: ellipsis; 
+}
+
+
+.CashierDashboard__cashier-name span:last-child{
+    font-size: 10px;
+    background-color: #656D4A;
+    color: #fff;
+    padding: 3px 7px ;
+    border-radius: 5px;
+    display: inline-block;
+    width: 63px;
+    text-transform: uppercase;
+}
+
+.CashierDashboard__modal-dots-btn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background-color: #656D4A;
+    border-radius: 5px;
+    color: #fff;
+    padding: 1px 6px 1px 9px;
+    font-size: 13px;
+    position: absolute;
+    letter-spacing: 3px;
+    top: 38%;
+    right: 2%;
+    cursor: pointer;
+}
+
+
+
+
+
+
+.CashierDashboard__order-list-container{
+    flex: 4;
+    /* background-color: #b3b3b3; */
+    padding: 30px 10px;
+    overflow: hidden; 
+}
+
+.CashierDashboard__order-list-wrapper{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 100%;
+    overflow-y: auto;
+    padding: 5px;
+    /* background-color: #414833; */
+}
+
+/* .CashierDashboard__order-list-wrapper::-webkit-scrollbar {
+    display: none;
+} */
+
+/* Scrollbar customization */
+.CashierDashboard__order-list-wrapper::-webkit-scrollbar {
+    width: 6px;
+}
+
+.CashierDashboard__order-list-wrapper::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.CashierDashboard__order-list-wrapper::-webkit-scrollbar-thumb {
+    background: #C2C5AA;
+    border-radius: 10px;
+}
+
+.CashierDashboard__order-list-wrapper::-webkit-scrollbar-thumb:hover {
+    background: rgb(175, 177, 144);
+    cursor: pointer;
+}
+
+
+.CashierDashboard__order-selected-container{
+    background-color: #656d4a1f;
+    padding: 7px 10px;
+    border-radius: 10px;
+    display: flex;
+}
+
+.CashierDashboard__order-item-name-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 2;
+    /* background-color: #C2C5AA; */
+    
+}
+
+.CashierDashboard__order-item-name-container span:first-child{
+    /* background-color: #656D4A; */
+    font-weight: bold;
+    width:200px;
+    white-space: nowrap;  
+    overflow: hidden;   
+    text-overflow: ellipsis; 
+}
+
+.CashierDashboard__order-item-size-price-container{
+    font-size: 15px;
+    color: #464743;
+    display: flex;
+    align-items: center;
+}
+
+
+
+.CashierDashboard__order-item-price-delete-container{
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    gap: 10px;
+}
+
+
+.CashierDashboard__order-item-price-delete-container span{
+    background-color: #60694e;
+    color: #fff;
+    font-weight: 600;
+    padding: 5px 11px;
+    border-radius: 50%;
+    margin-right: 2px;
+}
+
+
+.CashierDashboard__order-line{
+    width: 2px;
+    height: 35px;
+    background-color: #C2C5AA;
+}
+
+.CashierDashboard__order-delete-icon-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: 5px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+
+.CashierDashboard__order-delete-icon-container:hover{
+    background-color: #656d4a3c;
+}
+
+
+
+.CashierDashboard__order-delete-icon-container:active{
+    opacity: 0.8;
+}
+
+
+.CashierDashboard__order-delete-icon{
+    width: 25px;
+    cursor: pointer;
+
+}
+
+
+
+
+
+
+
+.CashierDashboard__place-order-container{
+    flex: 1;
+    background-color: #656d4a28;
+    display: flex;
+    flex-direction: column;
+    padding: 25px 20px 20px;
+    flex-shrink: 0;
+}
+
+.CashierDashboard__total-container{
+    display: flex;
+    align-items: center;
+    margin: 0 30px 25px;
+    color: #656D4A;
+}
+
+.CashierDashboard__total-container span:first-child{
+    flex: 1;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 16px;
+}
+.CashierDashboard__total-container span:last-child{
+    flex: 1;
+    text-align: end;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.CashierDashboard__place-order-btn{
+    background-color: #656D4A;
+    text-transform: uppercase;
+    border: none;
+    color: #fff;
+    padding: 16px;
+    font-size: 15px;
+    font-weight: 500;
+    border-radius: 7px;
+    cursor: pointer;
+}

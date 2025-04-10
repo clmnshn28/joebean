@@ -123,7 +123,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Admin Item List | JoeBean</title>
         <link rel="stylesheet" href="../../assets/css/indexs.css">
-        <link rel="stylesheet" href="../../assets/css/admin/admin_item_listers.css">
+        <link rel="stylesheet" href="../../assets/css/admin/admin_item_lister.css">
         <link rel="stylesheet" href="../../assets/css/admin/admin_cashier_lister.css">
         <link rel="stylesheet" href="../../assets/css/modals.css">
     </head>
@@ -201,7 +201,7 @@
                                         ucwords(strtolower($row['lastname']));
                                     $age = calculateAge($row['birth_year'], $row['birth_month'], $row['birth_day']);
                                     $image_path = !empty($row['image']) ? $row['image'] : 'uploads/default.png';
-                                    $created_at_formatted = date("F d, Y - h : i A", strtotime($row['created_at']));
+                                    $created_at_formatted = date("F d, Y — h : i A", strtotime($row['created_at']));
                                     $birthdate = date("F d, Y", strtotime("{$row['birth_year']}-{$row['birth_month']}-{$row['birth_day']}"));
 
                                     echo "<tr>";

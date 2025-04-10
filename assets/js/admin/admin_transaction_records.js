@@ -45,3 +45,38 @@ document.querySelectorAll('.AdminTransactionRecord__table-data-btn').forEach(but
 closeModalButton.onclick = function() {
     modal.style.display = "none";
 }
+
+// =================================================================================
+// Pagination functionality
+const leftPaginationBtn = document.querySelector('.AdminItemList__pagination-left');
+const rightPaginationBtn = document.querySelector('.AdminItemList__pagination-right');
+const paginationNumber = document.querySelector('.AdminItemList__pagination-number');
+
+// Current page from URL or default to 1
+const urlParams = new URLSearchParams(window.location.search);
+const currentPage = parseInt(urlParams.get('page')) || 1;
+
+// Handle left pagination button click
+leftPaginationBtn.addEventListener('click', function() {
+    if (currentPage > 1) {
+        const newPage = currentPage - 1;
+        window.location.href = `admin_transaction_record.php?page=${newPage}`;
+    }
+});
+
+// Handle right pagination button click
+rightPaginationBtn.addEventListener('click', function() {
+    const totalPages = parseInt(paginationNumber.textContent.split(' of ')[1]);
+    if (currentPage < totalPages) {
+        const newPage = currentPage + 1;
+        window.location.href = `admin_transaction_record.php?page=${newPage}`;
+    }
+});
+
+// Hide pagination if there's only one page
+const totalPages = parseInt(paginationNumber.textContent.split(' of ')[1]) || 1;
+if (totalPages <= 1) {
+    document.getElementById('paginationContainer').style.display = 'none';
+} else {
+    document.getElementById('paginationContainer').style.display = 'flex';
+}

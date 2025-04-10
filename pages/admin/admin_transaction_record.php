@@ -24,7 +24,7 @@
     }
 
 
-    $limit = 7;
+    $limit = 6;
     $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int) $_GET['page'] : 1;
     $offset = ($page - 1) * $limit;
     
@@ -66,8 +66,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Admin Item List | JoeBean</title>
         <link rel="stylesheet" href="../../assets/css/indexs.css">
-        <link rel="stylesheet" href="../../assets/css/admin/admin_item_listers.css">
-        <link rel="stylesheet" href="../../assets/css/admin/admin_transaction_recordso.css">
+        <link rel="stylesheet" href="../../assets/css/admin/admin_item_lister.css">
+        <link rel="stylesheet" href="../../assets/css/admin/admin_transaction_recorda.css">
         <link rel="stylesheet" href="../../assets/css/modals.css">
     </head>
     <body>
@@ -144,7 +144,7 @@
                             if (mysqli_num_rows($result) > 0) {
                                 while ($row = mysqli_fetch_assoc($result)) {
                                     $created_at_formatted = date("m/d/Y", strtotime($row['created_at']));
-                                    $created_at_modal_formatted = date("M d, Y - h:i A", strtotime($row['created_at']));
+                                    $created_at_modal_formatted = date("M d, Y — h:i A", strtotime($row['created_at']));
                                     echo "<tr>";
                                         echo "<td>
                                             <div class='item-with-image'>
@@ -293,6 +293,6 @@
 
 
 
-        <script src="../../assets/js/admin/admin_transaction_record.js"></script>
+        <script src="../../assets/js/admin/admin_transaction_records.js"></script>
     </body>
 </html>

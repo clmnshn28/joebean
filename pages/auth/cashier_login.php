@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['role'] = $user['role'];
 
                 // Redirect to the cashier dashboard or home page
-                header("Location: cashier_dashboard.php");
+                header("Location: ../cashier/cashier_dashboard.php");
                 exit;
             } else {
                 $error_message = "You are not authorized as a cashier.";

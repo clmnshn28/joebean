@@ -27,12 +27,13 @@ $error_message = "";
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $itemName = $_POST["item-name"];
     $itemCategory = $_POST["item-category"];
-    $itemPrice1 = $_POST["item-price1"];
-    $itemPrice2 = $_POST["item-price2"];
-    $itemStock1 = $_POST["item-stock1"];
-    $itemStock2 = $_POST["item-stock2"];
-    $itemSize1 = $_POST["item-size1"];
-    $itemSize2 = $_POST["item-size2"];
+    $itemPrice1 = $_POST["item-price1"] !== "" ? $_POST["item-price1"] : null;
+    $itemPrice2 = $_POST["item-price2"] !== "" ? $_POST["item-price2"] : null;
+    $itemStock1 = $_POST["item-stock1"] !== "" ? $_POST["item-stock1"] : null;
+    $itemStock2 = $_POST["item-stock2"] !== "" ? $_POST["item-stock2"] : null;
+    $itemSize1 = $_POST["item-size1"] !== "" ? $_POST["item-size1"] : null;
+    $itemSize2 = $_POST["item-size2"] !== "" ? $_POST["item-size2"] : null;
+    
 
     // Image upload
     $imagePath = null;
@@ -129,7 +130,7 @@ $result = mysqli_query($conn, $query);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Item List | JoeBean</title>
     <link rel="stylesheet" href="../../assets/css/indexs.css">
-    <link rel="stylesheet" href="../../assets/css/admin/admin_item_listers.css">
+    <link rel="stylesheet" href="../../assets/css/admin/admin_item_lister.css">
     <link rel="stylesheet" href="../../assets/css/modals.css">
 </head>
 
@@ -184,6 +185,7 @@ $result = mysqli_query($conn, $query);
                             <th>Item Price</th>
                             <th>Item Category</th>
                             <th>Item Stock</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody id="itemTableBody">
@@ -192,15 +194,42 @@ $result = mysqli_query($conn, $query);
                             while ($row = mysqli_fetch_assoc($result)) {
                                 echo "<tr>";
                                 echo "<td>
-                                                    <div class='item-with-image'>
-                                                        <img class='item-image' src='../../assets/images/products/" . htmlspecialchars($row['item_image']) . "' alt='Item Image'>
-                                                        <span>" . htmlspecialchars(ucwords(strtolower($row['item_name']))) . "</span>
-                                                    </div>
-                                                </td>";
-                                echo "<td>" . str_replace(",", " <br> ",htmlspecialchars(ucwords(strtolower($row['sizes'])))) . "</td>";
-                                echo "<td>₱" . str_replace(",", "<br>₱", htmlspecialchars($row['prices'])) . "</td>";
+                                        <div class='item-with-image'>
+                                            <img class='item-image' src='../../assets/images/products/" . htmlspecialchars($row['item_image']) . "' alt='Item Image'>
+                                            <span>" . htmlspecialchars(ucwords(strtolower($row['item_name']))) . "</span>
+                                        </div>
+                                    </td>";
+                                // Size
+                                $sizesRaw = trim($row['sizes'], ", ");
+                                if ($sizesRaw === "") {
+                                    echo "<td style='padding-left:30px'>-</td>";
+                                } else {
+                                    echo "<td>" . str_replace(",", "<br>", htmlspecialchars(ucwords(strtolower($sizesRaw)))) . "</td>";
+                                }
+                                                
+                               // Price
+                                $prices = array_filter(explode(',', $row['prices']), fn($p) => floatval($p) > 0);
+                                $priceDisplay = implode("<br>₱", array_map('htmlspecialchars', $prices));
+                                echo "<td>" . ($priceDisplay ? "₱" . $priceDisplay : "") . "</td>";
                                 echo "<td>" . htmlspecialchars(ucwords(strtolower($row['item_category']))) . "</td>";
-                                echo "<td>" . str_replace(",", " <br> ",htmlspecialchars($row['stocks'])) . "</td>";
+                                // Stock
+                                $stocks = array_filter(explode(',', $row['stocks']), fn($s) => intval($s) > 0);
+                                $stockDisplay = implode("<br>", array_map('htmlspecialchars', $stocks));
+                                echo "<td>" . $stockDisplay . "</td>";
+                                echo "<td>
+                                        <div class='AdminItemList__table-btn'>
+                                            <button 
+                                                class='AdminItemList__table-edit-data-btn' 
+                                            >
+                                                <img class='AdminItemList__table-edit-icon-btn'  src='../../assets/images/edit-icon.svg' alt='edit icon'>
+                                            </button>
+                                             <button 
+                                                class='AdminItemList__table-delete-data-btn' 
+                                            >
+                                                <img class='AdminItemList__table-delete-icon-btn' src='../../assets/images/trash-icon.svg' alt='trash icon'>
+                                            </button>
+                                        </div>
+                                    </td>";
                                 echo "</tr>";
                             }
                         } else {
@@ -262,19 +291,19 @@ $result = mysqli_query($conn, $query);
                     </div>
                     <div class="AdminItemList__modal-items-group">
                         <div class="AdminItemList__modal-item-price-container">
-                            <p>Item Size :  <span class="required">*</span></p>
-                            <input type="text" id="item-size" name="item-size1" autocomplete="off" required>
-                            <input type="text" id="item-size" name="item-size2" autocomplete="off" required>
+                            <p>Item Size : </p>
+                            <input type="text" id="item-size" name="item-size1" autocomplete="off" >
+                            <input type="text" id="item-size" name="item-size2" autocomplete="off" >
                         </div>
                         <div class="AdminItemList__modal-item-price-container">
                             <p>Item Price :  <span class="required">*</span></p>
                             <input type="text" id="item-price" name="item-price1" autocomplete="off" required>
-                            <input type="text" id="item-price1" name="item-price2" autocomplete="off" required>
+                            <input type="text" id="item-price1" name="item-price2" autocomplete="off" >
                         </div>
                         <div class="AdminItemList__modal-item-price-container">
                             <p>Item Stock :  <span class="required">*</span></p>
                             <input type="text" id="item-stock" name="item-stock1" autocomplete="off" required>
-                            <input type="text" id="item-stock1" name="item-stock2" autocomplete="off" required>
+                            <input type="text" id="item-stock1" name="item-stock2" autocomplete="off" >
                         </div>
 
                     </div>
