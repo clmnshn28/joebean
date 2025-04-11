@@ -24,7 +24,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
 }
 
 $error_message = "";
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['action'] === 'adding-data') {
     $itemName = $_POST["item-name"];
     $itemCategory = $_POST["item-category"];
     $itemPrice1 = $_POST["item-price1"] !== "" ? $_POST["item-price1"] : null;
@@ -88,8 +88,111 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 }
 
+// Handle edit form submission
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['action'] === 'editing-data') {
+    $productId = $_POST["product-id"];
+    $itemName = $_POST["item-edit-name"];
+    $itemCategory = $_POST["item-edit-category"];
+    $itemPrice1 = $_POST["item-edit-price1"] !== "" ? $_POST["item-edit-price1"] : null;
+    $itemPrice2 = $_POST["item-edit-price2"] !== "" ? $_POST["item-edit-price2"] : null;
+    $itemStock1 = $_POST["item-edit-stock1"] !== "" ? $_POST["item-edit-stock1"] : null;
+    $itemStock2 = $_POST["item-edit-stock2"] !== "" ? $_POST["item-edit-stock2"] : null;
+    $itemSize1 = $_POST["item-edit-size1"] !== "" ? $_POST["item-edit-size1"] : null;
+    $itemSize2 = $_POST["item-edit-size2"] !== "" ? $_POST["item-edit-size2"] : null;
+    
+    // Image update logic
+    $imagePath = $_POST["current-image"]; // Default to current image
+    if (isset($_FILES['item-edit-image']) && $_FILES['item-edit-image']['error'] === UPLOAD_ERR_OK) {
+        $uploadDir = '../../assets/images/products/';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+
+        $fileTmpPath = $_FILES['item-edit-image']['tmp_name'];
+        $fileName = time() . '_' . basename($_FILES['item-edit-image']['name']);
+        $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        $allowedExtensions = ['jpg', 'jpeg', 'png'];
+
+        if (in_array($fileExtension, $allowedExtensions)) {
+            $targetPath = $uploadDir . $fileName;
+            if (move_uploaded_file($fileTmpPath, $targetPath)) {
+                $imagePath = $fileName;
+            } else {
+                $error_message = "Image upload failed.";
+            }
+        } else {
+            $error_message = "Invalid image type.";
+        }
+    }
+
+    // Update product in database
+    $sqlProduct = "UPDATE products 
+                  SET item_name = '$itemName', 
+                      item_category = '$itemCategory', 
+                      item_image = '$imagePath' 
+                  WHERE id = $productId";
+
+    if (mysqli_query($conn, $sqlProduct)) {
+        // Get the variant IDs (you'll need to modify your query to include these)
+        $variantQuery = "SELECT id FROM product_variants WHERE product_id = $productId ORDER BY id LIMIT 2";
+        $variantResult = mysqli_query($conn, $variantQuery);
+        $variantIds = [];
+        while ($variant = mysqli_fetch_assoc($variantResult)) {
+            $variantIds[] = $variant['id'];
+        }
+        
+        // Update first variant
+        if (isset($variantIds[0])) {
+            $sqlVariant1 = "UPDATE product_variants 
+                          SET item_size = '$itemSize1', 
+                              item_price = '$itemPrice1', 
+                              item_stock = '$itemStock1' 
+                          WHERE id = {$variantIds[0]}";
+            mysqli_query($conn, $sqlVariant1);
+        }
+        
+        // Update second variant
+        if (isset($variantIds[1])) {
+            $sqlVariant2 = "UPDATE product_variants 
+                          SET item_size = '$itemSize2', 
+                              item_price = '$itemPrice2', 
+                              item_stock = '$itemStock2' 
+                          WHERE id = {$variantIds[1]}";
+            mysqli_query($conn, $sqlVariant2);
+        }
+        
+        header("Location: admin_item_list.php");
+        exit();
+    } else {
+        $error_message = "Error updating product: " . mysqli_error($conn);
+    }
+}
+
+
+// Handle item deletion
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['action'] === 'delete') {
+    $productId = $_POST["delete_product_id"];
+    
+    // First delete the variants (to maintain foreign key constraints)
+    $sqlDeleteVariants = "DELETE FROM product_variants WHERE product_id = $productId";
+    
+    if (mysqli_query($conn, $sqlDeleteVariants)) {
+        // Then delete the product
+        $sqlDeleteProduct = "DELETE FROM products WHERE id = $productId";
+        
+        if (mysqli_query($conn, $sqlDeleteProduct)) {
+            header("Location: admin_item_list.php");
+            exit();
+        } else {
+            $error_message = "Error deleting product: " . mysqli_error($conn);
+        }
+    } else {
+        $error_message = "Error deleting product variants: " . mysqli_error($conn);
+    }
+}
+
 // Pagination logic
-$items_per_page = 7;
+$items_per_page = 6;
 $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
 $offset = ($page - 1) * $items_per_page;
 
@@ -103,6 +206,7 @@ $total_pages = ceil($total_items / $items_per_page);
 // Modified query with LIMIT for pagination
 $query = "
     SELECT 
+        p.id, 
         p.item_name, 
         p.item_image, 
         p.item_category,
@@ -130,7 +234,7 @@ $result = mysqli_query($conn, $query);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Item List | JoeBean</title>
     <link rel="stylesheet" href="../../assets/css/indexs.css">
-    <link rel="stylesheet" href="../../assets/css/admin/admin_item_lister.css">
+    <link rel="stylesheet" href="../../assets/css/admin/admin_item_listey.css">
     <link rel="stylesheet" href="../../assets/css/modals.css">
 </head>
 
@@ -205,8 +309,7 @@ $result = mysqli_query($conn, $query);
                                     echo "<td style='padding-left:30px'>-</td>";
                                 } else {
                                     echo "<td>" . str_replace(",", "<br>", htmlspecialchars(ucwords(strtolower($sizesRaw)))) . "</td>";
-                                }
-                                                
+                                }                         
                                // Price
                                 $prices = array_filter(explode(',', $row['prices']), fn($p) => floatval($p) > 0);
                                 $priceDisplay = implode("<br>₱", array_map('htmlspecialchars', $prices));
@@ -220,11 +323,21 @@ $result = mysqli_query($conn, $query);
                                         <div class='AdminItemList__table-btn'>
                                             <button 
                                                 class='AdminItemList__table-edit-data-btn' 
+                                                id='openEditModalBtn'
+                                                data-product-id='" . $row['id'] . "' 
+                                                data-name='" . htmlspecialchars($row['item_name']) . "'
+                                                data-category='" . htmlspecialchars($row['item_category']) . "'
+                                                data-sizes='" . htmlspecialchars($row['sizes']) . "'
+                                                data-prices='" . htmlspecialchars($row['prices']) . "'
+                                                data-stocks='" . htmlspecialchars($row['stocks']) . "'
+                                                data-image='" . htmlspecialchars($row['item_image']) . "'
                                             >
                                                 <img class='AdminItemList__table-edit-icon-btn'  src='../../assets/images/edit-icon.svg' alt='edit icon'>
                                             </button>
                                              <button 
                                                 class='AdminItemList__table-delete-data-btn' 
+                                                data-product-id='" . $row['id'] . "' 
+                                                data-name='" . htmlspecialchars($row['item_name']) . "'
                                             >
                                                 <img class='AdminItemList__table-delete-icon-btn' src='../../assets/images/trash-icon.svg' alt='trash icon'>
                                             </button>
@@ -275,6 +388,7 @@ $result = mysqli_query($conn, $query);
                 </div>
 
                 <div class="AdminItemList__modal-right">
+                    <input type="hidden" name="action" value="adding-data">
                     <div class="AdminItemList__modal-form-group">
                         <label for="item-name">
                             ITEM NAME :
@@ -287,23 +401,40 @@ $result = mysqli_query($conn, $query);
                             ITEM CATEGORY :
                             <span class="required">*</span>
                         </label>
-                        <input type="text" id="item-category" name="item-category" autocomplete="off" required>
+                        <!-- <input type="text" id="item-category" name="item-category" autocomplete="off" required> -->
+                        <input type="hidden" id="item-category" name="item-category" >
+                        <div class="custom-select-container">
+                            <div class="custom-select-trigger" id="category-trigger">
+                                Select category
+                                <img src="../../assets/images/dropdown-icon.svg" alt="dropdown icon">
+                            </div>
+                            <div class="custom-options">
+                                <div class="custom-option" data-value="Hot Beverage">Hot Beverage</div>
+                                <div class="custom-option" data-value="Cold Beverage">Cold Beverage</div>
+                                <div class="custom-option" data-value="Rice Meal">Rice Meal</div>
+                                <div class="custom-option" data-value="Snack">Snack</div>
+                                <div class="custom-option" data-value="Dessert">Dessert</div>
+                            </div>
+                        </div>
                     </div>
                     <div class="AdminItemList__modal-items-group">
                         <div class="AdminItemList__modal-item-price-container">
                             <p>Item Size : </p>
                             <input type="text" id="item-size" name="item-size1" autocomplete="off" >
                             <input type="text" id="item-size" name="item-size2" autocomplete="off" >
+                            <span class="AdminItemList__optional-message">(Optional)</span>
                         </div>
                         <div class="AdminItemList__modal-item-price-container">
                             <p>Item Price :  <span class="required">*</span></p>
                             <input type="text" id="item-price" name="item-price1" autocomplete="off" required>
                             <input type="text" id="item-price1" name="item-price2" autocomplete="off" >
+                            <span class="AdminItemList__optional-message">(Optional)</span>
                         </div>
                         <div class="AdminItemList__modal-item-price-container">
                             <p>Item Stock :  <span class="required">*</span></p>
                             <input type="text" id="item-stock" name="item-stock1" autocomplete="off" required>
                             <input type="text" id="item-stock1" name="item-stock2" autocomplete="off" >
+                            <span class="AdminItemList__optional-message">(Optional)</span>
                         </div>
 
                     </div>
@@ -322,7 +453,131 @@ $result = mysqli_query($conn, $query);
         </form>
     </div>
 
-    <script src="../../assets/js/admin/admin_item_lister.js"></script>
+
+
+    <!-- Edit Modal structure -->
+    <div class="modal" id="itemEditModal">
+        <form class="modal-content" action="" method="POST" enctype="multipart/form-data">
+            <div class="modal-header-container">
+                <!-- <span class="close" id="closeModal">&times;</span> -->
+                <h3>Edit Item</h3>
+            </div>
+
+            <div class="AdminItemList__modal-form-container">
+                <div class="AdminItemList__modal-left">
+                    <img id="item-edit-preview" src="../../assets/images/image-preview.jpg" alt="image item-image" class="item-image-icon">
+                    <input type="file" name="item-edit-image" id="item-edit-image" accept="image/*" style="display: none;">
+                    <button type="button" class="AdminItemList__modal-select-image-btn" onclick="document.getElementById('item-edit-image').click();">
+                        <img src="../../assets/images/upload-icon.svg" alt="upload icon">
+                        Upload photo
+                    </button>
+                    <span class="error-image-message"></span>
+                </div>
+
+                <div class="AdminItemList__modal-right">
+                    <input type="hidden" name="action" value="editing-data">
+                    <input type="hidden" name="product-id" id="edit-product-id" value="">
+                    <input type="hidden" name="current-image" id="current-image" value="">
+                    <div class="AdminItemList__modal-form-group">
+                        <label for="item-edit-name">
+                            ITEM NAME :
+                            <span class="required">*</span>
+                        </label>
+                        <input type="text" id="item-edit-name" name="item-edit-name" autocomplete="off" required>
+                    </div>
+                    <div class="AdminItemList__modal-form-group">
+                        <label for="item-edit-category">
+                            ITEM CATEGORY :
+                            <span class="required">*</span>
+                        </label>
+                        <input type="hidden" id="item-edit-category" name="item-edit-category" autocomplete="off" required>
+                        <div class="custom-select-container" id="custom-edit-container">
+                            <div class="custom-select-trigger" id="category-edit-trigger">
+                                Select category
+                                <img src="../../assets/images/dropdown-icon.svg" alt="dropdown icon">
+                            </div>
+                            <div class="custom-options">
+                                <div class="custom-edit-option" data-value="Hot Beverage">Hot Beverage</div>
+                                <div class="custom-edit-option" data-value="Cold Beverage">Cold Beverage</div>
+                                <div class="custom-edit-option" data-value="Rice Meal">Rice Meal</div>
+                                <div class="custom-edit-option" data-value="Snack">Snack</div>
+                                <div class="custom-edit-option" data-value="Dessert">Dessert</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="AdminItemList__modal-items-group">
+                        <div class="AdminItemList__modal-item-price-container">
+                            <p>Item Size : </p>
+                            <input type="text" id="item-edit-size" name="item-edit-size1" autocomplete="off" >
+                            <input type="text" id="item-edit-size" name="item-edit-size2" autocomplete="off" >
+                            <span class="AdminItemList__optional-message">(Optional)</span>
+                        </div>
+                        <div class="AdminItemList__modal-item-price-container">
+                            <p>Item Price :  <span class="required">*</span></p>
+                            <input type="text" id="item-edit-price" name="item-edit-price1" autocomplete="off" required>
+                            <input type="text" id="item-edit-price1" name="item-edit-price2" autocomplete="off" >
+                            <span class="AdminItemList__optional-message">(Optional)</span>
+                        </div>
+                        <div class="AdminItemList__modal-item-price-container">
+                            <p>Item Stock :  <span class="required">*</span></p>
+                            <input type="text" id="item-edit-stock" name="item-edit-stock1" autocomplete="off" required>
+                            <input type="text" id="item-edit-stock1" name="item-edit-stock2" autocomplete="off" >
+                            <span class="AdminItemList__optional-message">(Optional)</span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer-container">
+                <button type="button" class="AdminItemList__modal-cancel-button" id="cancelEditButton">
+                    Cancel
+                </button>
+                <button type="submit" name="edit-submit" class="AdminItemList__modal-save-button" id="saveEditButton">
+                    Save
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+
+        <!--Delete Item Modal structure -->
+        <div class="modal" id="deleteItemModal">
+            <div class="AdminItemList__modal-delete-content">
+                <div class="AdminItemList__modal-delete-header-container">
+                    <h3>Delete Item</h3>
+                </div>
+
+                <p class="AdminItemList__modal-delete-first-p">Are you sure you want to delete this item?</p>
+                <p class="AdminItemList__modal-delete-second-p">This action cannot be undone.</p>
+                <p class="AdminItemList__modal-span-item-name">Item Name:  <span id="deleteItemName"></span></p>
+    
+                <!-- <div class="AdminItemList__modal-delete-item-name">
+                    <span class="AdminItemList__modal-span-item-name">Item Name: </span>
+                    <div class="AdminItemList__modal-item-name-div">
+                        <span id="deleteItemName"></span>
+                    </div>
+                </div> -->
+
+                <form action="" method="post" id="deleteItemForm">
+                    <input type="hidden" name="delete_product_id" id="deleteProductId">
+                    <input type="hidden" name="action" value="delete">
+
+                    <div class="AdminItemList__modal-delete-button-inner-group">
+                        <button type="button" class="AdminItemList__modal-delete-cancel-pass-button">
+                            Cancel
+                        </button>
+                        <button type="submit" class="AdminItemList__modal-delete-confirm-pass-button">
+                            Confirm
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+    <script src="../../assets/js/admin/admin_item_list.js"></script>
 </body>
 
 </html>

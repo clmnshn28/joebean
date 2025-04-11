@@ -123,7 +123,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Admin Item List | JoeBean</title>
         <link rel="stylesheet" href="../../assets/css/indexs.css">
-        <link rel="stylesheet" href="../../assets/css/admin/admin_item_lister.css">
+        <link rel="stylesheet" href="../../assets/css/admin/admin_item_listey.css">
         <link rel="stylesheet" href="../../assets/css/admin/admin_cashier_lister.css">
         <link rel="stylesheet" href="../../assets/css/modals.css">
     </head>
@@ -445,7 +445,7 @@
             </div>
         </div>
 
-        <script src="../../assets/js/admin/admin_cashier_lister.js"></script>
+        <script src="../../assets/js/admin/admin_cashier_list.js"></script>
     </body>
 
     </html>
