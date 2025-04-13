@@ -458,9 +458,9 @@
                 <div class="ErrorPayment__modal-content-header-container">
                     <img class="error-icon" src="../../assets/images/error-icon.svg" alt="Logout icon">
                     <img class="success-icon" src="../../assets/images/successful-icon.svg" alt="SuccessFull icon">
-                    <h3>Insufficient Amount</h3>
+                    <h3></h3>
                 </div>
-                <p class="ErrorPayment__modal-p">Payment amount is less than the total amount. <br>  Please enter a sufficient payment.</p>
+                <p class="ErrorPayment__modal-p"></p>
                 <div class="ErrorPayment__modal-button-group">
                     <button type="button" class="ErrorPayment__modal-cancel-button">
                         Close

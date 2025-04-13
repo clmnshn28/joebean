@@ -191,6 +191,87 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['
     }
 }
 
+
+if (isset($_POST['export_excel'])) {
+    header("Content-Type: application/vnd.ms-excel");
+    header('Content-Disposition: attachment; filename="item_lists_' . date('Y-m-d') . '.xls"');
+    
+    $export_result = mysqli_query($conn, "
+        SELECT 
+            p.id, 
+            p.item_name, 
+            p.item_category,
+            GROUP_CONCAT(v.item_size SEPARATOR ', ') AS sizes,
+            GROUP_CONCAT(v.item_price SEPARATOR ', ') AS prices,
+            GROUP_CONCAT(v.item_stock SEPARATOR ', ') AS stocks
+        FROM products p
+        JOIN product_variants v ON p.id = v.product_id
+        WHERE p.status = 'active'
+        GROUP BY p.id
+        ORDER BY p.id DESC
+    ");
+
+    echo '<table border="1">';
+    echo '<tr>';
+    echo '<th>ID</th>';
+    echo '<th>Item Name</th>';
+    echo '<th>Item Size</th>';
+    echo '<th>Item Price</th>';
+    echo '<th>Item Category</th>';
+    echo '<th>Item Stock</th>';
+    echo '</tr>';
+
+    while ($row = mysqli_fetch_assoc($export_result)) {
+        echo '<tr>';
+        echo '<td>' . $row['id'] . '</td>';
+        echo '<td>' . ucwords(strtolower($row['item_name'])) . '</td>';
+        
+        // Process sizes
+        $sizes = explode(',', $row['sizes']);
+        $sizes_str = '';
+        foreach ($sizes as $size) {
+            $size = trim($size);
+            if (!empty($size)) {
+                $sizes_str .= ucwords(strtolower($size)) . " | ";
+            }
+        }
+        $sizes_str = rtrim($sizes_str, " | ");
+        echo '<td>' . $sizes_str . '</td>';
+        
+        // Process prices
+        $prices = explode(',', $row['prices']);
+        $prices_str = '';
+        foreach ($prices as $price) {
+            $price = trim($price);
+            if (floatval($price) > 0) {
+                $prices_str .= '₱' . $price . " | ";
+            }
+        }
+        $prices_str = rtrim($prices_str, " | ");
+        echo '<td>' . $prices_str . '</td>';
+        
+        echo '<td>' . ucwords(strtolower($row['item_category'])) . '</td>';
+        
+        // Process stocks
+        $stocks = explode(',', $row['stocks']);
+        $stocks_str = '';
+        foreach ($stocks as $stock) {
+            $stock = trim($stock);
+            if (intval($stock) > 0) {
+                $stocks_str .= $stock . " | ";
+            }
+        }
+        $stocks_str = rtrim($stocks_str, " | ");
+        echo '<td>' . $stocks_str . '</td>';
+        
+        echo '</tr>';
+    }
+    
+    echo '</table>';
+    exit();
+    
+}
+
 // Pagination logic
 $items_per_page = 7;
 $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
@@ -234,7 +315,7 @@ $result = mysqli_query($conn, $query);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Item List | JoeBean</title>
     <link rel="stylesheet" href="../../assets/css/indexs.css">
-    <link rel="stylesheet" href="../../assets/css/admin/admin_item_lists.css">
+    <link rel="stylesheet" href="../../assets/css/admin/admin_item_listef.css">
     <link rel="stylesheet" href="../../assets/css/modall.css">
 </head>
 
@@ -280,11 +361,17 @@ $result = mysqli_query($conn, $query);
                 <div class="AdminItemList__header-container">
                     <h3>Item List</h3>
                     <div class="AdminItemList__header-search-container">
+                        
                         <div class="AdminItemList__search-content">
                             <input type="text" autocomplete="off" placeholder="Search">
                             <span></span>
                             <img src="../../assets/images/search-icon.svg" alt="search icon">
                         </div>
+                        <form method="post">
+                                <button class="AdminItemList__excel-btn" type="submit" name="export_excel">
+                                    <img src="../../assets/images/excel-icon.svg" alt="">
+                                </button>
+                            </form>
                         <button id="openModalBtn"> + Add Item</button>
                     </div>
                 </div>

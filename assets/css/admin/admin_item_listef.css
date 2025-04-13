@@ -187,11 +187,11 @@
     display: flex;
     align-items: center;
     justify-content: end;
-    gap: 20px;
-    flex: 0.8;
+    gap: 15px;
+    flex: 1.5;
 }
 .AdminItemList__search-content{
-    width: 65%;
+    width: 45%;
     position: relative;
 }
 
@@ -230,7 +230,7 @@
     display: none;
 }
 
-.AdminItemList__header-container button{
+#openModalBtn{
     background-color: #5e6343;
     padding: 10px 20px;
     font-size: 17px;
@@ -241,10 +241,32 @@
     width: 9rem;
 }
 
-.AdminItemList__header-container button:active{
+.AdminItemList__excel-btn:active,
+#openModalBtn:active{
     opacity: 0.8;
     transform: scale(0.95); 
 }
+
+
+.AdminItemList__excel-btn{
+    border: 2px solid #5e6343;
+    background: #5e6343;
+    padding: 7px 6px;
+    border-radius:  7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.AdminItemList__excel-btn img{
+    width: 23px;
+}
+
+.AdminItemList__excel-btn:hover{
+    transform: scale(1.03); 
+}
+
 
 
 .AdminItemList__table table {

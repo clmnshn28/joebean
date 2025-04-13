@@ -34,7 +34,7 @@
 
     // ===================================================================
     // for resetting password
-    if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    if (isset($_GET['action']) && $_GET['action'] === 'resetPassword') {
 
         $userId = $_POST['user_id'];
         $password = $_POST['password'];
@@ -49,7 +49,7 @@
         $stmt->bind_param("si", $hashedPassword, $userId);
 
         if ($stmt->execute()) {
-            $_SESSION['reset_success'] = "Password successfully reset!";
+            $_SESSION['reset_success'] = "The password has been successfully reset for this cashier account.";
         } else {
             $_SESSION['reset_error'] = "Failed to reset password.";
         }
@@ -99,6 +99,57 @@
         exit();
     }
 
+    // ================================================================
+
+    if (isset($_POST['export_excel'])) {
+        header("Content-Type: application/vnd.ms-excel");
+        header('Content-Disposition: attachment; filename="cashiers_list_' . date('Y-m-d') . '.xls"');
+    
+        $export_result = mysqli_query($conn, "SELECT * FROM users WHERE role='cashier' ORDER BY id ASC");
+    
+        echo "<table border='1'>";
+        echo "<tr style='background-color: #f2f2f2; font-weight: bold;'>";
+        echo "<th>ID</th>";
+        echo "<th>Username</th>";
+        echo "<th>Full Name</th>";
+        echo "<th>Gender</th>";
+        echo "<th>Age</th>";
+        echo "<th>Birthdate</th>";
+        echo "<th>Account Created</th>";
+        echo "</tr>";
+
+        if (mysqli_num_rows($export_result) > 0) {
+            while ($row = mysqli_fetch_assoc($export_result)) {
+                $fullname = ucwords(strtolower($row['firstname'])) . ' ' .
+                    (isset($row['middlename']) ? ucwords(strtolower($row['middlename'])) . ' ' : '') .
+                    ucwords(strtolower($row['lastname']));
+                
+                $age = calculateAge($row['birth_year'], $row['birth_month'], $row['birth_day']);
+                $birthdate = date("F d, Y", strtotime("{$row['birth_year']}-{$row['birth_month']}-{$row['birth_day']}"));
+                $created_at = date("F d, Y - h:i A", strtotime($row['created_at']));
+                
+                // Determine status
+                $status = ($row['deleted_at'] === NULL) ? "Active" : "Deactivated";
+                
+                echo "<tr>";
+                    echo "<td>" . $row['id'] . "</td>";
+                    echo "<td>" . $row['username'] . "</td>";
+                    echo "<td>" . $fullname . "</td>";
+                    echo "<td>" . ucwords(strtolower($row['gender'])) . "</td>";
+                    echo "<td>" . $age . "</td>";
+                    echo "<td>" . $birthdate . "</td>";
+                    echo "<td>" . $created_at . "</td>";
+                echo "</tr>";
+            }
+        } else {
+            echo "<tr><td colspan='7' style='text-align: center;'>No cashiers found</td></tr>";
+        }
+        
+        echo "</table>";
+        exit; 
+
+    }
+
     // Set number of records per page
     $limit = 7;
     // Get the current page number from the URL, default is 1
@@ -123,8 +174,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Admin Item List | JoeBean</title>
         <link rel="stylesheet" href="../../assets/css/indexs.css">
-        <link rel="stylesheet" href="../../assets/css/admin/admin_item_lists.css">
-        <link rel="stylesheet" href="../../assets/css/admin/admin_cashier_list.css">
+        <link rel="stylesheet" href="../../assets/css/admin/admin_item_listef.css">
+        <link rel="stylesheet" href="../../assets/css/admin/admin_cashier_lists.css">
         <link rel="stylesheet" href="../../assets/css/modall.css">
     </head>
 
@@ -170,6 +221,11 @@
                                 <span></span>
                                 <img src="../../assets/images/search-icon.svg" alt="search icon">
                             </div>
+                            <form method="post">
+                                <button class="AdminItemList__excel-btn" type="submit" name="export_excel">
+                                    <img src="../../assets/images/excel-icon.svg" alt="">
+                                </button>
+                            </form>
                         </div>
                     </div>
                     <table class="AdminCashierList__table-content-item">
@@ -342,6 +398,7 @@
                 </div>
                 <form action="" method="post" class="AdminCashierList__modal-reset-pass-form-container">
                     <input type="hidden" name="user_id" id="resetUserId">
+                    <input type="hidden" name="action" value="resetPassword">
                     <div class="AdminCashierList__modal-reset-pass-details-list">
                         <p class="AdminCashierList__modal-reset-pass-detail-name">
                             Username <span>:</span>
@@ -470,7 +527,73 @@
             </div>
         </div>
 
+        <div class="modal" id="successResetPasswordModal">
+            <div class="Modal_fade-in ErrorPayment__modal-content">
+                <div class="ErrorPayment__modal-content-header-container">
+                    <img class="error-icon" src="../../assets/images/error-icon.svg" alt="Logout icon">
+                    <img class="success-icon" src="../../assets/images/successful-icon.svg" alt="SuccessFull icon">
+                    <h3></h3>
+                </div>
+                <p class="ErrorPayment__modal-p"></p>
+                <div class="ErrorPayment__modal-button-group">
+                    <button type="button" class="ErrorPayment__modal-cancel-button">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <script src="../../assets/js/admin/admin_cashier_lister.js"></script>
+
+        <script>
+            const successModal = document.getElementById('successResetPasswordModal');
+            const icons = document.querySelectorAll('.ErrorPayment__modal-content-header-container img');
+            const errorIcon = icons[0];   
+            const successIcon = icons[1];
+            const modalTitle = successModal.querySelector('h3');
+            const modalMessage = successModal.querySelector('.ErrorPayment__modal-p');
+
+
+            <?php if(isset($_SESSION['reset_success'])): ?>
+
+                successModal.style.display = 'flex';
+
+                modalTitle.style.color = "#4CAF50";
+                modalTitle.textContent = 'Password Reset Successful';
+
+                modalMessage.textContent = '<?php echo $_SESSION['reset_success']; ?>';
+            
+                errorIcon.style.display = 'none';
+                successIcon.style.display = 'block';
+
+                successModal.querySelector('.ErrorPayment__modal-cancel-button').addEventListener('click', function() {
+                    successModal.style.display = 'none';
+                });
+                
+                <?php unset($_SESSION['reset_success']); ?>
+                
+            <?php endif; ?>
+                
+            // Similarly for error messages
+            <?php if(isset($_SESSION['reset_error'])): ?>
+
+                successModal.style.display = 'flex';
+                
+                modalTitle.style.color = "#a53f3f";
+                modalTitle.textContent = 'Password Reset Unsuccessful';
+                
+                modalMessage.textContent = '<?php echo $_SESSION['reset_error']; ?>';
+                                
+                errorIcon.style.display = 'none';
+                successIcon.style.display = 'block';
+                
+                successModal.querySelector('.ErrorPayment__modal-cancel-button').addEventListener('click', function() {
+                    successModal.style.display = 'none';
+                });
+                    
+                <?php unset($_SESSION['reset_error']); ?>
+            <?php endif; ?>
+        </script>
     </body>
 
     </html>

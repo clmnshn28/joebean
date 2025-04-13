@@ -1,12 +1,12 @@
 # ☕︎ Joebean : A Point-of-Sale System with Inventory
-**Joebean** is a simple and efficient POS and inventory system designed for cafés and food businesses, featuring two main roles—Admin and Cashier—where Admins can manage items, transactions, and staff, while Cashiers can easily take and process customer orders.
+**Joebean** is a simple and efficient POS and inventory system designed for cafés and food businesses, featuring two main roles—**Admin** and **Cashier**—where Admins can manage items, transactions, and staff, while Cashiers can easily take and process customer orders.
 
 ## ✨ Features
   ### Joebean supports two user roles:
  #### 👤 Admin
-   - Full access to inventory and system settings
+   - Full access to Item Lists
    - Can manage cashier accounts
-   - Can view transaction history and sales reports
+   - Can view transaction records
 
 #### 👨‍💼 Cashier
   - Can view and select food & beverage items
@@ -16,7 +16,7 @@
 ## </> Tech Stack
   - `HTML`
   - `CSS`
-  - `JS`(JavaScript)
+  - `JS (JavaScript)`
   - `PHP`
   - `MySQL`
  

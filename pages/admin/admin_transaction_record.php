@@ -23,6 +23,61 @@
         exit();
     }
 
+    if (isset($_POST['export_excel'])) {
+        header("Content-Type: application/vnd.ms-excel");
+        header('Content-Disposition: attachment; filename="transaction_records_' . date('Y-m-d') . '.xls"');
+        
+        $exportResult = mysqli_query($conn, "
+            SELECT 
+                t.ref_no,
+                t.payment_method, 
+                t.created_at, 
+                t.quantity, 
+                t.unit_price, 
+                t.total_amount, 
+                CONCAT(u.firstname, ' ', u.lastname) AS cashier_name, 
+                t.product_item, 
+                p.item_category
+            FROM transaction t
+            JOIN users u ON t.user_id = u.id
+            JOIN products p ON t.product_id = p.id
+            ORDER BY t.created_at ASC
+        ");
+    
+        echo "<table border='1'>";
+        echo "<tr>
+                <th>Cashier</th>
+                <th>Product</th>
+                <th>Category</th>
+                <th>Qty</th>
+                <th>Price</th>
+                <th>Total</th>
+                <th>Payment</th>
+                <th>Reference No</th>
+                <th>Date</th>
+              </tr>";
+    
+        if (mysqli_num_rows($exportResult) > 0) {
+            while ($row = mysqli_fetch_assoc($exportResult)) {
+                echo "<tr>";
+                    echo "<td>" . $row['cashier_name'] . "</td>";
+                    echo "<td>" . $row['product_item'] . "</td>";
+                    echo "<td>" . $row['item_category'] . "</td>";
+                    echo "<td>" . $row['quantity'] . "</td>";
+                    echo "<td>" . $row['unit_price'] . "</td>";
+                    echo "<td>" . $row['total_amount'] . "</td>";
+                    echo "<td>" . $row['payment_method'] . "</td>";
+                    echo "<td>" . $row['ref_no'] . "</td>";
+                    echo "<td>" . date("m/d/Y", strtotime($row['created_at'])) . "</td>";
+                echo "</tr>";
+            }
+        } else {
+            echo "<tr><td colspan='9' style='text-align: center;'>No transaction records found</td></tr>";
+        }
+        echo "</table>";
+        exit(); 
+    }
+    
 
     $limit = 6;
     $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int) $_GET['page'] : 1;
@@ -66,8 +121,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Admin Item List | JoeBean</title>
         <link rel="stylesheet" href="../../assets/css/indexs.css">
-        <link rel="stylesheet" href="../../assets/css/admin/admin_item_lists.css">
-        <link rel="stylesheet" href="../../assets/css/admin/admin_transaction_record.css">
+        <link rel="stylesheet" href="../../assets/css/admin/admin_item_listef.css">
+        <link rel="stylesheet" href="../../assets/css/admin/admin_transaction_records.css">
         <link rel="stylesheet" href="../../assets/css/modall.css">
     </head>
     <body>
@@ -112,6 +167,11 @@
                                 <span></span>
                                 <img src="../../assets/images/search-icon.svg" alt="search icon">
                             </div>
+                            <form method="post">
+                                <button class="AdminItemList__excel-btn" type="submit" name="export_excel">
+                                    <img src="../../assets/images/excel-icon.svg" alt="">
+                                </button>
+                            </form>
                         </div>
                     </div>
                     <table class="AdminTransactionRecords__table-content-item">
