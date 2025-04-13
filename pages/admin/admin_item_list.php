@@ -192,7 +192,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['
 }
 
 // Pagination logic
-$items_per_page = 6;
+$items_per_page = 7;
 $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
 $offset = ($page - 1) * $items_per_page;
 
@@ -234,7 +234,7 @@ $result = mysqli_query($conn, $query);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Item List | JoeBean</title>
     <link rel="stylesheet" href="../../assets/css/indexs.css">
-    <link rel="stylesheet" href="../../assets/css/admin/admin_item_listey.css">
+    <link rel="stylesheet" href="../../assets/css/admin/admin_item_lists.css">
     <link rel="stylesheet" href="../../assets/css/modals.css">
 </head>
 
@@ -259,7 +259,7 @@ $result = mysqli_query($conn, $query);
                 </a>
                 <a href="admin_transaction_record.php">
                     <img src="../../assets/images/time-icon.svg" alt="time-icon">
-                    Transaction Record
+                    Transaction Records
                 </a>
             </nav>
             <div class="AdminItemList__logout-container">
@@ -279,7 +279,14 @@ $result = mysqli_query($conn, $query);
                 <?php endif; ?>
                 <div class="AdminItemList__header-container">
                     <h3>Item List</h3>
-                    <button id="openModalBtn"> + Add Item</button>
+                    <div class="AdminItemList__header-search-container">
+                        <div class="AdminItemList__search-content">
+                            <input type="text" autocomplete="off" placeholder="Search">
+                            <span></span>
+                            <img src="../../assets/images/search-icon.svg" alt="search icon">
+                        </div>
+                        <button id="openModalBtn"> + Add Item</button>
+                    </div>
                 </div>
                 <table class="AdminItemList__table-content-item">
                     <thead>
@@ -577,7 +584,7 @@ $result = mysqli_query($conn, $query);
         </div>
 
 
-    <script src="../../assets/js/admin/admin_item_list.js"></script>
+    <script src="../../assets/js/admin/admin_item_listes.js"></script>
 </body>
 
 </html>

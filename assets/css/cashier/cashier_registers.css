@@ -259,6 +259,7 @@
 
 .CashierRegister__select-image-btn:active{
     opacity: 0.8;
+    transform: scale(0.98); 
 }
 
 /* password requirements */
@@ -319,6 +320,7 @@
 
 .CashierRegister__register-btn:active{
     opacity: 0.8;
+    transform: scale(0.98); 
 }
 
 .CashierRegister__login-link {

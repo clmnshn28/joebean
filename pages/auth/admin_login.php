@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Admin Login | JoeBean</title>
         <link rel="stylesheet" href="../../assets/css/indexs.css">
-        <link rel="stylesheet" href="../../assets/css/admin/admin_login.css">
+        <link rel="stylesheet" href="../../assets/css/admin/admin_logins.css">
     </head>
     <body>
     <div class="AdminLogin__main-content">

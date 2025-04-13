@@ -93,6 +93,61 @@ if (totalPages <= 1) {
     document.getElementById('paginationContainer').style.display = 'flex';
 }
 
+// =================================================================================
+
+
+// Get search input element
+const searchInput = document.querySelector('.AdminItemList__header-search-container input');
+
+searchInput.addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase().trim();
+    filterTable(searchTerm);
+});
+
+// Function to filter table rows
+function filterTable(searchTerm) {
+    const tableBody = document.getElementById('itemTableBody');
+    const tableRows = tableBody.querySelectorAll('tr:not(.no-results-row)');
+    let matchFound = false;
+    
+    // Remove any existing "no results" row
+    const existingNoResultsRow = tableBody.querySelector('.no-results-row');
+    if (existingNoResultsRow) {
+        existingNoResultsRow.remove();
+    }
+    
+    // If search is empty like show all rows
+    if (searchTerm === '') {
+        tableRows.forEach(row => {
+            row.style.display = '';
+        });
+        return;
+    }
+
+    // Loop through all table rows
+    tableRows.forEach(row => {
+        // Get text content
+        const itemName = row.querySelector('td:first-child span')?.textContent.toLowerCase() || '';
+        const itemCategory = row.querySelector('td:nth-child(4)')?.textContent.toLowerCase() || '';
+        
+        // Check if row contains the search term
+        if (itemName.includes(searchTerm) || itemCategory.includes(searchTerm)) {
+            row.style.display = '';
+            matchFound = true;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+
+    // Show no-results message if no matches found
+    if (!matchFound) {
+        const noResultsRow = document.createElement('tr');
+        noResultsRow.className = 'no-results-row';
+        noResultsRow.innerHTML = `<td colspan="6"><div class="no-data-message" style="text-transform: none;">No items match your search for "${searchTerm}"</div></td>`;
+        tableBody.appendChild(noResultsRow);
+    }
+}
+
 
 // =================================================================================
 

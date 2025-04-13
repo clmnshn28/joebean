@@ -123,8 +123,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Admin Item List | JoeBean</title>
         <link rel="stylesheet" href="../../assets/css/indexs.css">
-        <link rel="stylesheet" href="../../assets/css/admin/admin_item_listey.css">
-        <link rel="stylesheet" href="../../assets/css/admin/admin_cashier_lister.css">
+        <link rel="stylesheet" href="../../assets/css/admin/admin_item_lists.css">
+        <link rel="stylesheet" href="../../assets/css/admin/admin_cashier_list.css">
         <link rel="stylesheet" href="../../assets/css/modals.css">
     </head>
 
@@ -149,7 +149,7 @@
                     </a>
                     <a href="admin_transaction_record.php">
                         <img src="../../assets/images/time-icon.svg" alt="time-icon">
-                        Transaction Record
+                        Transaction Records
                     </a>
                 </nav>
                 <div class="AdminItemList__logout-container">
@@ -164,6 +164,13 @@
                 <div class="AdminItemList__table">
                     <div class="AdminItemList__header-container">
                         <h3>Cashiers List</h3>
+                        <div class="AdminItemList__header-search-container">
+                            <div class="AdminItemList__search-content">
+                                <input type="text" autocomplete="off" placeholder="Search">
+                                <span></span>
+                                <img src="../../assets/images/search-icon.svg" alt="search icon">
+                            </div>
+                        </div>
                     </div>
                     <table class="AdminCashierList__table-content-item">
                         <thead>
@@ -176,7 +183,7 @@
                                 <th></th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="cashierTableBody">
                             <!-- <tr>
                                 <td><img class="AdminCashierList__table-data-image" src="../../assets/uploads/default.png" alt=""></td>
                                 <td>clmnshn</td>
@@ -445,7 +452,7 @@
             </div>
         </div>
 
-        <script src="../../assets/js/admin/admin_cashier_list.js"></script>
+        <script src="../../assets/js/admin/admin_cashier_lists.js"></script>
     </body>
 
     </html>

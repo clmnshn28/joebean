@@ -82,6 +82,7 @@
 
 .AdminTransactionRecord__table-data-btn:active{
     opacity: 0.8;
+    transform: scale(0.95); 
 }
 
 
@@ -317,4 +318,5 @@
 
 .AdminTransactionRecord__modal-cancel-button:active{
     opacity: 0.8;
+    transform: scale(0.95); 
 }

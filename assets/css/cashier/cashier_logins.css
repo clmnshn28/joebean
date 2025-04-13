@@ -1,11 +1,11 @@
-.AdminLogin__main-content{
+.CashierLogin__main-content{
     display: flex;
     height: 100vh;
     padding: 40px;
 }
 
 /* left section */
-.AdminLogin__left-container{
+.CashierLogin__left-container{
     flex: 1.05;
     display: flex;
     flex-direction: column;
@@ -14,18 +14,18 @@
     padding: 20px 40px;
 }
 
-.AdminLogin__branding{
+.CashierLogin__branding{
     display: flex;
     align-items: center;
     
 }
 
-.AdminLogin__logo {
+.CashierLogin__logo {
     width: 90px;
     height: auto;
 }
 
-.AdminLogin__system-name {
+.CashierLogin__system-name {
     display: flex;
     flex-direction: column;
     color: #656D4A;
@@ -34,13 +34,13 @@
     padding: 5px 20px 7px;
 }
 
-.AdminLogin__title {
+.CashierLogin__title {
     font-size: 24px;
     font-weight: bold;
     margin: 0;
 }
 
-.AdminLogin__subtitle {
+.CashierLogin__subtitle {
     font-size: 16px;
     color: #555;
     margin: 0;
@@ -49,7 +49,7 @@
 
 
 /* header */
-.AdminLogin__form-container{
+.CashierLogin__form-container{
     background-color: #eeeeeec6;
     padding: 30px 60px 30px;
     border-radius: 20px;
@@ -59,7 +59,7 @@
 
 }
 
-.AdminLogin__form-container p{
+.CashierLogin__form-type{
     color: #656D4A;
     font-weight: 600;
     margin-bottom: 2px;
@@ -67,27 +67,27 @@
 
 }
 
-.AdminLogin__form-container h2 {
+.CashierLogin__form-container h2 {
     color: #656D4A;
     font-size: 32px;
     margin-bottom: 30px;
     text-transform: uppercase;
 }
 
-.AdminLogin__desc{
+.CashierLogin__desc{
     margin-bottom: 50px;
     font-size: 20px;
     color: #555;
 }
 
 /* form */
-.AdminLogin__form{
+.CashierLogin__form{
     /* background-color: #6a6a6a */
     width: 93%;
     margin-left: 20px;
 }
 
-.AdminLogin__input-group{
+.CashierLogin__input-group{
     position: relative;
     margin-bottom: 30px;
 }
@@ -96,7 +96,7 @@
     margin-bottom: 15px;
 }
 
-.AdminLogin__input-group input {
+.CashierLogin__input-group input {
     width: 100%;
     box-sizing: border-box;
     font-size: 15px;
@@ -107,7 +107,7 @@
     font-family: "Poppins", sans-serif;
 }
   
-.AdminLogin__input-group label {
+.CashierLogin__input-group label {
     position: absolute;
     left: 60px;
     top: 50%;
@@ -118,7 +118,7 @@
     transition: 0.3s;
 }
 
-.AdminLogin__username-icon {
+.CashierLogin__username-icon {
     width: 35px;
     position: absolute;
     left: 17px;
@@ -126,7 +126,7 @@
     transform: translateY(-50%);
 }
 
-.AdminLogin__password-icon {
+.CashierLogin__password-icon {
     width: 29px;
     position: absolute;
     left: 20px;
@@ -135,8 +135,8 @@
 }
 
   
-.AdminLogin__input-group input:focus + label,
-.AdminLogin__input-group input:not(:placeholder-shown) + label {
+.CashierLogin__input-group input:focus + label,
+.CashierLogin__input-group input:not(:placeholder-shown) + label {
     top: 2px;
     font-size: 13px;
     color: #6a6a6a;
@@ -152,7 +152,7 @@ input:focus {
 }
  
 
-.AdminLogin__eye-icon{
+.CashierLogin__eye-icon{
     width: 25px;
     position: absolute;
     top: 50%;
@@ -162,7 +162,7 @@ input:focus {
 }
 
 /* forgot pass */
-.AdminLogin__forgot-password {
+.CashierLogin__forgot-password {
     color: #656D4A;
     text-decoration: none;
     display: inline-block;
@@ -175,7 +175,7 @@ input:focus {
 
 
 /* login btn */
-.AdminLogin__home-button {
+.CashierLogin__home-button {
     width: 100%;
     padding: 15px;
     background-color: #656D4A;
@@ -188,17 +188,18 @@ input:focus {
     transition: background-color 1s ease-in-out, color 1s ease-in-out;
 }
   
-.AdminLogin__home-button:hover {
+.CashierLogin__home-button:hover {
     background-color: #4f5539;
 }
 
-.AdminLogin__home-button:active {
+.CashierLogin__home-button:active {
     opacity: 0.8;
+    transform: scale(0.98); 
 }
 
 
 /* login btn */
-.AdminLogin__type-button {
+.CashierLogin__type-button {
     width: 100%;
     padding: 15px;
     background-color: #fff;
@@ -212,19 +213,20 @@ input:focus {
     transition: background-color 1s ease-in-out, color 1s ease-in-out;
 }
   
-.AdminLogin__type-button:hover {
+.CashierLogin__type-button:hover {
     background-color: #656D4A;
     color: #fff;
 }
 
-.AdminLogin__type-button:active {
+.CashierLogin__type-button:active {
     opacity: 0.8;
+    transform: scale(0.98); 
 }
 
 
 
 /* right section */
-.AdminLogin__right-container{
+.CashierLogin__right-container{
     flex: 1;
     display: flex;
     justify-content: center;
@@ -232,7 +234,7 @@ input:focus {
 }
 
 
-.AdminLogin__right-container img{
+.CashierLogin__right-container img{
     width: 80%;
     max-width: 750px;
     /* animation: floatUpDown 4s ease-in-out infinite; */
@@ -240,21 +242,19 @@ input:focus {
 
 
 
-.AdminLogin__redirect-text {
+.CashierLogin__redirect-text {
     text-align: center;
-    margin-top: 25px;
-    font-size: 13px;
-    color: #333;
-    opacity: 0;
-    pointer-events: none;
+    margin-top: 20px;
+    font-size: 15px;
+    color: #555;
 }
 
-.AdminLogin__register-link {
+.CashierLogin__register-link {
     color: #656D4A;
     font-weight: 500;
     text-decoration: underline;
+    font-weight: bold;
 }
-
 
 
 .error-message{

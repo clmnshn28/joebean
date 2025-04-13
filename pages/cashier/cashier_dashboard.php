@@ -23,6 +23,70 @@
         exit();
     }
 
+    $userId = $_SESSION['user_id'] ?? null;
+    $cashierFullName = 'NONE';
+    $role = 'NONE';
+    $avatarPath = '../../assets/images/avatars/default.jpg'; 
+
+    if ($userId) {
+        // Prepare statement to prevent SQL injection
+        $stmt = $conn->prepare("
+        SELECT 
+            id, 
+            firstname, 
+            middlename, 
+            lastname, 
+            username, 
+            role, 
+            gender, 
+            birth_year, 
+            birth_month, 
+            birth_day, 
+            created_at, 
+            image 
+        FROM users WHERE id = ?");
+
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($row = $result->fetch_assoc()) {
+          
+            $cashierName = $row['firstname'] . ' ' . $row['lastname'];
+            $role = $row['role'];
+            
+            $birthDate = new DateTime($row['birth_year'] . '-' . $row['birth_month'] . '-' . $row['birth_day']);
+            $today = new DateTime();
+            $age = $today->diff($birthDate)->y;
+            
+            $birthdate = date("F d, Y", strtotime("{$row['birth_year']}-{$row['birth_month']}-{$row['birth_day']}"));
+            
+            $created_at_formatted = date("F d, Y — h:i A", strtotime($row['created_at']));
+            
+            if (!empty($row['image'])) {
+                $avatarPath = '../../assets/images/avatars/' . $row['image'];
+            }
+            
+            $fullname = ucwords(strtolower($row['firstname'])) . ' ' .
+                       (isset($row['middlename']) ? ucwords(strtolower($row['middlename'])) . ' ' : '') .
+                       ucwords(strtolower($row['lastname']));
+            
+            $modalData = [
+                'id' => $row['id'],
+                'username' => $row['username'],
+                'fullname' => $fullname,
+                'gender' => ucwords(strtolower($row['gender'])),
+                'age' => $age,
+                'birthdate' => $birthdate,
+                'created_at' => $created_at_formatted,
+                'image' => $avatarPath
+            ];
+        }
+        
+        $stmt->close();
+        $conn->close();
+    }
+    
 ?>
 
 
@@ -34,7 +98,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Cashier Dashboard | JoeBean</title>
         <link rel="stylesheet" href="../../assets/css/indexs.css">
-        <link rel="stylesheet" href="../../assets/css/cashier/cashier_dashboard.css">
+        <link rel="stylesheet" href="../../assets/css/cashier/cashier_dashboardet.css">
         <link rel="stylesheet" href="../../assets/css/modals.css">
     </head>
     <body>
@@ -68,9 +132,7 @@
                                 <button class="CashierDashboard__category-button">
                                     <img class="CashierDashboard__category-button-img" src="../../assets/images/unselected-pasta.png" alt="pasta">
                                 </button>
-                                <button class="CashierDashboard__category-button">
-                                    <img class="CashierDashboard__category-button-img" src="../../assets/images/unselected-pasta.png" alt="pasta">
-                                </button>
+                              
                             </div>
                         </div>
                     </div>
@@ -112,53 +174,17 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="CashierDashboard__product-item-container">
-                                <div class="CashierDashboard__product-top-content">
-                                    <h3>SPANISH LATTE</h3>
-                                    <img src="../../assets/images/products/1744201275_spanish-latte.png" alt="">
-                                </div>
-                                <div class="CashierDashboard__product-bottom-content">
-                                    <div class="CashierDashboard__product-size-container">
-                                        <p class="CashierDashboard__product-price">₱<span>119</span></p>
-                                        <button class="CashierDashboard__size-btn">Grande</button>
-                                        <span class="CashierDashboard__product-stock">Stk: <span>29</span></span>
-                                    </div>
-                                    <div class="CashierDashboard__product-size-container">
-                                        <p class="CashierDashboard__product-price">₱<span>119</span></p>
-                                        <button class="CashierDashboard__size-btn">Venti</button>
-                                        <span class="CashierDashboard__product-stock">Stk: <span>29</span></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="CashierDashboard__product-item-container">
-                                <div class="CashierDashboard__product-top-content">
-                                    <h3>SPANISH LATTE</h3>
-                                    <img src="../../assets/images/products/1744201275_spanish-latte.png" alt="">
-                                </div>
-                                <div class="CashierDashboard__product-bottom-content">
-                                    <div class="CashierDashboard__product-size-container">
-                                        <p class="CashierDashboard__product-price">₱<span>119</span></p>
-                                        <button class="CashierDashboard__size-btn">Grande</button>
-                                        <span class="CashierDashboard__product-stock">Stk: <span>29</span></span>
-                                    </div>
-                                    <div class="CashierDashboard__product-size-container">
-                                        <p class="CashierDashboard__product-price">₱<span>119</span></p>
-                                        <button class="CashierDashboard__size-btn">Venti</button>
-                                        <span class="CashierDashboard__product-stock">Stk: <span>29</span></span>
-                                    </div>
-                                </div>
-                            </div>
-
+                           
                         </div>
                     </div>
                 </div>
             </div>
             <div class="CashierDashboard__order-section">
                 <div class="CashierDashboard__cashier-details-container">
-                    <img src="../../assets/images/avatars/default.jpg" alt="">
+                    <img src="<?php echo htmlspecialchars($avatarPath); ?>" alt="<?php echo htmlspecialchars($cashierName); ?>">
                     <div class="CashierDashboard__cashier-name">
-                        <span>Celmin Shane Quizon</span>
-                        <span>Cashier</span>
+                        <span><?php echo htmlspecialchars($cashierName); ?></span>
+                        <span><?php echo htmlspecialchars($role); ?></span>
                     </div>
                     <button class="CashierDashboard__modal-dots-btn">•••</button>
                 </div>
@@ -224,46 +250,60 @@
 
                 <div class="CashierDashboard__modal-form-container">
                     <div class="CashierDashboard__modal-left">
-                        <img id="modalImage" src="../../assets/images/image-preview.jpg" alt="image item-image" class="CashierDashboard__item-image-icon">
+                        <img id="modalImage" src="<?php echo htmlspecialchars($modalData['image'] ?? '../../assets/images/image-preview.jpg'); ?>" alt="<?php echo htmlspecialchars($cashierName); ?>" class="CashierDashboard__item-image-icon">
                     </div>
 
                     <div class="CashierDashboard__modal-right">
-                        <p class="CashierDashboard__fullname" id="modalFullname"> Celmin Shane Arceo Quizon</p>
+                        <p class="CashierDashboard__fullname" id="modalFullname">
+                            <?php echo htmlspecialchars($modalData['fullname'] ?? '-'); ?>
+                        </p>
                         <div class="CashierDashboard__details-list">
                             <p class="CashierDashboard__detail-name">
                                 Cashier ID <span>:</span>
                             </p>
-                            <p class="CashierDashboard__detail-value" id="modalUsername">1</p>
+                            <p class="CashierDashboard__detail-value" id="modalUsername">
+                                <?php echo htmlspecialchars($modalData['id'] ?? '-'); ?>
+                            </p>
                         </div>
                         <div class="CashierDashboard__details-list">
                             <p class="CashierDashboard__detail-name">
                                 Username <span>:</span>
                             </p>
-                            <p class="CashierDashboard__detail-value" id="modalUsername">clmnshn28</p>
+                            <p class="CashierDashboard__detail-value" id="modalUsername">
+                                <?php echo htmlspecialchars($modalData['username'] ?? '-'); ?></p>
+                            </p>
                         </div>
                         <div class="CashierDashboard__details-list">
                             <p class="CashierDashboard__detail-name">
                                 Gender <span>:</span>
                             </p>
-                            <p class="CashierDashboard__detail-value" id="modalGender">Male</p>
+                            <p class="CashierDashboard__detail-value" id="modalGender">
+                                <?php echo htmlspecialchars($modalData['gender'] ?? '-'); ?>
+                            </p>
                         </div>
                         <div class="CashierDashboard__details-list">
                             <p class="CashierDashboard__detail-name">
                                 Age <span>:</span>
                             </p>
-                            <p class="CashierDashboard__detail-value" id="modalAge">22</p>
+                            <p class="CashierDashboard__detail-value" id="modalAge">
+                                <?php echo htmlspecialchars($modalData['age'] ?? '-'); ?>
+                            </p>
                         </div>
                         <div class="CashierDashboard__details-list">
                             <p class="CashierDashboard__detail-name">
                                 Birthdate <span>:</span>
                             </p>
-                            <p class="CashierDashboard__detail-value" id="modalBirthdate">December 28, 2002</p>
+                            <p class="CashierDashboard__detail-value" id="modalBirthdate">
+                                <?php echo htmlspecialchars($modalData['birthdate'] ?? '-'); ?>
+                            </p>
                         </div>
                         <div class="CashierDashboard__details-list">
                             <p class="CashierDashboard__detail-name">
                                 Account Created <span>:</span>
                             </p>
-                            <p class="CashierDashboard__detail-value" id="modalCreatedAt">April 04, 2002 - 04:53 PM</p>
+                            <p class="CashierDashboard__detail-value" id="modalCreatedAt">
+                                <?php echo htmlspecialchars($modalData['created_at'] ?? '-'); ?>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -279,7 +319,7 @@
 
 
         <!--place order modal structure -->
-        <div class="modal" id="profileDetailsModal">
+        <div class="modal" id="placeOrderModal">
             <div class="CashierDashboard__place-order-modal-content">
 
                 <!-- Left Section - Order Details -->
@@ -343,22 +383,24 @@
                         <input type="text" class="CashierDashboard__payment-input" value="">
                         
                         <div class="CashierDashboard__numpad">
-                            <button class="CashierDashboard__numpad-btn">1</button>
-                            <button class="CashierDashboard__numpad-btn">2</button>
-                            <button class="CashierDashboard__numpad-btn">3</button>
-                            <button class="CashierDashboard__numpad-btn function-btn">+10</button>
-                            <button class="CashierDashboard__numpad-btn">4</button>
-                            <button class="CashierDashboard__numpad-btn">5</button>
-                            <button class="CashierDashboard__numpad-btn">6</button>
-                            <button class="CashierDashboard__numpad-btn function-btn">+20</button>
-                            <button class="CashierDashboard__numpad-btn">7</button>
-                            <button class="CashierDashboard__numpad-btn">8</button>
-                            <button class="CashierDashboard__numpad-btn">9</button>
-                            <button class="CashierDashboard__numpad-btn function-btn">+50</button>
-                            <button class="CashierDashboard__numpad-btn function-btn">+/-</button>
-                            <button class="CashierDashboard__numpad-btn">0</button>
-                            <button class="CashierDashboard__numpad-btn">.</button>
-                            <button class="CashierDashboard__numpad-btn function-btn">⌫</button>
+                            <button class="CashierDashboard__numpad-btn" data-key="1">1</button>
+                            <button class="CashierDashboard__numpad-btn" data-key="2">2</button>
+                            <button class="CashierDashboard__numpad-btn" data-key="3">3</button>
+                            <button class="CashierDashboard__numpad-btn function-btn" data-key="+10">+10</button>
+                            <button class="CashierDashboard__numpad-btn" data-key="4">4</button>
+                            <button class="CashierDashboard__numpad-btn" data-key="5">5</button>
+                            <button class="CashierDashboard__numpad-btn" data-key="6">6</button>
+                            <button class="CashierDashboard__numpad-btn function-btn" data-key="+20">+20</button>
+                            <button class="CashierDashboard__numpad-btn" data-key="7">7</button>
+                            <button class="CashierDashboard__numpad-btn" data-key="8">8</button>
+                            <button class="CashierDashboard__numpad-btn" data-key="9">9</button>
+                            <button class="CashierDashboard__numpad-btn function-btn" data-key="+50">+50</button>
+                            <button class="CashierDashboard__numpad-btn function-btn" data-key="+/-">+/-</button>
+                            <button class="CashierDashboard__numpad-btn" data-key="0">0</button>
+                            <button class="CashierDashboard__numpad-btn" data-key=".">.</button>
+                            <button class="CashierDashboard__numpad-btn function-btn" data-key="backspace">
+                                <img src="../../assets/images/numpad-delete-icon.svg" alt="numpad delete icon">
+                            </button>
                         </div>
                         
                         <div class="CashierDashboard__action-buttons">
@@ -393,6 +435,6 @@
             </div>
         </div>
 
-        <script src="../../assets/js/cashier/cashier_dashboard.js"></script>
+        <script src="../../assets/js/cashier/cashier_dashboards.js"></script>
     </body>
 </html>

@@ -4,6 +4,64 @@ document.querySelector('.AdminItemList__logout').addEventListener('click', funct
     }
 });
 
+
+// =================================================================================
+
+
+// Get search input element
+const searchInput = document.querySelector('.AdminItemList__header-search-container input');
+
+searchInput.addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase().trim();
+    filterTable(searchTerm);
+});
+
+// Function to filter table rows
+function filterTable(searchTerm) {
+    const tableBody = document.getElementById('transactionTableBody');
+    const tableRows = tableBody.querySelectorAll('tr:not(.no-results-row)');
+    let matchFound = false;
+    
+    // Remove any existing "no results" row
+    const existingNoResultsRow = tableBody.querySelector('.no-results-row');
+    if (existingNoResultsRow) {
+        existingNoResultsRow.remove();
+    }
+    
+    // If search is empty like show all rows
+    if (searchTerm === '') {
+        tableRows.forEach(row => {
+            row.style.display = '';
+        });
+        return;
+    }
+
+    // Loop through all table rows
+    tableRows.forEach(row => {
+        // Get text content
+        const transactionCashierName = row.querySelector('td:first-child span')?.textContent.toLowerCase() || '';
+        const transactionProductItem = row.querySelector('td:nth-child(2)')?.textContent.toLowerCase() || '';
+        const transactionPaymentMethod = row.querySelector('td:nth-child(6) p')?.textContent.toLowerCase() || '';
+        
+        // Check if row contains the search term
+        if (transactionCashierName.includes(searchTerm) || transactionProductItem.includes(searchTerm) || transactionPaymentMethod.includes(searchTerm)) {
+            row.style.display = '';
+            matchFound = true;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+
+    // Show no-results message if no matches found
+    if (!matchFound) {
+        const noResultsRow = document.createElement('tr');
+        noResultsRow.className = 'no-results-row';
+        noResultsRow.innerHTML = `<td colspan="8"><div class="no-data-message" style="text-transform: none;">No items match your search for "${searchTerm}"</div></td>`;
+        tableBody.appendChild(noResultsRow);
+    }
+}
+
+
 // =================================================================================
 
 const modal = document.getElementById("itemModal");

@@ -85,6 +85,7 @@
 .AdminCashierList__table-reactivate-data-btn:active,
 .AdminCashierList__table-data-btn:active{
     opacity: 0.8;
+    transform: scale(0.95); 
 }
 
 
@@ -113,6 +114,7 @@
 
 .AdminCashierList__modal-reset-password-button:active{
     opacity: 0.8;
+    transform: scale(0.95); 
 }
 
 
@@ -221,6 +223,7 @@
 
 .AdminCashierList__modal-cancel-button:active{
     opacity: 0.8;
+    transform: scale(0.95); 
 }
 
 
@@ -430,6 +433,7 @@
 .AdminCashierList__modal-deact-pass-button:active,
 .AdminCashierList__modal-full-reset-pass-button:active{
     opacity: 0.8;
+    transform: scale(0.95); 
 }
 
 
@@ -533,6 +537,7 @@
 .AdminCashierList__modal-deactivate-cancel-pass-button:active,
 .AdminCashierList__modal-deactivate-confirm-pass-button:active{
     opacity: 0.8;
+    transform: scale(0.95); 
 }
 
 
@@ -567,4 +572,5 @@
 .AdminCashierList__modal-reactivate-cancel-pass-button:active,
 .AdminCashierList__modal-reactivate-confirm-pass-button:active{
     opacity: 0.8;
+    transform: scale(0.95); 
 }

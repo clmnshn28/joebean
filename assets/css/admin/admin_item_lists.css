@@ -130,6 +130,7 @@
 
 .AdminItemList__logout:active {
     opacity: 0.8;
+    transform: scale(0.98); 
 }
 
 
@@ -177,20 +178,72 @@
     font-size: 27px;
     color: #5e6343;
     text-transform: uppercase;
+    flex: 1;
+}
+
+
+.AdminItemList__header-search-container{
+    /* background-color: #bbdb53; */
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    gap: 20px;
+    flex: 0.8;
+}
+.AdminItemList__search-content{
+    width: 65%;
+    position: relative;
+}
+
+.AdminItemList__search-content input{
+    width: 100%;
+    padding: 8px 15px 8px 35px;
+    border: 2px solid #656D4A;
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #414833;
+    font-family: "poppins", "san serif", Arial, Helvetica, sans-serif;
+}
+
+.AdminItemList__search-content input:focus{
+    outline: none;
+}
+
+.AdminItemList__search-content img{
+    width: 18px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 4%;
+}
+
+.AdminItemList__search-content span{
+    width: 2px;
+    height: 26px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 7.5%;
+    background-color: #b9b9b9c3;
+    /* border-right: 2px solid #a9a9a9; */
+    display: none;
 }
 
 .AdminItemList__header-container button{
     background-color: #5e6343;
-    padding: 9px 20px;
+    padding: 10px 20px;
     font-size: 17px;
     border: none;
     border-radius: 5px;
     color: #fff;
     cursor: pointer;
+    width: 9rem;
 }
 
 .AdminItemList__header-container button:active{
     opacity: 0.8;
+    transform: scale(0.95); 
 }
 
 
@@ -250,7 +303,7 @@
 
 .AdminItemList__table-content-item th:nth-child(4), 
 .AdminItemList__table-content-item td:nth-child(4) {
-    width: 15%;
+    width: 17%;
 }
 
 .AdminItemList__table-content-item th:nth-child(5), 
@@ -322,8 +375,8 @@
 .AdminItemList__table-delete-data-btn:active,
 .AdminItemList__table-edit-data-btn:active{
     opacity: 0.8;
+    transform: scale(0.95); 
 }
-
 
 
 
@@ -369,6 +422,7 @@
 .AdminItemList__pagination-right:active,
 .AdminItemList__pagination-left:active{
     opacity: 0.8;
+    transform: scale(0.95); 
 }
 
 
@@ -439,6 +493,7 @@
 
 .AdminItemList__modal-select-image-btn:active{
     opacity: 0.8;
+    transform: scale(0.95); 
 }
 
 
@@ -675,6 +730,7 @@
 .AdminItemList__modal-cancel-button:active,
 .AdminItemList__modal-save-button:active{
     opacity: 0.8;
+    transform: scale(0.95); 
 }
 
 
@@ -789,4 +845,5 @@
 .AdminItemList__modal-delete-cancel-pass-button:active,
 .AdminItemList__modal-delete-confirm-pass-button:active{
     opacity: 0.8;
+    transform: scale(0.95); 
 }

@@ -166,6 +166,7 @@
 
 .CashierDashboard__category-button:active{
     opacity: 0.8;
+    transform: scale(0.95); 
 }
 
 
@@ -282,7 +283,7 @@
     text-transform: uppercase;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.5s ease-in-out;
+    transition: background-color 0.3s ease-in-out;
 }
 
 .CashierDashboard__size-btn:hover{
@@ -291,6 +292,7 @@
 
 .CashierDashboard__size-btn:active{
     opacity: 0.8;
+    transform: scale(0.95); 
 }
 
 .CashierDashboard__product-stock{
@@ -401,7 +403,10 @@
 }
 
 
-
+.CashierDashboard__modal-dots-btn:active{
+    opacity: 0.8;
+    transform: scale(0.95); 
+}
 
 
 
@@ -524,6 +529,7 @@
 
 .CashierDashboard__order-delete-icon-container:active{
     opacity: 0.8;
+    transform: scale(0.95); 
 }
 
 
@@ -578,9 +584,17 @@
     font-weight: 500;
     border-radius: 7px;
     cursor: pointer;
+    transition: background-color 0.7s;
 }
 
+.CashierDashboard__place-order-btn:hover{
+    background-color: #535a3d;
+}
 
+.CashierDashboard__place-order-btn:active{
+    opacity: 0.8;
+    transform: scale(0.95); 
+}
 
 
 
@@ -613,6 +627,7 @@
 
 .CashierDashboard__modal-reset-password-button:active{
     opacity: 0.8;
+    transform: scale(0.95); 
 }
 
 
@@ -720,6 +735,7 @@
 
 .CashierDashboard__modal-logout-button:active{
     opacity: 0.8;
+    transform: scale(0.95); 
 }
 
 
@@ -942,6 +958,9 @@
     font-size: 18px;
     cursor: pointer;
     border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .CashierDashboard__numpad-btn:hover {
@@ -950,6 +969,11 @@
 
 .CashierDashboard__numpad-btn:active{
     opacity: 0.5;
+    transform: scale(0.95); 
+}
+
+.CashierDashboard__numpad-btn img{
+    width: 26px;
 }
 
 .function-btn {
@@ -1017,6 +1041,7 @@
 
 .btn:active{
     opacity: 0.8;
+    transform: scale(0.95); 
 }
 
 
@@ -1076,6 +1101,12 @@
     border-radius: 5px;
     border: 2px solid #949494;
 }
+
+.CashierDashboard__ref-input-group input[disabled] {
+    background-color: #f0f0f0;
+    color: #888;
+    cursor: not-allowed;
+}
   
 .CashierDashboard__ref-input-group label {
     position: absolute;
@@ -1104,4 +1135,16 @@
 input:focus {
     background-color: #fff;
     border-bottom: 2px solid #f7f7f7;
+}
+
+
+/* Style for selected payment button */
+.CashierDashboard__btn-cash:has(.CashierDashboard__check-payment[style*="display: flex"]){
+    background-color: #4CAF50;
+    color: white;
+}
+
+.CashierDashboard__btn-gcash:has(.CashierDashboard__check-payment[style*="display: flex"]) {
+    background-color: #4285f4;
+    color: white;
 }

@@ -97,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cashier Register | JoeBean</title>
     <link rel="stylesheet" href="../../assets/css/indexs.css">
-    <link rel="stylesheet" href="../../assets/css/cashier/cashier_register.css">
+    <link rel="stylesheet" href="../../assets/css/cashier/cashier_registers.css">
 </head>
 
 <body>

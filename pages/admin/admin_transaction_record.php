@@ -66,8 +66,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Admin Item List | JoeBean</title>
         <link rel="stylesheet" href="../../assets/css/indexs.css">
-        <link rel="stylesheet" href="../../assets/css/admin/admin_item_listey.css">
-        <link rel="stylesheet" href="../../assets/css/admin/admin_transaction_recorda.css">
+        <link rel="stylesheet" href="../../assets/css/admin/admin_item_lists.css">
+        <link rel="stylesheet" href="../../assets/css/admin/admin_transaction_record.css">
         <link rel="stylesheet" href="../../assets/css/modals.css">
     </head>
     <body>
@@ -91,7 +91,7 @@
                     </a>
                     <a href="admin_transaction_record.php" class="active">
                         <img src="../../assets/images/time-icon.svg" alt="time-icon">
-                        Transaction Record
+                        Transaction Records
                     </a>
                 </nav>
                 <div class="AdminItemList__logout-container">
@@ -106,6 +106,13 @@
                 <div class="AdminItemList__table">
                     <div class="AdminItemList__header-container">
                         <h3>Transaction Records</h3>
+                        <div class="AdminItemList__header-search-container">
+                            <div class="AdminItemList__search-content">
+                                <input type="text" autocomplete="off" placeholder="Search">
+                                <span></span>
+                                <img src="../../assets/images/search-icon.svg" alt="search icon">
+                            </div>
+                        </div>
                     </div>
                     <table class="AdminTransactionRecords__table-content-item">
                         <thead>
@@ -120,7 +127,7 @@
                                 <th></th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="transactionTableBody">
                             <!-- <tr>
                                 <td>
                                     <div class='item-with-image'>
@@ -293,6 +300,6 @@
 
 
 
-        <script src="../../assets/js/admin/admin_transaction_record.js"></script>
+        <script src="../../assets/js/admin/admin_transaction_records.js"></script>
     </body>
 </html>
