@@ -68,7 +68,7 @@
         <link rel="stylesheet" href="../../assets/css/indexs.css">
         <link rel="stylesheet" href="../../assets/css/admin/admin_item_lists.css">
         <link rel="stylesheet" href="../../assets/css/admin/admin_transaction_record.css">
-        <link rel="stylesheet" href="../../assets/css/modals.css">
+        <link rel="stylesheet" href="../../assets/css/modall.css">
     </head>
     <body>
         <div class="AdminItemList__main-content">
@@ -95,10 +95,10 @@
                     </a>
                 </nav>
                 <div class="AdminItemList__logout-container">
-                    <a href="admin_item_list.php?action=logout" class="AdminItemList__logout">
+                    <button class="AdminItemList__logout">
                         <img src="../../assets/images/logout-icon.svg" alt="logout icon">
                         Log Out
-                    </a>
+                    </button>
                 </div>
             </div>
 
@@ -299,7 +299,24 @@
         </div>
 
 
+        <div class="modal" id="logoutSideBarModal" >
+            <div class="Modal_fade-in Logout__modal-content">
+                <div class="Logout__modal-content-header-container">
+                    <img src="../../assets/images/logout-confirm-icon.svg" alt="Logout icon">
+                    <h3>Logout</h3>
+                </div>
+                <p class="Logout__modal-p">Are you sure you want to logout your account?</p>
+                <div class="Logout__modal-button-group">
+                    <button type="button" class="Logout__modal-cancel-button">
+                        Cancel
+                    </button>
+                    <a href="admin_item_list.php?action=logout" class="Logout__modal-confirm-button">
+                        Confirm
+                    </a>
+                </div>
+            </div>
+        </div>
 
-        <script src="../../assets/js/admin/admin_transaction_records.js"></script>
+        <script src="../../assets/js/admin/admin_transaction_recorder.js"></script>
     </body>
 </html>

@@ -1,12 +1,21 @@
 
+const logoutSideBarModal = document.getElementById("logoutSideBarModal");
+
+document.querySelector('.Logout__modal-cancel-button').addEventListener('click', function() {
+    logoutSideBarModal.style.display = "none";
+});
+
+document.querySelector('#logoutBtnModal').addEventListener('click', function() {
+    logoutSideBarModal.style.display = "flex";
+});
+
+
+// ==========================================================================================
 
 
 const profileModal = document.getElementById('profileDetailsModal');
 const dotsBtn = document.querySelector('.CashierDashboard__modal-dots-btn');
 const closeBtn = document.getElementById('closeModal');
-
-const logoutBtn = document.getElementById('logoutBtnModal');
-
 
 dotsBtn.addEventListener('click', function() {
     profileModal.style.display = 'flex';
@@ -14,14 +23,16 @@ dotsBtn.addEventListener('click', function() {
 
 closeBtn.addEventListener('click', function() {
     profileModal.style.display = 'none';
+    // profileModal.querySelector('.CashierDashboard__relative-modal').classList.add('modal-fadeout');
+        
+    // // Wait for animation to complete before redirecting
+    // setTimeout(function() {
+    //     profileModal.style.display = 'none';
+    //     profileModal.querySelector('.CashierDashboard__relative-modal').classList.remove('modal-fadeout');
+    // }, 300); 
 });
 
 
-logoutBtn.addEventListener('click', function(e) {
-    if (confirm('Are you sure you want to log out?')) {
-        window.location.href = 'cashier_dashboard.php?action=logout';
-    }
-});
 
 // ==========================================================================================
 
@@ -98,6 +109,7 @@ function resetPaymentSelections() {
     paymentInput.value = '';
     paymentValueElement.textContent = '0.00';
     changeValueElement.textContent = '0.00';
+    changeValueElement.style.color = '';
     refInput.removeAttribute('required');
     refInput.setAttribute('disabled', 'disabled');
 }
@@ -183,24 +195,59 @@ paymentInput.addEventListener('input', updatePaymentDisplay);
 doneBtn.addEventListener('click', function() {
     
     const paymentAmount = parseFloat(paymentInput.value) || 0;
-    
-    // Check if payment is sufficient
-    if (paymentAmount < totalAmount) {
-        alert('Payment amount is less than the total amount. Please enter a sufficient payment.');
-        paymentInput.focus();
-        return;
-    }
-    
-    // Check if GCash is selected and reference number is provided
+    const errorModal = document.getElementById('ErrorPaymentModal');
+    const errorModalText = document.querySelector('.ErrorPayment__modal-p');
+    const errorModalHeader = document.querySelector('.ErrorPayment__modal-content-header-container h3');
+    const icons = document.querySelectorAll('.ErrorPayment__modal-content-header-container img');
+    const errorIcon = icons[0];   
+    const successIcon = icons[1];
+
+        // Check if GCash is selected and reference number is provided
     if (gcashBtn.querySelector('.CashierDashboard__check-payment').style.display === 'flex') {
         if (!refInput.value.trim()) {
-            alert('Please enter a reference number for GCash payment.');
-            refInput.focus();
+            errorModal.style.display = 'flex';
+            errorModalHeader.style.color = '#a53f3f';
+            errorModalHeader.textContent = 'Missing Reference Number';
+            errorModalText.textContent = 'Please enter a reference number for GCash payment.';
+            errorIcon.style.display = 'block';
+            successIcon.style.display = 'none';
             return;
         }
     }
+    // Check if payment is sufficient
+    if (paymentAmount < totalAmount) {
+        errorModal.style.display = 'flex';
+        errorModalHeader.style.color = '#a53f3f';
+        errorModalHeader.textContent = 'Insufficient Amount';
+        errorModalText.textContent = 'Payment amount is less than the total amount. Please enter a sufficient payment.';
+        errorIcon.style.display = 'block';
+        successIcon.style.display = 'none';
+        return;
+    }
     
-    alert('Payment processed successfully!');
+
+    
+    errorModal.style.display = 'flex';
+    errorModalHeader.textContent = 'Payment Successful';
+    errorModalHeader.style.color = '#4CAF50';
+    errorModalText.textContent = 'Payment processed successfully!';
+    errorIcon.style.display = 'none';
+    successIcon.style.display = 'block';
     placeOrderModal.style.display = 'none';
     resetPaymentSelections();
+});
+
+
+document.querySelector('.ErrorPayment__modal-cancel-button').addEventListener('click', function() {
+    document.getElementById('ErrorPaymentModal').style.display = 'none';
+    const errorModalHeader = document.querySelector('.ErrorPayment__modal-content-header-container h3');
+    
+    // Only focus on inputs if it was an error message
+    if (errorModalHeader.textContent !== 'Payment Successful') {
+        if (gcashBtn.querySelector('.CashierDashboard__check-payment').style.display === 'flex' && !refInput.value.trim()) {
+            refInput.focus();
+        } else {
+            paymentInput.focus();
+        }
+    }
 });

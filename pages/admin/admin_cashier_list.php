@@ -125,7 +125,7 @@
         <link rel="stylesheet" href="../../assets/css/indexs.css">
         <link rel="stylesheet" href="../../assets/css/admin/admin_item_lists.css">
         <link rel="stylesheet" href="../../assets/css/admin/admin_cashier_list.css">
-        <link rel="stylesheet" href="../../assets/css/modals.css">
+        <link rel="stylesheet" href="../../assets/css/modall.css">
     </head>
 
     <body>
@@ -153,10 +153,10 @@
                     </a>
                 </nav>
                 <div class="AdminItemList__logout-container">
-                    <a href="admin_item_list.php?action=logout" class="AdminItemList__logout">
+                    <button class="AdminItemList__logout">
                         <img src="../../assets/images/logout-icon.svg" alt="logout icon">
                         Log Out
-                    </a>
+                    </button>
                 </div>
             </div>
 
@@ -336,7 +336,7 @@
 
         <!-- Modal structure -->
         <div class="modal" id="resetPasswordModal">
-            <div class="AdminCashierList__modal-reset-pass-content">
+            <div class="Modal_fade-in AdminCashierList__modal-reset-pass-content">
                 <div class="AdminCashierList__modal-reset-pass-header-container">
                     <h3>Reset Password</h3>
                 </div>
@@ -402,7 +402,7 @@
 
         <!-- Modal structure -->
         <div class="modal" id="deactivateModal">
-            <div class="AdminCashierList__modal-deactivate-content">
+            <div class="Modal_fade-in AdminCashierList__modal-deactivate-content">
                 <div class="AdminCashierList__modal-reset-pass-header-container">
                     <h3>Deactivate Cashier Account</h3>
                 </div>
@@ -428,7 +428,7 @@
 
         <!-- Modal structure -->
         <div class="modal" id="reactivateModal">
-            <div class="AdminCashierList__modal-deactivate-content">
+            <div class="Modal_fade-in AdminCashierList__modal-deactivate-content">
                 <div class="AdminCashierList__modal-reset-pass-header-container">
                     <h3>Reactivate Cashier Account</h3>
                 </div>
@@ -452,7 +452,25 @@
             </div>
         </div>
 
-        <script src="../../assets/js/admin/admin_cashier_lists.js"></script>
+        <div class="modal" id="logoutSideBarModal" >
+            <div class="Modal_fade-in Logout__modal-content">
+                <div class="Logout__modal-content-header-container">
+                    <img src="../../assets/images/logout-confirm-icon.svg" alt="Logout icon">
+                    <h3>Logout</h3>
+                </div>
+                <p class="Logout__modal-p">Are you sure you want to logout your account?</p>
+                <div class="Logout__modal-button-group">
+                    <button type="button" class="Logout__modal-cancel-button">
+                        Cancel
+                    </button>
+                    <a href="admin_item_list.php?action=logout" class="Logout__modal-confirm-button">
+                        Confirm
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <script src="../../assets/js/admin/admin_cashier_lister.js"></script>
     </body>
 
     </html>

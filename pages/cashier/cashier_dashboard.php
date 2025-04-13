@@ -98,8 +98,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Cashier Dashboard | JoeBean</title>
         <link rel="stylesheet" href="../../assets/css/indexs.css">
-        <link rel="stylesheet" href="../../assets/css/cashier/cashier_dashboardet.css">
-        <link rel="stylesheet" href="../../assets/css/modals.css">
+        <link rel="stylesheet" href="../../assets/css/cashier/cashier_dashboardew.css">
+        <link rel="stylesheet" href="../../assets/css/modall.css">
     </head>
     <body>
         <div class="CashierDashboard__main-content">
@@ -435,6 +435,40 @@
             </div>
         </div>
 
-        <script src="../../assets/js/cashier/cashier_dashboards.js"></script>
+        <div class="modal" id="logoutSideBarModal" >
+            <div class="Modal_fade-in Logout__modal-content">
+                <div class="Logout__modal-content-header-container">
+                    <img src="../../assets/images/logout-confirm-icon.svg" alt="Logout icon">
+                    <h3>Logout</h3>
+                </div>
+                <p class="Logout__modal-p">Are you sure you want to logout your account?</p>
+                <div class="Logout__modal-button-group">
+                    <button type="button" class="Logout__modal-cancel-button">
+                        Cancel
+                    </button>
+                    <a href="cashier_dashboard.php?action=logout" class="Logout__modal-confirm-button">
+                        Confirm
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="ErrorPaymentModal">
+            <div class="Modal_fade-in ErrorPayment__modal-content">
+                <div class="ErrorPayment__modal-content-header-container">
+                    <img class="error-icon" src="../../assets/images/error-icon.svg" alt="Logout icon">
+                    <img class="success-icon" src="../../assets/images/successful-icon.svg" alt="SuccessFull icon">
+                    <h3>Insufficient Amount</h3>
+                </div>
+                <p class="ErrorPayment__modal-p">Payment amount is less than the total amount. <br>  Please enter a sufficient payment.</p>
+                <div class="ErrorPayment__modal-button-group">
+                    <button type="button" class="ErrorPayment__modal-cancel-button">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <script src="../../assets/js/cashier/cashier_dashboardey.js"></script>
     </body>
 </html>

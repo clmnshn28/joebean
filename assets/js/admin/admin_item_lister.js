@@ -1,8 +1,14 @@
-document.querySelector('.AdminItemList__logout').addEventListener('click', function(e) {
-    if (!confirm('Are you sure you want to log out?')) {
-        e.preventDefault();
-    }
+    
+const logoutSideBarModal = document.getElementById("logoutSideBarModal");
+
+document.querySelector('.Logout__modal-cancel-button').addEventListener('click', function() {
+    logoutSideBarModal.style.display = "none";
 });
+
+document.querySelector('.AdminItemList__logout').addEventListener('click', function() {
+    logoutSideBarModal.style.display = "flex";
+});
+
 
 // =================================================================================
 

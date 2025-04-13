@@ -147,9 +147,9 @@ registerBtn.addEventListener("click", function (event) {
 
      if (isValid && password === confirmPassword) {
         form.submit(); // Manually submit form if all validations pass
+        modal.style.display = 'flex';
     }
     
    
 });
-
 
