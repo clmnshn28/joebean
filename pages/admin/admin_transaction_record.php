@@ -24,44 +24,52 @@
     }
 
     if (isset($_POST['export_excel'])) {
-        header("Content-Type: application/vnd.ms-excel");
-        header('Content-Disposition: attachment; filename="transaction_records_' . date('Y-m-d') . '.xls"');
+        $count_query = mysqli_query($conn, "SELECT COUNT(*) as count FROM transactions");
+        $count_data = mysqli_fetch_assoc($count_query);
+
+        if ($count_data['count'] == 0) {
+            $_SESSION['export_error'] = "Unable to export data to Excel. There are no items available to export.";
+            header("Location: " . $_SERVER['PHP_SELF']); // Redirect back to the same page
+            exit();
+        } else {
+            header("Content-Type: application/vnd.ms-excel");
+            header('Content-Disposition: attachment; filename="transaction_records_' . date('Y-m-d') . '.xls"');
+            
+            $export_result = mysqli_query($conn, "
+                SELECT 
+                    t.id AS transaction_id,
+                    t.ref_no,
+                    t.payment_method, 
+                    t.created_at, 
+                    t.quantity, 
+                    t.unit_price, 
+                    t.total_amount, 
+                    CONCAT(u.firstname, ' ', u.lastname) AS cashier_name, 
+                    t.product_item, 
+                    p.item_category
+                FROM transactions t
+                JOIN users u ON t.user_id = u.id
+                JOIN products p ON t.product_id = p.id
+                ORDER BY t.created_at ASC
+            ");
         
-        $export_result = mysqli_query($conn, "
-            SELECT 
-                t.id AS transaction_id,
-                t.ref_no,
-                t.payment_method, 
-                t.created_at, 
-                t.quantity, 
-                t.unit_price, 
-                t.total_amount, 
-                CONCAT(u.firstname, ' ', u.lastname) AS cashier_name, 
-                t.product_item, 
-                p.item_category
-            FROM transaction t
-            JOIN users u ON t.user_id = u.id
-            JOIN products p ON t.product_id = p.id
-            ORDER BY t.created_at ASC
-        ");
-    
-        echo "<table border='1'>";
-        echo "<thead>";
-        echo "<tr>
-                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Transaction ID</th>
-                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Cashier</th>
-                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Product</th>
-                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Category</th>
-                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Qty</th>
-                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Price</th>
-                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Total</th>
-                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Payment</th>
-                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Reference No.</th>
-                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Date</th>
-              </tr>";
-        echo "</thead>";
-        echo "<tbody>";
-        if (mysqli_num_rows($export_result) > 0) {
+            echo "<table border='1'>";
+            echo "<thead>";
+            echo "<tr>
+                    <th style='background-color: #656D4A; color: white; font-size: 21px;'>Transaction ID</th>
+                    <th style='background-color: #656D4A; color: white; font-size: 21px;'>Cashier</th>
+                    <th style='background-color: #656D4A; color: white; font-size: 21px;'>Product</th>
+                    <th style='background-color: #656D4A; color: white; font-size: 21px;'>Category</th>
+                    <th style='background-color: #656D4A; color: white; font-size: 21px;'>Qty</th>
+                    <th style='background-color: #656D4A; color: white; font-size: 21px;'>Price</th>
+                    <th style='background-color: #656D4A; color: white; font-size: 21px;'>Total</th>
+                    <th style='background-color: #656D4A; color: white; font-size: 21px;'>Payment</th>
+                    <th style='background-color: #656D4A; color: white; font-size: 21px;'>Reference No.</th>
+                    <th style='background-color: #656D4A; color: white; font-size: 21px;'>Date</th>
+                </tr>";
+            echo "</thead>";
+            echo "<tbody>";
+     
             while ($row = mysqli_fetch_assoc($export_result)) {
                 echo "<tr style='font-size: 20px;'>";
                     echo "<td>" . $row['transaction_id'] . "</td>";
@@ -69,19 +77,18 @@
                     echo "<td>" . $row['product_item'] . "</td>";
                     echo "<td>" . $row['item_category'] . "</td>";
                     echo "<td>" . $row['quantity'] . "</td>";
-                    echo "<td>" . $row['unit_price'] . "</td>";
-                    echo "<td>" . $row['total_amount'] . "</td>";
+                    echo "<td>&#8369;" . $row['unit_price'] . "</td>";
+                    echo "<td>&#8369;" . $row['total_amount'] . "</td>";
                     echo "<td>" . $row['payment_method'] . "</td>";
                     echo "<td style='text-align: center;'>" . ($row['ref_no'] ? $row['ref_no'] : '-')  . "</td>";
                     echo "<td>" . date("F d, Y - h:i A", strtotime($row['created_at'])) . "</td>";
                 echo "</tr>";
             }
-        } else {
-            echo "<tr><td colspan='10' style='text-align: center;'>No transaction records found</td></tr>";
+        
+            echo "</tbody>";
+            echo "</table>";
+            exit(); 
         }
-        echo "</tbody>";
-        echo "</table>";
-        exit(); 
     }
     
 
@@ -90,7 +97,7 @@
     $offset = ($page - 1) * $limit;
     
     // Get the total number of transactions
-    $count_result = mysqli_query($conn, "SELECT COUNT(*) as total FROM transaction");
+    $count_result = mysqli_query($conn, "SELECT COUNT(*) as total FROM transactions");
     $total_transactions = mysqli_fetch_assoc($count_result)['total'];
     $total_pages = ceil($total_transactions / $limit);
     
@@ -109,7 +116,7 @@
             p.item_category, 
             p.item_image, 
             u.image AS cashier_image
-        FROM transaction t
+        FROM transactions t
         JOIN users u ON t.user_id = u.id
         JOIN products p ON t.product_id = p.id
         ORDER BY t.created_at DESC
@@ -127,7 +134,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Admin Item List | JoeBean</title>
         <link rel="stylesheet" href="../../assets/css/indexs.css">
-        <link rel="stylesheet" href="../../assets/css/admin/admin_item_listef.css">
+        <link rel="stylesheet" href="../../assets/css/admin/admin_item_lists.css">
         <link rel="stylesheet" href="../../assets/css/admin/admin_transaction_records.css">
         <link rel="stylesheet" href="../../assets/css/modall.css">
     </head>
@@ -383,6 +390,50 @@
             </div>
         </div>
 
+        <div class="modal" id="ErrorExportModal">
+            <div class="Modal_fade-in ErrorPayment__modal-content">
+                <div class="ErrorPayment__modal-content-header-container">
+                    <img class="error-icon" src="../../assets/images/error-icon.svg" alt="Logout icon">
+                    <img class="success-icon" src="../../assets/images/successful-icon.svg" alt="SuccessFull icon">
+                    <h3></h3>
+                </div>
+                <p class="ErrorPayment__modal-p"></p>
+                <div class="ErrorPayment__modal-button-group">
+                    <button type="button" class="ErrorPayment__modal-cancel-button">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <script src="../../assets/js/admin/admin_transaction_recorder.js"></script>
+        <script>
+            const successModal = document.getElementById('ErrorExportModal');
+            const icons = document.querySelectorAll('.ErrorPayment__modal-content-header-container img');
+            const errorIcon = icons[0];   
+            const successIcon = icons[1];
+            const modalTitle = successModal.querySelector('h3');
+            const modalMessage = successModal.querySelector('.ErrorPayment__modal-p');
+                
+            // Similarly for error messages
+            <?php if(isset($_SESSION['export_error'])): ?>
+
+                successModal.style.display = 'flex';
+                
+                modalTitle.style.color = "#a53f3f";
+                modalTitle.textContent = 'Export Failed';
+                
+                modalMessage.textContent = '<?php echo $_SESSION['export_error']; ?>';
+                                
+                errorIcon.style.display = 'block';
+                successIcon.style.display = 'none';
+                
+                successModal.querySelector('.ErrorPayment__modal-cancel-button').addEventListener('click', function() {
+                    successModal.style.display = 'none';
+                });
+                    
+                <?php unset($_SESSION['export_error']); ?>
+            <?php endif; ?>
+        </script>
     </body>
 </html>

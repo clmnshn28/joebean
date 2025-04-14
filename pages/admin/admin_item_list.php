@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['
     $itemStock2 = $_POST["item-stock2"] !== "" ? $_POST["item-stock2"] : null;
     $itemSize1 = $_POST["item-size1"] !== "" ? $_POST["item-size1"] : null;
     $itemSize2 = $_POST["item-size2"] !== "" ? $_POST["item-size2"] : null;
-    
+
 
     // Image upload
     $imagePath = null;
@@ -67,22 +67,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['
     VALUES (1, '$itemName', '$itemCategory', '$imagePath', 'active')";
 
     if (mysqli_query($conn, $sqlProduct)) {
-    // Get the last inserted product_id
-    $productId = mysqli_insert_id($conn);
+        // Get the last inserted product_id
+        $productId = mysqli_insert_id($conn);
 
-    // Insert into product_variants table for each size, price, and stock combination
-    $sqlVariant1 = "INSERT INTO product_variants (product_id, item_size, item_price, item_stock) 
+        // Insert into product_variants table for each size, price, and stock combination
+        $sqlVariant1 = "INSERT INTO product_variants (product_id, item_size, item_price, item_stock) 
                 VALUES ($productId, '$itemSize1', '$itemPrice1', '$itemStock1')";
 
-    $sqlVariant2 = "INSERT INTO product_variants (product_id, item_size, item_price, item_stock) 
+        $sqlVariant2 = "INSERT INTO product_variants (product_id, item_size, item_price, item_stock) 
                 VALUES ($productId, '$itemSize2', '$itemPrice2', '$itemStock2')";
 
-    if (mysqli_query($conn, $sqlVariant1) && mysqli_query($conn, $sqlVariant2)) {
-        header("Location: admin_item_list.php");
-        exit();
-    } else {
-        $error_message = "Error inserting product variants: " . mysqli_error($conn);
-    }
+        if (mysqli_query($conn, $sqlVariant1) && mysqli_query($conn, $sqlVariant2)) {
+            header("Location: admin_item_list.php");
+            exit();
+        } else {
+            $error_message = "Error inserting product variants: " . mysqli_error($conn);
+        }
     } else {
         $error_message = "Error inserting product: " . mysqli_error($conn);
     }
@@ -99,7 +99,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['
     $itemStock2 = $_POST["item-edit-stock2"] !== "" ? $_POST["item-edit-stock2"] : null;
     $itemSize1 = $_POST["item-edit-size1"] !== "" ? $_POST["item-edit-size1"] : null;
     $itemSize2 = $_POST["item-edit-size2"] !== "" ? $_POST["item-edit-size2"] : null;
-    
+
     // Image update logic
     $imagePath = $_POST["current-image"]; // Default to current image
     if (isset($_FILES['item-edit-image']) && $_FILES['item-edit-image']['error'] === UPLOAD_ERR_OK) {
@@ -140,7 +140,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['
         while ($variant = mysqli_fetch_assoc($variantResult)) {
             $variantIds[] = $variant['id'];
         }
-        
+
         // Update first variant
         if (isset($variantIds[0])) {
             $sqlVariant1 = "UPDATE product_variants 
@@ -150,7 +150,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['
                           WHERE id = {$variantIds[0]}";
             mysqli_query($conn, $sqlVariant1);
         }
-        
+
         // Update second variant
         if (isset($variantIds[1])) {
             $sqlVariant2 = "UPDATE product_variants 
@@ -160,7 +160,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['
                           WHERE id = {$variantIds[1]}";
             mysqli_query($conn, $sqlVariant2);
         }
-        
+
         header("Location: admin_item_list.php");
         exit();
     } else {
@@ -172,14 +172,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['
 // Handle item deletion
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['action'] === 'delete') {
     $productId = $_POST["delete_product_id"];
-    
+
     // First delete the variants (to maintain foreign key constraints)
     $sqlDeleteVariants = "DELETE FROM product_variants WHERE product_id = $productId";
-    
+
     if (mysqli_query($conn, $sqlDeleteVariants)) {
         // Then delete the product
         $sqlDeleteProduct = "DELETE FROM products WHERE id = $productId";
-        
+
         if (mysqli_query($conn, $sqlDeleteProduct)) {
             header("Location: admin_item_list.php");
             exit();
@@ -193,44 +193,53 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['
 
 
 if (isset($_POST['export_excel'])) {
-    header("Content-Type: application/vnd.ms-excel");
-    header('Content-Disposition: attachment; filename="item_lists_' . date('Y-m-d') . '.xls"');
-    
-    $export_result = mysqli_query($conn, "
-        SELECT 
-            p.id AS item_id, 
-            p.item_name, 
-            p.item_category,
-            p.created_at,
-            GROUP_CONCAT(v.item_size SEPARATOR ', ') AS sizes,
-            GROUP_CONCAT(v.item_price SEPARATOR ', ') AS prices,
-            GROUP_CONCAT(v.item_stock SEPARATOR ', ') AS stocks
-        FROM products p
-        JOIN product_variants v ON p.id = v.product_id
-        WHERE p.status = 'active'
-        GROUP BY p.id
-        ORDER BY p.id ASC
-    ");
 
-    echo "<table border='1'>";
-    echo "<thead>";
-    echo "<tr>
-            <th style='background-color: #656D4A; color: white; font-size: 21px;'>Item ID</th>
-            <th style='background-color: #656D4A; color: white; font-size: 21px;'>Item Name</th>
-            <th style='background-color: #656D4A; color: white; font-size: 21px;'>Item Size</th>
-            <th style='background-color: #656D4A; color: white; font-size: 21px;'>Item Price</th>
-            <th style='background-color: #656D4A; color: white; font-size: 21px;'>Item Category</th>
-            <th style='background-color: #656D4A; color: white; font-size: 21px;'>Item Stock</th>
-            <th style='background-color: #656D4A; color: white; font-size: 21px;'>Date</th>
-        </tr>";
-    echo "</thead>";
-    echo "<tbody>";
-    if (mysqli_num_rows($export_result) > 0) {
+    $check_result = mysqli_query($conn,  "SELECT COUNT(*) as count FROM products WHERE status = 'active'");
+    $count_data = mysqli_fetch_assoc($check_result);
+    
+    if ($count_data['count'] == 0) {
+        $_SESSION['export_error'] = "Unable to export data to Excel. There are no items available to export.";
+        header("Location: " . $_SERVER['PHP_SELF']); // Redirect back to the same page
+        exit();
+    } else {
+        header("Content-Type: application/vnd.ms-excel");
+        header('Content-Disposition: attachment; filename="item_lists_' . date('Y-m-d') . '.xls"');
+
+        $export_result = mysqli_query($conn, "
+            SELECT 
+                p.id AS item_id, 
+                p.item_name, 
+                p.item_category,
+                p.created_at,
+                GROUP_CONCAT(v.item_size SEPARATOR ', ') AS sizes,
+                GROUP_CONCAT(v.item_price SEPARATOR ', ') AS prices,
+                GROUP_CONCAT(v.item_stock SEPARATOR ', ') AS stocks
+            FROM products p
+            JOIN product_variants v ON p.id = v.product_id
+            WHERE p.status = 'active'
+            GROUP BY p.id
+            ORDER BY p.id ASC
+        ");
+
+        echo "<table border='1'>";
+        echo "<thead>";
+        echo "<tr>
+                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Item ID</th>
+                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Item Name</th>
+                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Item Size</th>
+                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Item Price</th>
+                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Item Category</th>
+                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Item Stock</th>
+                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Date</th>
+            </tr>";
+        echo "</thead>";
+        echo "<tbody>";
+       
         while ($row = mysqli_fetch_assoc($export_result)) {
             echo "<tr style='font-size: 20px;'>";
             echo "<td>" . $row['item_id'] . "</td>";
             echo "<td>" . ucwords(strtolower($row['item_name'])) . "</td>";
-            
+
             // Process sizes
             $sizes = explode(',', $row['sizes']);
             $sizes_str = '';
@@ -242,21 +251,21 @@ if (isset($_POST['export_excel'])) {
             }
             $sizes_str = rtrim($sizes_str, " | ");
             echo "<td>" . $sizes_str . "</td>";
-            
+
             // Process prices
             $prices = explode(',', $row['prices']);
             $prices_str = '';
             foreach ($prices as $price) {
                 $price = trim($price);
                 if (floatval($price) > 0) {
-                    $prices_str .= '₱' . $price . " | ";
+                    $prices_str .= '&#8369;' . $price . " | ";
                 }
             }
             $prices_str = rtrim($prices_str, " | ");
             echo "<td>" . $prices_str . "</td>";
-            
+
             echo "<td>" . ucwords(strtolower($row['item_category'])) . "</td>";
-            
+
             // Process stocks
             $stocks = explode(',', $row['stocks']);
             $stocks_str = '';
@@ -271,13 +280,11 @@ if (isset($_POST['export_excel'])) {
             echo "<td>" . date("F d, Y - h:i A", strtotime($row['created_at'])) . "</td>";
             echo "</tr>";
         }
-    } else {
-        echo "<tr><td colspan='7' style='text-align: center;'>No items found</td></tr>";
+       
+        echo "</tbody>";
+        echo "</table>";
+        exit();
     }
-    echo "</tbody>";
-    echo "</table>";
-    exit();
-    
 }
 
 // Pagination logic
@@ -323,7 +330,7 @@ $result = mysqli_query($conn, $query);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Item List | JoeBean</title>
     <link rel="stylesheet" href="../../assets/css/indexs.css">
-    <link rel="stylesheet" href="../../assets/css/admin/admin_item_listef.css">
+    <link rel="stylesheet" href="../../assets/css/admin/admin_item_lists.css">
     <link rel="stylesheet" href="../../assets/css/modall.css">
 </head>
 
@@ -369,17 +376,17 @@ $result = mysqli_query($conn, $query);
                 <div class="AdminItemList__header-container">
                     <h3>Item List</h3>
                     <div class="AdminItemList__header-search-container">
-                        
+
                         <div class="AdminItemList__search-content">
                             <input type="text" autocomplete="off" placeholder="Search">
                             <span></span>
                             <img src="../../assets/images/search-icon.svg" alt="search icon">
                         </div>
                         <form method="post">
-                                <button class="AdminItemList__excel-btn" type="submit" name="export_excel">
-                                    <img src="../../assets/images/excel-icon.svg" alt="">
-                                </button>
-                            </form>
+                            <button class="AdminItemList__excel-btn" type="submit" name="export_excel">
+                                <img src="../../assets/images/excel-icon.svg" alt="">
+                            </button>
+                        </form>
                         <button id="openModalBtn"> + Add Item</button>
                     </div>
                 </div>
@@ -411,8 +418,8 @@ $result = mysqli_query($conn, $query);
                                     echo "<td style='padding-left:30px'>-</td>";
                                 } else {
                                     echo "<td>" . str_replace(",", "<br>", htmlspecialchars(ucwords(strtolower($sizesRaw)))) . "</td>";
-                                }                         
-                               // Price
+                                }
+                                // Price
                                 $prices = array_filter(explode(',', $row['prices']), fn($p) => floatval($p) > 0);
                                 $priceDisplay = implode("<br>₱", array_map('htmlspecialchars', $prices));
                                 echo "<td style='text-align:left; padding-left: 40px;'>" . ($priceDisplay ? "₱" . $priceDisplay : "") . "</td>";
@@ -448,7 +455,7 @@ $result = mysqli_query($conn, $query);
                                 echo "</tr>";
                             }
                         } else {
-                            echo '<tr class="no-data-row"><td colspan="5"><div class="no-data-message">No Item List</div></td></tr>';
+                            echo '<tr class="no-data-row"><td colspan="6"><div class="no-data-message">No Item List</div></td></tr>';
                         }
 
                         ?>
@@ -471,7 +478,7 @@ $result = mysqli_query($conn, $query);
 
 
     <!-- Modal structure -->
-    <div class="modal" id="itemModal" >
+    <div class="modal" id="itemModal">
         <form class="modal-content" action="" method="POST" enctype="multipart/form-data">
             <div class="modal-header-container">
                 <!-- <span class="close" id="closeModal">&times;</span> -->
@@ -504,38 +511,47 @@ $result = mysqli_query($conn, $query);
                             <span class="required">*</span>
                         </label>
                         <!-- <input type="text" id="item-category" name="item-category" autocomplete="off" required> -->
-                        <input type="hidden" id="item-category" name="item-category" >
+                        <input type="hidden" id="item-category" name="item-category">
                         <div class="custom-select-container">
                             <div class="custom-select-trigger" id="category-trigger">
                                 Select category
                                 <img src="../../assets/images/dropdown-icon.svg" alt="dropdown icon">
                             </div>
                             <div class="custom-options">
-                                <div class="custom-option" data-value="Hot Beverage">Hot Beverage</div>
-                                <div class="custom-option" data-value="Cold Beverage">Cold Beverage</div>
+                                <div class="custom-option" data-value="Iced Coffee">Iced Coffee</div>
+                                <div class="custom-option" data-value="Hot Coffee">Hot Coffee</div>
+                                <div class="custom-option" data-value="Frappe Coffee">Frappe Coffee</div>
+                                <div class="custom-option" data-value="Iced Non-Coffee">Iced Non-Coffee</div>
+                                <div class="custom-option" data-value="Hot Non-Coffee">Hot Non-Coffee</div>
+                                <div class="custom-option" data-value="Frappe Non-Coffee">Frappe Non-Coffee</div>
+
                                 <div class="custom-option" data-value="Rice Meal">Rice Meal</div>
-                                <div class="custom-option" data-value="Snack">Snack</div>
-                                <div class="custom-option" data-value="Dessert">Dessert</div>
+                                <div class="custom-option" data-value="Ala Carte">Ala Carte</div>
+                                <div class="custom-option" data-value="Croffle">Croffle</div>
+                                <div class="custom-option" data-value="Pasta & Fries">Pasta & Fries</div>
+                                <div class="custom-option" data-value="Pizza Barkada">Pizza Barkada</div>
+                                <div class="custom-option" data-value="Add-Ons">Add-Ons</div>
+
                             </div>
                         </div>
                     </div>
                     <div class="AdminItemList__modal-items-group">
                         <div class="AdminItemList__modal-item-price-container">
                             <p>Item Size : </p>
-                            <input type="text" id="item-size" name="item-size1" autocomplete="off" >
-                            <input type="text" id="item-size" name="item-size2" autocomplete="off" >
+                            <input type="text" id="item-size" name="item-size1" autocomplete="off">
+                            <input type="text" id="item-size" name="item-size2" autocomplete="off">
                             <span class="AdminItemList__optional-message">(Optional)</span>
                         </div>
                         <div class="AdminItemList__modal-item-price-container">
-                            <p>Item Price :  <span class="required">*</span></p>
+                            <p>Item Price : <span class="required">*</span></p>
                             <input type="text" id="item-price" name="item-price1" autocomplete="off" required>
-                            <input type="text" id="item-price1" name="item-price2" autocomplete="off" >
+                            <input type="text" id="item-price1" name="item-price2" autocomplete="off">
                             <span class="AdminItemList__optional-message">(Optional)</span>
                         </div>
                         <div class="AdminItemList__modal-item-price-container">
-                            <p>Item Stock :  <span class="required">*</span></p>
+                            <p>Item Stock : <span class="required">*</span></p>
                             <input type="text" id="item-stock" name="item-stock1" autocomplete="off" required>
-                            <input type="text" id="item-stock1" name="item-stock2" autocomplete="off" >
+                            <input type="text" id="item-stock1" name="item-stock2" autocomplete="off">
                             <span class="AdminItemList__optional-message">(Optional)</span>
                         </div>
 
@@ -610,20 +626,20 @@ $result = mysqli_query($conn, $query);
                     <div class="AdminItemList__modal-items-group">
                         <div class="AdminItemList__modal-item-price-container">
                             <p>Item Size : </p>
-                            <input type="text" id="item-edit-size" name="item-edit-size1" autocomplete="off" >
-                            <input type="text" id="item-edit-size" name="item-edit-size2" autocomplete="off" >
+                            <input type="text" id="item-edit-size" name="item-edit-size1" autocomplete="off">
+                            <input type="text" id="item-edit-size" name="item-edit-size2" autocomplete="off">
                             <span class="AdminItemList__optional-message">(Optional)</span>
                         </div>
                         <div class="AdminItemList__modal-item-price-container">
-                            <p>Item Price :  <span class="required">*</span></p>
+                            <p>Item Price : <span class="required">*</span></p>
                             <input type="text" id="item-edit-price" name="item-edit-price1" autocomplete="off" required>
-                            <input type="text" id="item-edit-price1" name="item-edit-price2" autocomplete="off" >
+                            <input type="text" id="item-edit-price1" name="item-edit-price2" autocomplete="off">
                             <span class="AdminItemList__optional-message">(Optional)</span>
                         </div>
                         <div class="AdminItemList__modal-item-price-container">
-                            <p>Item Stock :  <span class="required">*</span></p>
+                            <p>Item Stock : <span class="required">*</span></p>
                             <input type="text" id="item-edit-stock" name="item-edit-stock1" autocomplete="off" required>
-                            <input type="text" id="item-edit-stock1" name="item-edit-stock2" autocomplete="off" >
+                            <input type="text" id="item-edit-stock1" name="item-edit-stock2" autocomplete="off">
                             <span class="AdminItemList__optional-message">(Optional)</span>
                         </div>
 
@@ -644,59 +660,103 @@ $result = mysqli_query($conn, $query);
     </div>
 
 
-        <!--Delete Item Modal structure -->
-        <div class="modal" id="deleteItemModal">
-            <div class="Modal_fade-in AdminItemList__modal-delete-content">
-                <div class="AdminItemList__modal-delete-header-container">
-                    <h3>Delete Item</h3>
-                </div>
+    <!--Delete Item Modal structure -->
+    <div class="modal" id="deleteItemModal">
+        <div class="Modal_fade-in AdminItemList__modal-delete-content">
+            <div class="AdminItemList__modal-delete-header-container">
+                <h3>Delete Item</h3>
+            </div>
 
-                <p class="AdminItemList__modal-delete-first-p">Are you sure you want to delete this item?</p>
-                <p class="AdminItemList__modal-delete-second-p">This action cannot be undone.</p>
-                <p class="AdminItemList__modal-span-item-name">Item Name:  <span id="deleteItemName"></span></p>
-    
-                <!-- <div class="AdminItemList__modal-delete-item-name">
+            <p class="AdminItemList__modal-delete-first-p">Are you sure you want to delete this item?</p>
+            <p class="AdminItemList__modal-delete-second-p">This action cannot be undone.</p>
+            <p class="AdminItemList__modal-span-item-name">Item Name: <span id="deleteItemName"></span></p>
+
+            <!-- <div class="AdminItemList__modal-delete-item-name">
                     <span class="AdminItemList__modal-span-item-name">Item Name: </span>
                     <div class="AdminItemList__modal-item-name-div">
                         <span id="deleteItemName"></span>
                     </div>
                 </div> -->
 
-                <form action="" method="post" id="deleteItemForm">
-                    <input type="hidden" name="delete_product_id" id="deleteProductId">
-                    <input type="hidden" name="action" value="delete">
+            <form action="" method="post" id="deleteItemForm">
+                <input type="hidden" name="delete_product_id" id="deleteProductId">
+                <input type="hidden" name="action" value="delete">
 
-                    <div class="AdminItemList__modal-delete-button-inner-group">
-                        <button type="button" class="AdminItemList__modal-delete-cancel-pass-button">
-                            Cancel
-                        </button>
-                        <button type="submit" class="AdminItemList__modal-delete-confirm-pass-button">
-                            Confirm
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <div class="modal" id="logoutSideBarModal">
-            <div class="Modal_fade-in Logout__modal-content">
-                <div class="Logout__modal-content-header-container">
-                    <img src="../../assets/images/logout-confirm-icon.svg" alt="Logout icon">
-                    <h3>Logout</h3>
-                </div>
-                <p class="Logout__modal-p">Are you sure you want to logout your account?</p>
-                <div class="Logout__modal-button-group">
-                    <button type="button" class="Logout__modal-cancel-button">
+                <div class="AdminItemList__modal-delete-button-inner-group">
+                    <button type="button" class="AdminItemList__modal-delete-cancel-pass-button">
                         Cancel
                     </button>
-                    <a href="admin_item_list.php?action=logout" class="Logout__modal-confirm-button">
+                    <button type="submit" class="AdminItemList__modal-delete-confirm-pass-button">
                         Confirm
-                    </a>
+                    </button>
                 </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="logoutSideBarModal">
+        <div class="Modal_fade-in Logout__modal-content">
+            <div class="Logout__modal-content-header-container">
+                <img src="../../assets/images/logout-confirm-icon.svg" alt="Logout icon">
+                <h3>Logout</h3>
+            </div>
+            <p class="Logout__modal-p">Are you sure you want to logout your account?</p>
+            <div class="Logout__modal-button-group">
+                <button type="button" class="Logout__modal-cancel-button">
+                    Cancel
+                </button>
+                <a href="admin_item_list.php?action=logout" class="Logout__modal-confirm-button">
+                    Confirm
+                </a>
             </div>
         </div>
+    </div>
+
+    <div class="modal" id="ErrorExportModal">
+        <div class="Modal_fade-in ErrorPayment__modal-content">
+            <div class="ErrorPayment__modal-content-header-container">
+                <img class="error-icon" src="../../assets/images/error-icon.svg" alt="Logout icon">
+                <img class="success-icon" src="../../assets/images/successful-icon.svg" alt="SuccessFull icon">
+                <h3></h3>
+            </div>
+            <p class="ErrorPayment__modal-p"></p>
+            <div class="ErrorPayment__modal-button-group">
+                <button type="button" class="ErrorPayment__modal-cancel-button">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
 
     <script src="../../assets/js/admin/admin_item_lister.js"></script>
+    <script>
+        const successModal = document.getElementById('ErrorExportModal');
+        const icons = document.querySelectorAll('.ErrorPayment__modal-content-header-container img');
+        const errorIcon = icons[0];   
+        const successIcon = icons[1];
+        const modalTitle = successModal.querySelector('h3');
+        const modalMessage = successModal.querySelector('.ErrorPayment__modal-p');
+            
+        // Similarly for error messages
+        <?php if(isset($_SESSION['export_error'])): ?>
+
+            successModal.style.display = 'flex';
+            
+            modalTitle.style.color = "#a53f3f";
+            modalTitle.textContent = 'Export Failed';
+            
+            modalMessage.textContent = '<?php echo $_SESSION['export_error']; ?>';
+                            
+            errorIcon.style.display = 'block';
+            successIcon.style.display = 'none';
+            
+            successModal.querySelector('.ErrorPayment__modal-cancel-button').addEventListener('click', function() {
+                successModal.style.display = 'none';
+            });
+                
+            <?php unset($_SESSION['export_error']); ?>
+        <?php endif; ?>
+    </script>
 </body>
 
 </html>

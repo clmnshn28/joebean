@@ -57,15 +57,7 @@
         $stmt->close();
         header("Location: admin_cashier_list.php");
         exit();
-        if (isset($_SESSION['reset_success'])) {
-            echo "<script>alert('" . $_SESSION['reset_success'] . "');</script>";
-            unset($_SESSION['reset_success']);
-        }
-
-        if (isset($_SESSION['reset_error'])) {
-            echo "<script>alert('" . $_SESSION['reset_error'] . "');</script>";
-            unset($_SESSION['reset_error']);
-        }
+    
     }
 
 
@@ -102,25 +94,34 @@
     // ================================================================
 
     if (isset($_POST['export_excel'])) {
-        header("Content-Type: application/vnd.ms-excel");
-        header('Content-Disposition: attachment; filename="cashiers_list_' . date('Y-m-d') . '.xls"');
-    
-        $export_result = mysqli_query($conn, "SELECT * FROM users WHERE role='cashier' ORDER BY id ASC");
-    
-        echo "<table border='1'>";
-        echo "<thead>";
-        echo "<tr>
-                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Cashier ID</th>
-                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Username</th>
-                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Full Name</th>
-                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Gender</th>
-                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Age</th>
-                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Birthdate</th>
-                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Account Created</th>
-            </tr>";
-        echo "</thead>";
-        echo "<tbody>";
-        if (mysqli_num_rows($export_result) > 0) {
+        $check_result = mysqli_query($conn, "SELECT COUNT(*) as count FROM users WHERE role='cashier'");
+        $count_data = mysqli_fetch_assoc($check_result);
+        
+           
+        if ($count_data['count'] == 0) {
+            $_SESSION['export_error'] = "Unable to export data to Excel. There are no items available to export.";
+            header("Location: " . $_SERVER['PHP_SELF']); // Redirect back to the same page
+            exit();
+        } else {
+            header("Content-Type: application/vnd.ms-excel");
+            header('Content-Disposition: attachment; filename="cashiers_list_' . date('Y-m-d') . '.xls"');
+        
+            $export_result = mysqli_query($conn, "SELECT * FROM users WHERE role='cashier' ORDER BY id ASC");
+        
+            echo "<table border='1'>";
+            echo "<thead>";
+            echo "<tr>
+                    <th style='background-color: #656D4A; color: white; font-size: 21px;'>Cashier ID</th>
+                    <th style='background-color: #656D4A; color: white; font-size: 21px;'>Username</th>
+                    <th style='background-color: #656D4A; color: white; font-size: 21px;'>Full Name</th>
+                    <th style='background-color: #656D4A; color: white; font-size: 21px;'>Gender</th>
+                    <th style='background-color: #656D4A; color: white; font-size: 21px;'>Age</th>
+                    <th style='background-color: #656D4A; color: white; font-size: 21px;'>Birthdate</th>
+                    <th style='background-color: #656D4A; color: white; font-size: 21px;'>Account Created</th>
+                </tr>";
+            echo "</thead>";
+            echo "<tbody>";
+        
             while ($row = mysqli_fetch_assoc($export_result)) {
                 $fullname = ucwords(strtolower($row['firstname'])) . ' ' .
                     (isset($row['middlename']) ? ucwords(strtolower($row['middlename'])) . ' ' : '') .
@@ -142,12 +143,11 @@
                     echo "<td style='font-size: 20px;'>" . $created_at . "</td>";
                 echo "</tr>";
             }
-        } else {
-            echo "<tr><td colspan='7' style='text-align: center;'>No cashiers found</td></tr>";
+       
+            echo "</tbody>";
+            echo "</table>";
+            exit; 
         }
-        echo "</tbody>";
-        echo "</table>";
-        exit; 
 
     }
 
@@ -175,7 +175,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Admin Item List | JoeBean</title>
         <link rel="stylesheet" href="../../assets/css/indexs.css">
-        <link rel="stylesheet" href="../../assets/css/admin/admin_item_listef.css">
+        <link rel="stylesheet" href="../../assets/css/admin/admin_item_lists.css">
         <link rel="stylesheet" href="../../assets/css/admin/admin_cashier_lists.css">
         <link rel="stylesheet" href="../../assets/css/modall.css">
     </head>
@@ -544,6 +544,7 @@
             </div>
         </div>
 
+
         <script src="../../assets/js/admin/admin_cashier_lister.js"></script>
 
         <script>
@@ -585,14 +586,33 @@
                 
                 modalMessage.textContent = '<?php echo $_SESSION['reset_error']; ?>';
                                 
-                errorIcon.style.display = 'none';
-                successIcon.style.display = 'block';
+                errorIcon.style.display = 'block';
+                successIcon.style.display = 'none';
                 
                 successModal.querySelector('.ErrorPayment__modal-cancel-button').addEventListener('click', function() {
                     successModal.style.display = 'none';
                 });
                     
                 <?php unset($_SESSION['reset_error']); ?>
+            <?php endif; ?>
+
+            <?php if(isset($_SESSION['export_error'])): ?>
+
+                successModal.style.display = 'flex';
+
+                modalTitle.style.color = "#a53f3f";
+                modalTitle.textContent = 'Export Failed';
+
+                modalMessage.textContent = '<?php echo $_SESSION['export_error']; ?>';
+                                
+                errorIcon.style.display = 'block';
+                successIcon.style.display = 'none';
+
+                successModal.querySelector('.ErrorPayment__modal-cancel-button').addEventListener('click', function() {
+                    successModal.style.display = 'none';
+                });
+                    
+                <?php unset($_SESSION['export_error']); ?>
             <?php endif; ?>
         </script>
     </body>
