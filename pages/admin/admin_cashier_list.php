@@ -108,16 +108,18 @@
         $export_result = mysqli_query($conn, "SELECT * FROM users WHERE role='cashier' ORDER BY id ASC");
     
         echo "<table border='1'>";
-        echo "<tr style='background-color: #f2f2f2; font-weight: bold;'>";
-        echo "<th>ID</th>";
-        echo "<th>Username</th>";
-        echo "<th>Full Name</th>";
-        echo "<th>Gender</th>";
-        echo "<th>Age</th>";
-        echo "<th>Birthdate</th>";
-        echo "<th>Account Created</th>";
-        echo "</tr>";
-
+        echo "<thead>";
+        echo "<tr>
+                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Cashier ID</th>
+                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Username</th>
+                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Full Name</th>
+                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Gender</th>
+                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Age</th>
+                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Birthdate</th>
+                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Account Created</th>
+            </tr>";
+        echo "</thead>";
+        echo "<tbody>";
         if (mysqli_num_rows($export_result) > 0) {
             while ($row = mysqli_fetch_assoc($export_result)) {
                 $fullname = ucwords(strtolower($row['firstname'])) . ' ' .
@@ -130,21 +132,20 @@
                 
                 // Determine status
                 $status = ($row['deleted_at'] === NULL) ? "Active" : "Deactivated";
-                
                 echo "<tr>";
-                    echo "<td>" . $row['id'] . "</td>";
-                    echo "<td>" . $row['username'] . "</td>";
-                    echo "<td>" . $fullname . "</td>";
-                    echo "<td>" . ucwords(strtolower($row['gender'])) . "</td>";
-                    echo "<td>" . $age . "</td>";
-                    echo "<td>" . $birthdate . "</td>";
-                    echo "<td>" . $created_at . "</td>";
+                    echo "<td style='font-size: 20px;'>" . $row['id'] . "</td>";
+                    echo "<td style='font-size: 20px;'>" . $row['username'] . "</td>";
+                    echo "<td style='font-size: 20px;'>" . $fullname . "</td>";
+                    echo "<td style='font-size: 20px;'>" . ucwords(strtolower($row['gender'])) . "</td>";
+                    echo "<td style='font-size: 20px;'>" . $age . "</td>";
+                    echo "<td style='font-size: 20px;'>" . $birthdate . "</td>";
+                    echo "<td style='font-size: 20px;'>" . $created_at . "</td>";
                 echo "</tr>";
             }
         } else {
             echo "<tr><td colspan='7' style='text-align: center;'>No cashiers found</td></tr>";
         }
-        
+        echo "</tbody>";
         echo "</table>";
         exit; 
 

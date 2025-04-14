@@ -27,8 +27,9 @@
         header("Content-Type: application/vnd.ms-excel");
         header('Content-Disposition: attachment; filename="transaction_records_' . date('Y-m-d') . '.xls"');
         
-        $exportResult = mysqli_query($conn, "
+        $export_result = mysqli_query($conn, "
             SELECT 
+                t.id AS transaction_id,
                 t.ref_no,
                 t.payment_method, 
                 t.created_at, 
@@ -45,21 +46,25 @@
         ");
     
         echo "<table border='1'>";
+        echo "<thead>";
         echo "<tr>
-                <th>Cashier</th>
-                <th>Product</th>
-                <th>Category</th>
-                <th>Qty</th>
-                <th>Price</th>
-                <th>Total</th>
-                <th>Payment</th>
-                <th>Reference No</th>
-                <th>Date</th>
+                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Transaction ID</th>
+                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Cashier</th>
+                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Product</th>
+                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Category</th>
+                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Qty</th>
+                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Price</th>
+                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Total</th>
+                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Payment</th>
+                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Reference No.</th>
+                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Date</th>
               </tr>";
-    
-        if (mysqli_num_rows($exportResult) > 0) {
-            while ($row = mysqli_fetch_assoc($exportResult)) {
-                echo "<tr>";
+        echo "</thead>";
+        echo "<tbody>";
+        if (mysqli_num_rows($export_result) > 0) {
+            while ($row = mysqli_fetch_assoc($export_result)) {
+                echo "<tr style='font-size: 20px;'>";
+                    echo "<td>" . $row['transaction_id'] . "</td>";
                     echo "<td>" . $row['cashier_name'] . "</td>";
                     echo "<td>" . $row['product_item'] . "</td>";
                     echo "<td>" . $row['item_category'] . "</td>";
@@ -67,13 +72,14 @@
                     echo "<td>" . $row['unit_price'] . "</td>";
                     echo "<td>" . $row['total_amount'] . "</td>";
                     echo "<td>" . $row['payment_method'] . "</td>";
-                    echo "<td>" . $row['ref_no'] . "</td>";
-                    echo "<td>" . date("m/d/Y", strtotime($row['created_at'])) . "</td>";
+                    echo "<td style='text-align: center;'>" . ($row['ref_no'] ? $row['ref_no'] : '-')  . "</td>";
+                    echo "<td>" . date("F d, Y - h:i A", strtotime($row['created_at'])) . "</td>";
                 echo "</tr>";
             }
         } else {
-            echo "<tr><td colspan='9' style='text-align: center;'>No transaction records found</td></tr>";
+            echo "<tr><td colspan='10' style='text-align: center;'>No transaction records found</td></tr>";
         }
+        echo "</tbody>";
         echo "</table>";
         exit(); 
     }

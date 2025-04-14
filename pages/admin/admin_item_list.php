@@ -198,9 +198,10 @@ if (isset($_POST['export_excel'])) {
     
     $export_result = mysqli_query($conn, "
         SELECT 
-            p.id, 
+            p.id AS item_id, 
             p.item_name, 
             p.item_category,
+            p.created_at,
             GROUP_CONCAT(v.item_size SEPARATOR ', ') AS sizes,
             GROUP_CONCAT(v.item_price SEPARATOR ', ') AS prices,
             GROUP_CONCAT(v.item_stock SEPARATOR ', ') AS stocks
@@ -208,66 +209,73 @@ if (isset($_POST['export_excel'])) {
         JOIN product_variants v ON p.id = v.product_id
         WHERE p.status = 'active'
         GROUP BY p.id
-        ORDER BY p.id DESC
+        ORDER BY p.id ASC
     ");
 
-    echo '<table border="1">';
-    echo '<tr>';
-    echo '<th>ID</th>';
-    echo '<th>Item Name</th>';
-    echo '<th>Item Size</th>';
-    echo '<th>Item Price</th>';
-    echo '<th>Item Category</th>';
-    echo '<th>Item Stock</th>';
-    echo '</tr>';
-
-    while ($row = mysqli_fetch_assoc($export_result)) {
-        echo '<tr>';
-        echo '<td>' . $row['id'] . '</td>';
-        echo '<td>' . ucwords(strtolower($row['item_name'])) . '</td>';
-        
-        // Process sizes
-        $sizes = explode(',', $row['sizes']);
-        $sizes_str = '';
-        foreach ($sizes as $size) {
-            $size = trim($size);
-            if (!empty($size)) {
-                $sizes_str .= ucwords(strtolower($size)) . " | ";
+    echo "<table border='1'>";
+    echo "<thead>";
+    echo "<tr>
+            <th style='background-color: #656D4A; color: white; font-size: 21px;'>Item ID</th>
+            <th style='background-color: #656D4A; color: white; font-size: 21px;'>Item Name</th>
+            <th style='background-color: #656D4A; color: white; font-size: 21px;'>Item Size</th>
+            <th style='background-color: #656D4A; color: white; font-size: 21px;'>Item Price</th>
+            <th style='background-color: #656D4A; color: white; font-size: 21px;'>Item Category</th>
+            <th style='background-color: #656D4A; color: white; font-size: 21px;'>Item Stock</th>
+            <th style='background-color: #656D4A; color: white; font-size: 21px;'>Date</th>
+        </tr>";
+    echo "</thead>";
+    echo "<tbody>";
+    if (mysqli_num_rows($export_result) > 0) {
+        while ($row = mysqli_fetch_assoc($export_result)) {
+            echo "<tr style='font-size: 20px;'>";
+            echo "<td>" . $row['item_id'] . "</td>";
+            echo "<td>" . ucwords(strtolower($row['item_name'])) . "</td>";
+            
+            // Process sizes
+            $sizes = explode(',', $row['sizes']);
+            $sizes_str = '';
+            foreach ($sizes as $size) {
+                $size = trim($size);
+                if (!empty($size)) {
+                    $sizes_str .= ucwords(strtolower($size)) . " | ";
+                }
             }
-        }
-        $sizes_str = rtrim($sizes_str, " | ");
-        echo '<td>' . $sizes_str . '</td>';
-        
-        // Process prices
-        $prices = explode(',', $row['prices']);
-        $prices_str = '';
-        foreach ($prices as $price) {
-            $price = trim($price);
-            if (floatval($price) > 0) {
-                $prices_str .= '₱' . $price . " | ";
+            $sizes_str = rtrim($sizes_str, " | ");
+            echo "<td>" . $sizes_str . "</td>";
+            
+            // Process prices
+            $prices = explode(',', $row['prices']);
+            $prices_str = '';
+            foreach ($prices as $price) {
+                $price = trim($price);
+                if (floatval($price) > 0) {
+                    $prices_str .= '₱' . $price . " | ";
+                }
             }
-        }
-        $prices_str = rtrim($prices_str, " | ");
-        echo '<td>' . $prices_str . '</td>';
-        
-        echo '<td>' . ucwords(strtolower($row['item_category'])) . '</td>';
-        
-        // Process stocks
-        $stocks = explode(',', $row['stocks']);
-        $stocks_str = '';
-        foreach ($stocks as $stock) {
-            $stock = trim($stock);
-            if (intval($stock) > 0) {
-                $stocks_str .= $stock . " | ";
+            $prices_str = rtrim($prices_str, " | ");
+            echo "<td>" . $prices_str . "</td>";
+            
+            echo "<td>" . ucwords(strtolower($row['item_category'])) . "</td>";
+            
+            // Process stocks
+            $stocks = explode(',', $row['stocks']);
+            $stocks_str = '';
+            foreach ($stocks as $stock) {
+                $stock = trim($stock);
+                if (intval($stock) > 0) {
+                    $stocks_str .= $stock . " | ";
+                }
             }
+            $stocks_str = rtrim($stocks_str, " | ");
+            echo "<td>" . $stocks_str . "</td>";
+            echo "<td>" . date("F d, Y - h:i A", strtotime($row['created_at'])) . "</td>";
+            echo "</tr>";
         }
-        $stocks_str = rtrim($stocks_str, " | ");
-        echo '<td>' . $stocks_str . '</td>';
-        
-        echo '</tr>';
+    } else {
+        echo "<tr><td colspan='7' style='text-align: center;'>No items found</td></tr>";
     }
-    
-    echo '</table>';
+    echo "</tbody>";
+    echo "</table>";
     exit();
     
 }
@@ -407,7 +415,7 @@ $result = mysqli_query($conn, $query);
                                // Price
                                 $prices = array_filter(explode(',', $row['prices']), fn($p) => floatval($p) > 0);
                                 $priceDisplay = implode("<br>₱", array_map('htmlspecialchars', $prices));
-                                echo "<td>" . ($priceDisplay ? "₱" . $priceDisplay : "") . "</td>";
+                                echo "<td style='text-align:left; padding-left: 40px;'>" . ($priceDisplay ? "₱" . $priceDisplay : "") . "</td>";
                                 echo "<td>" . htmlspecialchars(ucwords(strtolower($row['item_category']))) . "</td>";
                                 // Stock
                                 $stocks = array_filter(explode(',', $row['stocks']), fn($s) => intval($s) > 0);
