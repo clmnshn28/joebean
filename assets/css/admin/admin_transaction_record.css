@@ -1,0 +1,459 @@
+.AdminTransactionRecords__table-content-item th{
+    text-align: left;
+    padding: 13px 5px 13px;
+    background-color: #767c63;
+    color: #fff;
+    text-transform: uppercase;
+}
+
+
+.AdminTransactionRecords__table-content-item td {
+    text-align: left;
+    padding: 18px 5px 14px;
+    font-size: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.AdminTransactionRecords__table-content-item th:nth-child(1), 
+.AdminTransactionRecords__table-content-item td:nth-child(1) {
+    padding-left: 30px;
+    width: 31%;
+}
+.AdminTransactionRecords__table-content-item th:nth-child(1) {
+    padding-left: 40px;
+}
+
+.AdminTransactionRecords__table-content-item th:nth-child(2), 
+.AdminTransactionRecords__table-content-item td:nth-child(2) {
+    width: 17%;
+}
+
+.AdminTransactionRecords__table-content-item td:nth-child(2) {
+    padding-left: 30px;
+}
+
+.AdminTransactionRecords__table-content-item th:nth-child(3), 
+.AdminTransactionRecords__table-content-item td:nth-child(3) {
+    text-align: center;
+    width: 20%;
+}
+
+.AdminTransactionRecords__table-content-item th:nth-child(4), 
+.AdminTransactionRecords__table-content-item td:nth-child(4) {
+    text-align: center;
+    
+}
+
+.AdminTransactionRecords__table-content-item th:nth-child(5), 
+.AdminTransactionRecords__table-content-item td:nth-child(5) {
+    text-align: center;
+
+}
+
+
+
+/* */
+
+.AdminTransactionRecords__item-image{
+    width: 31px;
+    height: 31px;
+    object-fit: cover;
+    border-radius: 50%; 
+    border: 2px solid #a8a8a8;
+}
+
+.AdminTransactionRecord__table-data-btn{
+    padding: 6px 15px;
+    background-color: #565b48;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.AdminTransactionRecord__table-data-btn:active{
+    opacity: 0.8;
+    transform: scale(0.95); 
+}
+
+
+.AdminTransactionRecord__item-with-references{
+    /* background-color: #a8a8a8; */
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.AdminTransactionRecord__item-reference-number{
+    font-size: 9px;
+    background-color: #535a3c;
+    padding: 5px 10px 4px 12px;
+    border-radius: 5px;
+    color: #fdfff4;
+    position: relative;
+}
+
+.AdminTransactionRecord__item-reference-number::before {
+    content: "REFNO. ";
+    font-weight: 500;
+    font-size: 4px;
+    color: #edf3da;
+    margin-right: 5px;
+    position: absolute;
+    top: 5%;
+    left: 4%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* modal content */
+.AdminTransactionRecord__relative-modal{
+    background-color: #fff;
+    padding: 30px 40px 40px;
+    border-radius: 30px;
+    width: 100%;
+    max-width: 1000px;
+    min-height: 660px;
+    position: relative;
+    animation: modalFadeIn 0.3s;
+}
+
+@keyframes modalFadeIn {
+    from {transform: scale(0.8); opacity: 0;}
+    to {transform: scale(1); opacity: 1;}
+}
+
+.AdminTransactionRecord__modal-header{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 2px solid #aaa;
+    padding-bottom: 15px;
+}
+
+.AdminTransactionRecord__modal-header h3{
+    font-size: 25px;
+    color: #5e6343;
+}
+
+
+.AdminTransactionRecord__modal-form-container{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px ;
+    /* background-color: #aaaaaa; */
+}
+
+/* top */
+.AdminTransactionRecord__modal-top{
+    background-color: #6767672a;
+    padding: 20px;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 2px solid #535a3c82;
+}
+
+.AdminTransactionRecord__top-details-container{
+    display: flex;
+}
+
+.AdminTransactionRecord__details-list{
+    display: flex;
+    align-items: center;
+    /* background-color: aquamarine; */
+    flex: 1;
+}
+
+.AdminTransactionRecord__detail-name{
+    font-weight: bold;
+    color: #565b48;
+    font-size: 16px;
+    /* margin-right: 20px; */
+    /* background-color: #cccccc; */
+    flex: 0.7;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.AdminTransactionRecord__detail-name1{
+    font-weight: bold;
+    color: #565b48;
+    font-size: 16px;
+    /* margin-right: 20px; */
+    /* background-color: #cccccc; */
+    flex: 0.6;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+.AdminTransactionRecord__detail-name-dash{
+    margin-right: 15px;
+}
+
+
+.AdminTransactionRecord__item-with-image{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+}
+
+.AdminTransactionRecords__modal-item-image{
+    width: 35px;
+    height: 35px;
+    object-fit: cover;
+    border-radius: 50%; 
+    border: 2px solid #a8a8a8;
+}
+
+.AdminTransactionRecord__item-with-image span{
+    font-size: 16px;
+    font-weight: 500;
+    color: #4b4b4b;
+}
+
+.AdminTransactionRecord__detail-value{
+    font-size: 16px;
+    font-weight: 500;
+    color: #686868;
+    flex: 1.05;
+    display: flex;
+    align-items: center;
+    flex: 1;
+    /* background-color: #a8a8a8; */
+}
+
+#modalTransactionId{
+    font-size: 15px;
+    font-weight: 500;
+    color: #fff;
+    background-color: #63694d;
+    padding: 2px 8px;
+    border-radius: 5px;
+}
+
+
+.AdminTransactionRecord__reference-number{
+    font-size: 13px;
+    margin-left: 15px;
+    background-color: #535a3c;
+    padding: 10px 16px 6px;
+    border-radius: 5px;
+    color: #fdfff4;
+    position: relative;
+}
+
+.AdminTransactionRecord__reference-number::before {
+    content: "REFNO. ";
+    font-weight: 500;
+    font-size: 7px;
+    color: #edf3da;
+    margin-right: 5px;
+    position: absolute;
+    top: 5%;
+    left: 4%;
+}
+
+
+/* Bottom section with table */
+.AdminTransactionRecord__modal-bottom {
+    background-color: #8f8f8f2a;
+    padding: 18px;
+    border-radius: 15px;
+    border: 2px solid #535a3c82;
+    height: 305px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Table container */
+.AdminTransactionRecord__transaction-items-table {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    /* box-shadow: 0 0 10px #5f5f5f3f; */
+}
+
+.AdminTransactionRecord__transaction-items-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.AdminTransactionRecord__transaction-items-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #535a3c;
+    color: #fff;
+    width: 100%;
+}
+
+.AdminTransactionRecord__transaction-items-table thead tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.AdminTransactionRecord__transaction-items-table thead th {
+    padding: 12px 0;
+    text-align: left;
+    font-weight: 500;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+/* Scrollable body */
+.AdminTransactionRecord__transaction-items-table tbody {
+    display: block;
+    overflow-y: auto;
+    max-height: 230px;
+    width: 100%;
+}
+
+/* Scrollbar customization */
+.AdminTransactionRecord__transaction-items-table tbody::-webkit-scrollbar {
+    width: 6px;
+}
+
+.AdminTransactionRecord__transaction-items-table tbody::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.AdminTransactionRecord__transaction-items-table tbody::-webkit-scrollbar-thumb {
+    background: #C2C5AA;
+    border-radius: 10px;
+}
+
+.AdminTransactionRecord__transaction-items-table tbody::-webkit-scrollbar-thumb:hover {
+    background: rgb(175, 177, 144);
+    cursor: pointer;
+}
+
+
+.AdminTransactionRecord__transaction-items-table tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.AdminTransactionRecord__transaction-items-table tbody td {
+    padding: 10px 0;
+    text-align: left;
+    vertical-align: middle;
+    font-weight: 500;
+    font-size: 15px;
+    color: #4b4b4b;
+    border-bottom: 1px solid #dddddd;
+}
+
+.AdminTransactionRecord__transaction-items-table tbody tr:nth-of-type(even) {
+    background-color: #dbdbdb;
+}
+
+.AdminTransactionRecord__transaction-items-table tbody tr:hover {
+    background-color: #d1d1d1da;
+}
+
+
+.AdminTransactionRecord__transaction-items-table th:nth-child(1), 
+.AdminTransactionRecord__transaction-items-table td:nth-child(1) {
+    width: 25%;
+    padding-left: 20px;
+}
+.AdminTransactionRecord__transaction-items-table th:nth-child(1) {
+    padding-left: 25px;
+}
+.AdminTransactionRecord__modal-item-with-image{
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+.AdminTransactionRecord__modal-item-with-image img{
+    width: 30px;
+    height: 30px;
+}
+
+.AdminTransactionRecord__transaction-items-table th:nth-child(2), 
+.AdminTransactionRecord__transaction-items-table td:nth-child(2) {
+    width: 18%;
+}
+.AdminTransactionRecord__transaction-items-table th:nth-child(3), 
+.AdminTransactionRecord__transaction-items-table td:nth-child(3) {
+    width: 9%;
+}
+.AdminTransactionRecord__transaction-items-table th:nth-child(4), 
+.AdminTransactionRecord__transaction-items-table td:nth-child(4) {
+    width: 10%;
+    text-align: center;
+}
+.AdminTransactionRecord__transaction-items-table th:nth-child(5), 
+.AdminTransactionRecord__transaction-items-table td:nth-child(5) {
+    width: 10%;
+    text-align: center;
+
+}
+.AdminTransactionRecord__transaction-items-table th:nth-child(6), 
+.AdminTransactionRecord__transaction-items-table td:nth-child(6) {
+    width: 13%;
+    text-align: center;
+}
+
+
+/* button group */
+.AdminTransactionRecord__modal-footer-container{
+    border-top: 2px solid #aaa;
+    padding-top: 23px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    position: absolute;
+    bottom: 4.5%;
+    left: 5%;
+    right: 5%;
+}
+
+
+.AdminTransactionRecord__modal-cancel-button{
+    background-color: #c4c4c4;
+    padding: 11px;
+    width: 160px;
+    font-size: 18px;
+    font-weight: 500;
+    border: none;
+    border-radius: 5px;
+    color: #676767;
+    cursor: pointer;
+    transition: background-color 0.7s ease-in-out;
+}
+
+
+.AdminTransactionRecord__modal-cancel-button:hover{
+    background-color: #bababa;
+}
+
+.AdminTransactionRecord__modal-cancel-button:active{
+    opacity: 0.8;
+    transform: scale(0.95); 
+}

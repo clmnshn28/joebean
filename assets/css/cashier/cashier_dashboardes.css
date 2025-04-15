@@ -226,7 +226,7 @@
 
 .CashierDashboard__each-menu-sub-category-container h2{
     color: #585f41;
-    width: 97%;
+    width: 98.5%;
     font-size: 25px;
     border-bottom: 3px solid #41483328;
     padding-bottom: 15px;
@@ -238,7 +238,7 @@
 .CashierDashboard__wrap-menu-sub-category-content{
     display: flex;
     flex-wrap: wrap;
-    gap: 30px;
+    gap: 28px;
 }
 
 
@@ -248,31 +248,34 @@
 
 .CashierDashboard__product-item-container{
     background-color: #D9D9D9;
-    width: 260px;
-    padding: 13px 15px;
+    width: 265px;
+    padding: 15px 15px;
     border-radius: 10px;
     color: #656D4A;
     display: flex;
     flex-direction: column;
     cursor: default;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 
 
 .CashierDashboard__product-top-content{
     display: flex;
+    gap: 5px;
 }
 
 .CashierDashboard__product-top-content h3{
     font-size: 22px;
+    flex: 1;
+    /* background-color: #262725; */
 }
 
 .CashierDashboard__product-top-content img{
     width: 88px;
     height: 88px;
     object-fit: contain;
-    border: 2px solid #414833;
+    border: 2px solid #797979;
     border-radius: 10px;
 }
 
@@ -323,9 +326,11 @@
 }
 
 .CashierDashboard__product-stock{
-    font-size: 13px;
+    font-size: 12px;
     font-weight: bold;
     margin-left: 3px;
+    flex: 0.57;
+    /* background-color: #262725; */
 }
 .CashierDashboard__product-stock span{
     font-weight: 500;
@@ -339,7 +344,7 @@
     background-color: #cacaca3c;
     padding: 20px;
     border-radius: 10px;
-    width: 97%;
+    width: 98.5%;
 }
 
 .CashierDashboard__no-products{
@@ -505,6 +510,28 @@
     display: flex;
 }
 
+.CashierDashboard__order-item-circle-container{
+    /* background-color: #464743; */
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 5px;
+}
+
+.CashierDashboard__order-circle-number{
+    background-color: #60694e;
+    color: #fff;
+    font-weight: 600;
+    width: 33px;
+    height: 33px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+
 .CashierDashboard__order-item-name-container{
     display: flex;
     flex-direction: column;
@@ -513,6 +540,7 @@
     /* background-color: #C2C5AA; */
     
 }
+
 
 .CashierDashboard__order-item-name-container span:first-child{
     /* background-color: #656D4A; */
@@ -524,8 +552,8 @@
 }
 
 .CashierDashboard__order-item-size-price-container{
-    font-size: 15px;
-    color: #464743;
+    font-size: 14px;
+    color: #686966;
     display: flex;
     align-items: center;
 }
@@ -542,11 +570,11 @@
 
 
 .CashierDashboard__order-item-price-delete-container span{
-    background-color: #60694e;
+  background-color: #60694e;
     color: #fff;
     font-weight: 600;
     padding: 5px 11px;
-    border-radius: 50%;
+    border-radius: 50%;  
     margin-right: 2px;
 }
 

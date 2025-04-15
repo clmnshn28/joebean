@@ -106,7 +106,7 @@
             // Return success response for AJAX
             echo json_encode([
                 'status' => 'success',
-                'message' => 'Transaction completed successfully',
+                'message' => 'Transaction completed successfully.',
                 'transaction_id' => $transactionId
             ]);
             exit();
@@ -196,7 +196,7 @@
                 FROM products p 
                 JOIN product_variants pv ON p.id = pv.product_id 
                 WHERE p.item_category = ? AND p.status = 'active'
-                ORDER BY p.item_name ASC";
+                ORDER BY p.item_name DESC";
                 
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("s", $category);
@@ -280,7 +280,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Cashier Dashboard | JoeBean</title>
         <link rel="stylesheet" href="../../assets/css/indexs.css">
-        <link rel="stylesheet" href="../../assets/css/cashier/cashier_dashboarder.css">
+        <link rel="stylesheet" href="../../assets/css/cashier/cashier_dashboardes.css">
         <link rel="stylesheet" href="../../assets/css/modall.css">
     </head>
     <body>
@@ -428,15 +428,22 @@
                                                 <img src="../../assets/images/products/<?php echo $product['image']; ?>" alt="<?php echo $product['name']; ?>">
                                             </div>
                                             <div class="CashierDashboard__product-bottom-content">
-                                                <?php foreach ($product['sizes'] as $size) { ?>
+                                                <?php 
+                                                    foreach ($product['sizes'] as $size) { 
+                                                    
+                                                    if (empty($size['size']) && $size['price'] == 0 && $size['stock'] == 0) {
+                                                        continue;
+                                                    }    
+                                                ?>
                                                     <div class="CashierDashboard__product-size-container">
                                                         <p class="CashierDashboard__product-price">₱<span><?php echo number_format($size['price'], 0); ?></span></p>
                                                             <button class="CashierDashboard__size-btn" 
                                                                     data-product-id="<?php echo $product['id']; ?>"
                                                                     data-product-name="<?php echo $product['name']; ?>"
                                                                     data-product-size="<?php echo $size['size']; ?>"
-                                                                    data-product-price="<?php echo $size['price']; ?>">
-                                                                <?php echo $size['size']; ?>
+                                                                    data-product-price="<?php echo $size['price']; ?>"
+                                                                    data-subcategory="<?php echo $subCategory; ?>">
+                                                                <?php echo (!$size['size']) ? 'ADD' : $size['size']; ?>
                                                             </button>
                                                         <span class="CashierDashboard__product-stock">Stk: <span><?php echo $size['stock']; ?></span></span>
                                                     </div>
@@ -605,7 +612,7 @@
                     <h2 class="CashierDashboard__section-title">TOTAL ITEMS</h2>
                     <div class="CashierDashboard__final-order-content">
                         <div class="CashierDashboard__item-title-container">
-                            <div class="CashierDashboard__item-qty-title">QTY.</div>
+                            <div class="CashierDashboard__item-qty-title">Qty.</div>
                             <div class="CashierDashboard__item-product-title">Product</div>
                             <div class="CashierDashboard__item-price-title">Price</div>
                         </div>
@@ -736,7 +743,7 @@
             </div>
         </div>
 
-        <script src="../../assets/js/cashier/cashier_dashboard.js"></script>
+        <script src="../../assets/js/cashier/cashier_dashboardet.js"></script>
     
     </body>
 </html>

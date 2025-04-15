@@ -50,9 +50,23 @@ closeBtn.addEventListener('click', function() {
 
 
 // ==========================================================================================
+// Function to save cart to localStorage
+function saveCartToLocalStorage() {
+    localStorage.setItem('joebean_cart', JSON.stringify(cart));
+}
+
+// Function to load cart from localStorage
+function loadCartFromLocalStorage() {
+    const savedCart = localStorage.getItem('joebean_cart');
+    if (savedCart) {
+        return JSON.parse(savedCart);
+    }
+    return [];
+}
+
 
 // Initialize shopping cart and order display elements
-let cart = [];
+let cart = loadCartFromLocalStorage();
 const orderListWrapper = document.querySelector('.CashierDashboard__order-list-wrapper');
 const totalDisplay = document.querySelector('.CashierDashboard__total-container span:last-child');
 
@@ -64,6 +78,7 @@ sizeButtons.forEach(button => {
         const productName = this.dataset.productName;
         const productSize = this.dataset.productSize;
         const productPrice = parseFloat(this.dataset.productPrice);
+        const subcategory = this.dataset.subcategory; 
         const stockElement = this.closest('.CashierDashboard__product-size-container')
             .querySelector('.CashierDashboard__product-stock span');
         let currentStock = parseInt(stockElement.textContent);
@@ -75,7 +90,7 @@ sizeButtons.forEach(button => {
             stockElement.textContent = currentStock;
             
             // Add item to cart
-            addToCart(productId, productName, productSize, productPrice);
+            addToCart(productId, productName, productSize, productPrice, subcategory);
             
             // Update order display
             updateOrderDisplay();
@@ -103,7 +118,7 @@ sizeButtons.forEach(button => {
 
 
 // Function to add item to cart
-function addToCart(productId, productName, productSize, productPrice) {
+function addToCart(productId, productName, productSize, productPrice, subCategory) {
     // Check if item already exists in cart
     const existingItemIndex = cart.findIndex(item => 
         item.id === productId && item.size === productSize
@@ -119,9 +134,13 @@ function addToCart(productId, productName, productSize, productPrice) {
             name: productName,
             size: productSize,
             price: productPrice,
-            quantity: 1
+            quantity: 1,
+            subcategory: subCategory
         });
     }
+
+       // Save cart to localStorage
+       saveCartToLocalStorage();
 }
 
 
@@ -129,6 +148,37 @@ orderListWrapper.innerHTML = `
     <div class="CashierDashboard__empty-cart-message">
         <p>No items in cart</p>
     </div>`;
+updateOrderDisplay();
+updateTotal();
+updateStockDisplay();
+
+// Update stock display based on items in cart
+function updateStockDisplay() {
+    // Get all size buttons
+    const sizeButtons = document.querySelectorAll('.CashierDashboard__size-btn');
+    
+    // For each item in cart
+    cart.forEach(item => {
+        // Find corresponding size buttons
+        sizeButtons.forEach(button => {
+            if (button.dataset.productId === item.id && button.dataset.productSize === item.size) {
+                // Find stock element
+                const stockElement = button.closest('.CashierDashboard__product-size-container')
+                    .querySelector('.CashierDashboard__product-stock span');
+                
+                // Get displayed stock value
+                const displayedStock = parseInt(stockElement.textContent);
+                
+                // Calculate actual stock by subtracting item quantity
+                // This assumes the page loads with the database's current stock value
+                if (!stockElement.hasAttribute('data-adjusted')) {
+                    stockElement.textContent = displayedStock - item.quantity;
+                    stockElement.setAttribute('data-adjusted', 'true');
+                }
+            }
+        });
+    });
+}
 
 // Function to update order display
 function updateOrderDisplay() {
@@ -147,15 +197,20 @@ function updateOrderDisplay() {
         const orderItem = document.createElement('div');
         orderItem.className = 'CashierDashboard__order-selected-container';
         orderItem.innerHTML = `
+            <div class="CashierDashboard__order-item-circle-container">
+                <div class="CashierDashboard__order-circle-number">
+                    <span>${item.quantity}</span>
+                </div>
+            </div>
             <div class="CashierDashboard__order-item-name-container">
                 <span>${item.name}</span>
                 <div class="CashierDashboard__order-item-size-price-container">
-                    <p>${item.size}</p>/<p>₱${item.price.toFixed(2)}</p>
+                    <p>${item.size ? item.size : item.subcategory }</p>/<p>₱${item.price.toFixed(2)}</p>
                 </div>
             </div>
             <div class="CashierDashboard__order-item-price-delete-container">
-                <span>${item.quantity}</span>
-                <div class="CashierDashboard__order-line"></div>
+               
+         
                 <div class="CashierDashboard__order-delete-icon-container" data-index="${index}">
                     <img class="CashierDashboard__order-delete-icon" src="../../assets/images/trashcan-icon.svg" alt="trashcan icon">
                 </div>    
@@ -204,6 +259,9 @@ function removeFromCart(index) {
         
         // Update total
         updateTotal();
+
+        // Save cart to localStorage
+        saveCartToLocalStorage();
     }
 }
 
@@ -275,7 +333,7 @@ placeOrderBtn.addEventListener('click', function() {
             <div class="CashierDashboard__item-product-value-content">
                 <p>${item.name}</p>
                 <div class="CashierDashboard__item-product-sub-content">
-                    <span>${item.size}</span>
+                    <span>${item.size ? item.size : item.subcategory }</span>
                 </div>
             </div>
             <div class="CashierDashboard__item-price-value">₱${(item.price * item.quantity).toFixed(2)}</div>
@@ -478,8 +536,8 @@ doneBtn.addEventListener('click', function(e) {
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
-            // If payment is successful, clear the cart
             cart = [];
+            localStorage.removeItem('joebean_cart');
             updateOrderDisplay();
             updateTotal();
             
@@ -512,22 +570,6 @@ doneBtn.addEventListener('click', function(e) {
         console.error('Error:', error);
     });
 
-//    // If payment is successful, clear the cart
-//    cart = [];
-//    updateOrderDisplay();
-//    updateTotal();
-    
-//     errorModal.style.display = 'flex';
-//     errorModalHeader.textContent = 'Payment Successful';
-//     errorModalHeader.style.color = '#4CAF50';
-//     errorModalText.textContent = 'Payment processed successfully!';
-//     errorIcon.style.display = 'none';
-//     successIcon.style.display = 'block';
-//     placeOrderModal.style.display = 'none';
-//     resetPaymentSelections();
-
-//     // Submit the form
-//     document.getElementById('transactionForm').submit();
 });
 
 

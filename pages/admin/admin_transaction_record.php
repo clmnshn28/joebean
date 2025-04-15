@@ -23,7 +23,58 @@
         exit();
     }
 
+    if(isset($_POST['action']) && $_POST['action'] == 'get_transaction_details') {
+        $transaction_id = mysqli_real_escape_string($conn, $_POST['transaction_id']);
+        
+        // Get transaction header info
+        $transaction_query = mysqli_query($conn, "
+            SELECT 
+                t.id AS transaction_id,
+                t.ref_no,
+                t.payment_method,
+                t.total_amount,
+                t.created_at,
+                CONCAT(u.firstname, ' ', u.lastname) AS cashier_name,
+                u.image AS cashier_image
+            FROM transactions t
+            JOIN users u ON t.user_id = u.id
+            WHERE t.id = '$transaction_id'
+        ");
+        
+        $transaction = mysqli_fetch_assoc($transaction_query);
+        
+        // Get transaction items
+        $items_query = mysqli_query($conn, "
+            SELECT 
+                ti.quantity,
+                ti.unit_price,
+                ti.total_price AS item_total,
+                p.item_name,
+                p.item_category,
+                p.item_image,
+                pv.item_size
+            FROM transaction_items ti
+            JOIN products p ON ti.product_id = p.id
+            JOIN product_variants pv ON ti.product_variant_id = pv.id
+            WHERE ti.transaction_id = '$transaction_id'
+        ");
+        
+        $items = [];
+        while($item = mysqli_fetch_assoc($items_query)) {
+            $items[] = $item;
+        }
+        
+        $result = [
+            'transaction' => $transaction,
+            'items' => $items
+        ];
+        
+        echo json_encode($result);
+        exit();
+    }
+
     if (isset($_POST['export_excel'])) {
+       
         $count_query = mysqli_query($conn, "SELECT COUNT(*) as count FROM transactions");
         $count_data = mysqli_fetch_assoc($count_query);
 
@@ -32,65 +83,148 @@
             header("Location: " . $_SERVER['PHP_SELF']); // Redirect back to the same page
             exit();
         } else {
-            header("Content-Type: application/vnd.ms-excel");
+            header('Content-Type: application/vnd.ms-excel');
             header('Content-Disposition: attachment; filename="transaction_records_' . date('Y-m-d') . '.xls"');
             
-            $export_result = mysqli_query($conn, "
+            // Create the Excel content
+            echo '
+            <html>
+            <head>
+                <style>
+                    td, th {
+                        border: 1px solid #000000;
+                        padding: 5px;
+                    }
+                    .transaction-header {
+                        background-color: #f0f0f0;
+                    }
+                    .transaction-separator {
+                        background-color: #cccccc;
+                        height: 3px;
+                    }
+                    .item-row {
+                        background-color: #ffffff;
+                    }
+                    .total-row {
+                        background-color: #e6e6e6;
+                        font-weight: bold;
+                    }
+                </style>
+            </head>
+            <body>
+                <table>
+                    <tr>
+                        <th colspan="11" style="font-size: 16pt; text-align: center; background-color: #656D4A; color: white;">JoeBean Transaction Records</th>
+                    </tr>
+                    <tr>
+                        <th colspan="11" style="font-size: 11pt; text-align: center;">Generated on: ' . date('Y-m-d H:i:s') . '</th>
+                    </tr>
+                    <tr>
+                        <th style="background-color: #656D4A; color: white;">Transaction ID</th>
+                        <th style="background-color: #656D4A; color: white;">Date</th>
+                        <th style="background-color: #656D4A; color: white;">Cashier</th>
+                        <th style="background-color: #656D4A; color: white;">Payment Method</th>
+                        <th style="background-color: #656D4A; color: white;">Reference No.</th>
+                        <th style="background-color: #656D4A; color: white;">Item</th>
+                        <th style="background-color: #656D4A; color: white;">Category</th>
+                        <th style="background-color: #656D4A; color: white;">Size</th>
+                        <th style="background-color: #656D4A; color: white;">Quantity</th>
+                        <th style="background-color: #656D4A; color: white;">Unit Price</th>
+                        <th style="background-color: #656D4A; color: white;">Item Total</th>
+                    </tr>';
+            
+            // Get all transactions without pagination
+            $all_transactions = mysqli_query($conn, "
                 SELECT 
-                    t.id AS transaction_id,
+                    t.id AS transaction_id, 
                     t.ref_no,
                     t.payment_method, 
-                    t.created_at, 
-                    t.quantity, 
-                    t.unit_price, 
                     t.total_amount, 
-                    CONCAT(u.firstname, ' ', u.lastname) AS cashier_name, 
-                    t.product_item, 
-                    p.item_category
+                    t.created_at,
+                    CONCAT(u.firstname, ' ', u.lastname) AS cashier_name
                 FROM transactions t
                 JOIN users u ON t.user_id = u.id
-                JOIN products p ON t.product_id = p.id
                 ORDER BY t.created_at ASC
             ");
-        
-            echo "<table border='1'>";
-            echo "<thead>";
-            echo "<tr>
-                    <th style='background-color: #656D4A; color: white; font-size: 21px;'>Transaction ID</th>
-                    <th style='background-color: #656D4A; color: white; font-size: 21px;'>Cashier</th>
-                    <th style='background-color: #656D4A; color: white; font-size: 21px;'>Product</th>
-                    <th style='background-color: #656D4A; color: white; font-size: 21px;'>Category</th>
-                    <th style='background-color: #656D4A; color: white; font-size: 21px;'>Qty</th>
-                    <th style='background-color: #656D4A; color: white; font-size: 21px;'>Price</th>
-                    <th style='background-color: #656D4A; color: white; font-size: 21px;'>Total</th>
-                    <th style='background-color: #656D4A; color: white; font-size: 21px;'>Payment</th>
-                    <th style='background-color: #656D4A; color: white; font-size: 21px;'>Reference No.</th>
-                    <th style='background-color: #656D4A; color: white; font-size: 21px;'>Date</th>
-                </tr>";
-            echo "</thead>";
-            echo "<tbody>";
-     
-            while ($row = mysqli_fetch_assoc($export_result)) {
-                echo "<tr style='font-size: 20px;'>";
-                    echo "<td>" . $row['transaction_id'] . "</td>";
-                    echo "<td>" . $row['cashier_name'] . "</td>";
-                    echo "<td>" . $row['product_item'] . "</td>";
-                    echo "<td>" . $row['item_category'] . "</td>";
-                    echo "<td>" . $row['quantity'] . "</td>";
-                    echo "<td>&#8369;" . $row['unit_price'] . "</td>";
-                    echo "<td>&#8369;" . $row['total_amount'] . "</td>";
-                    echo "<td>" . $row['payment_method'] . "</td>";
-                    echo "<td style='text-align: center;'>" . ($row['ref_no'] ? $row['ref_no'] : '-')  . "</td>";
-                    echo "<td>" . date("F d, Y - h:i A", strtotime($row['created_at'])) . "</td>";
-                echo "</tr>";
+            
+            // Loop through each transaction
+            while ($row = mysqli_fetch_assoc($all_transactions)) {
+                $transaction_id = $row['transaction_id'];
+                $created_at_formatted = date("Y-m-d H:i:s", strtotime($row['created_at']));
+                $cashier_name = htmlspecialchars(ucwords(strtolower($row['cashier_name'])));
+                $payment_info = htmlspecialchars($row['payment_method']);
+                $reference_no = htmlspecialchars($row['ref_no']);
+                $ref_display = $reference_no ? $reference_no : '-';
+                // Get transaction items
+                $items_query = mysqli_query($conn, "
+                    SELECT 
+                        ti.quantity,
+                        ti.unit_price,
+                        ti.total_price AS item_total,
+                        p.item_name,
+                        p.item_category,
+                        pv.item_size
+                    FROM transaction_items ti
+                    JOIN products p ON ti.product_id = p.id
+                    JOIN product_variants pv ON ti.product_variant_id = pv.id
+                    WHERE ti.transaction_id = '$transaction_id'
+                ");
+                
+                $item_count = mysqli_num_rows($items_query);
+                if ($item_count > 0) {
+              
+                    // $item_number = 1;
+                    
+                    // Transaction summary row
+                    echo '<tr class="transaction-header">'; 
+                    echo '<td rowspan="' . ($item_count + 2) . '" style="text-align: center; vertical-align: middle; font-weight: bold;">' . $transaction_id . '</td>';
+                    echo '<td rowspan="' . ($item_count + 2) . '" style="text-align: center; vertical-align: middle;">' . $created_at_formatted . '</td>';
+                    echo '<td rowspan="' . ($item_count + 2) . '" style="text-align: center; vertical-align: middle;">' . $cashier_name . '</td>';
+                    echo '<td rowspan="' . ($item_count + 2) . '" style="text-align: center; vertical-align: middle;">' .  $payment_info . '</td>';
+                    echo '<td rowspan="' . ($item_count + 2) . '" style="text-align: center; vertical-align: middle;">' . $ref_display . '</td>';
+                    echo '<td colspan="6" style="background-color:rgba(194, 197, 170, 0.63);"><strong>Transaction Items:</strong></td>';
+                    echo '</tr>';
+                    
+                    // Item rows
+                    while ($item = mysqli_fetch_assoc($items_query)) {
+                        $itemSize = htmlspecialchars($item['item_size']);
+                   
+
+                        echo '<tr class="item-row">';
+                        echo '<td>' . htmlspecialchars($item['item_name']) . '</td>';
+                        echo '<td>' . htmlspecialchars($item['item_category']) . '</td>';
+                        if($itemSize){
+                            echo '<td>' . $itemSize . '</td>';
+                        }else{
+                            echo '<td style="text-align: center; vertical-align: middle;"> - </td>';
+                        } 
+                        echo '<td style="text-align: center; vertical-align: middle;">' . htmlspecialchars($item['quantity']) . '</td>';
+                        echo '<td>₱' . htmlspecialchars($item['unit_price']) . '</td>';
+                        echo '<td>₱' . htmlspecialchars($item['item_total']) . '</td>';
+                        echo '</tr>';
+                        
+                        // $item_number++;
+                    }
+                    
+                    // Transaction total row
+                    echo '<tr class="total-row">';
+                    echo '<td colspan="5" style="text-align: right;">Transaction Total:</td>';
+                    echo '<td>₱' . htmlspecialchars($row['total_amount']) . '</td>';
+                    echo '</tr>';
+                    
+                    // Separator row
+                    echo '<tr><td colspan="11" class="transaction-separator"></td></tr>';
+                }
             }
-        
-            echo "</tbody>";
-            echo "</table>";
-            exit(); 
+            
+            echo '
+                </table>
+            </body>
+            </html>';
+            exit();
         }
     }
-    
+
 
     $limit = 6;
     $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int) $_GET['page'] : 1;
@@ -107,22 +241,15 @@
             t.id AS transaction_id, 
             t.ref_no,
             t.payment_method, 
-            t.created_at, 
-            t.quantity, 
-            t.unit_price, 
             t.total_amount, 
+            t.created_at,
             CONCAT(u.firstname, ' ', u.lastname) AS cashier_name, 
-            t.product_item, 
-            p.item_category, 
-            p.item_image, 
             u.image AS cashier_image
         FROM transactions t
         JOIN users u ON t.user_id = u.id
-        JOIN products p ON t.product_id = p.id
         ORDER BY t.created_at DESC
         LIMIT $limit OFFSET $offset
     ");
-
 
 
 ?>
@@ -135,7 +262,7 @@
         <title>Admin Item List | JoeBean</title>
         <link rel="stylesheet" href="../../assets/css/indexs.css">
         <link rel="stylesheet" href="../../assets/css/admin/admin_item_lists.css">
-        <link rel="stylesheet" href="../../assets/css/admin/admin_transaction_records.css">
+        <link rel="stylesheet" href="../../assets/css/admin/admin_transaction_record.css">
         <link rel="stylesheet" href="../../assets/css/modall.css">
     </head>
     <body>
@@ -191,9 +318,6 @@
                         <thead>
                             <tr>
                                 <th>Cashier</th>
-                                <th>Product</th>
-                                <th>Qty</th>
-                                <th>Price</th>
                                 <th>Total Price</th>
                                 <th>Payment Method</th>
                                 <th>Date</th>
@@ -224,22 +348,23 @@
                             if (mysqli_num_rows($result) > 0) {
                                 while ($row = mysqli_fetch_assoc($result)) {
                                     $created_at_formatted = date("m/d/Y", strtotime($row['created_at']));
-                                    $created_at_modal_formatted = date("M d, Y — h:i A", strtotime($row['created_at']));
-                                    echo "<tr>";
+                                    echo "<tr data-transaction-id='" . $row['transaction_id'] . "'>";
                                         echo "<td>
                                             <div class='item-with-image'>
                                                 <img class='AdminTransactionRecords__item-image' src='../../assets/images/avatars/" . htmlspecialchars($row['cashier_image']) . "' alt='Item Image'>
                                                 <span>" . htmlspecialchars(ucwords(strtolower($row['cashier_name']))) . "</span>
                                             </div>
                                         </td>";
-                                        echo "<td>" . htmlspecialchars($row['product_item']) . "</td>";
-                                        echo "<td>" . htmlspecialchars($row['quantity']) . "</td>";
-                                        echo "<td>₱" . htmlspecialchars($row['unit_price']) . "</td>";
                                         echo "<td>₱" . htmlspecialchars($row['total_amount']) . "</td>";
                                         // echo "<td>" . htmlspecialchars($row['payment_method']) . "</td>";
                                         echo "<td>
                                                 <div class='AdminTransactionRecord__item-with-references'>
-                                                    <p>" . htmlspecialchars(ucwords(strtolower($row['payment_method']))) . "</p>";         
+                                                    <p>" . 
+                                                    htmlspecialchars(
+                                                        strtolower($row['payment_method']) === 'gcash'
+                                                            ? strtoupper(substr(strtolower($row['payment_method']), 0, 2)) . substr(strtolower($row['payment_method']), 2)
+                                                            : ucfirst(strtolower($row['payment_method']))
+                                                    ). "</p>";         
                                             // Check if payment method is GCash
                                             if (strtolower($row['payment_method']) === 'gcash') {
                                                 echo "<p class='AdminTransactionRecord__item-reference-number' id='modalReferenceNumber'>" . htmlspecialchars(ucwords(strtolower($row['ref_no']))) . "</p>";
@@ -250,18 +375,6 @@
                                         echo "<td>";
                                             echo "<button 
                                                 class='AdminTransactionRecord__table-data-btn'
-                                                data-productImage='" . htmlspecialchars($row['item_image']) . "'
-                                                data-transactionId='" . htmlspecialchars($row['transaction_id']) . "'
-                                                data-createdAt='" . $created_at_modal_formatted . "'
-                                                data-cashierImage='" . htmlspecialchars($row['cashier_image']) . "'
-                                                data-CashierName='" . htmlspecialchars(ucwords(strtolower($row['cashier_name']))) . "'
-                                                data-itemName='" . htmlspecialchars($row['product_item']) . "'
-                                                data-itemCategory='" . htmlspecialchars($row['item_category']) . "'
-                                                data-itemPrice='₱" . htmlspecialchars($row['unit_price']) . "'
-                                                data-itemQuantity='" . htmlspecialchars($row['quantity']) . "'
-                                                data-itemAmount='₱" . htmlspecialchars($row['total_amount']) . "'
-                                                data-paymentMethod='" . htmlspecialchars($row['payment_method']) . "'
-                                                data-referenceNumber='" . htmlspecialchars($row['ref_no']) . "'
                                                 >
                                                     View
                                                 </button>";
@@ -290,79 +403,84 @@
         </div>
 
         <!-- Modal structure -->
-        <div class="modal" id="itemModal" >
-            <div class="modal-content AdminTransactionRecord__relative-modal">
-                <div class="modal-header-container AdminTransactionRecord__modal-header">
+        <div class="modal" id="itemModal">
+            <div class="AdminTransactionRecord__relative-modal">
+                <div class="AdminTransactionRecord__modal-header">
                     <h3>Transaction Record Details</h3>
-        
                 </div>
-
                 <div class="AdminTransactionRecord__modal-form-container">
-                    <div class="AdminTransactionRecord__modal-left">
-                        <img id="modalProductImage" src="../../assets/images/products/1744201221_dark-choco.png" alt="image item-image" class="AdminTransactionRecord__item-image-icon">
-                    
-                        <div class="AdminTransactionRecord__id-time-container">
-                            <div class="AdminTransactionRecord__details-id-time-list">
-                                <p class="AdminTransactionRecord__detail-id-time-name">
-                                    Transaction ID<span>:</span>
+                    <div class="AdminTransactionRecord__modal-top">
+                        
+                        <div class="AdminTransactionRecord__top-details-container">
+                            <div class="AdminTransactionRecord__details-list">
+                                <p class="AdminTransactionRecord__detail-name1">
+                                    Cashier Name
+                                    <span class="AdminTransactionRecord__detail-name-dash">:</span>
                                 </p>
-                                <p class="AdminTransactionRecord__detail-id-time-value" id="modalTransactionId">2</p>
+                                <div class='AdminTransactionRecord__item-with-image'>
+                                    <img id="modalCashierImage" class='AdminTransactionRecords__modal-item-image' src='../../assets/images/avatars/1744201927_Picture.jpg' alt='Item Image'>
+                                    <span id="modalCashierName">Celmin Shane Quizon</span>
+                                </div>
                             </div>
-                            <p class="AdminTransactionRecord__created-at" id="modalCreatedAt">Jan 20, 2002 | 10:50 PM</p>
+                            <div class="AdminTransactionRecord__details-list">
+                                <p class="AdminTransactionRecord__detail-name">
+                                    Date Created
+                                    <span class="AdminTransactionRecord__detail-name-dash">:</span>
+                                </p>
+                                <p class="AdminTransactionRecord__detail-value" id="modalTransactionCreated">Apr 10, 2025 - 12:02 AM</p>
+                            </div>
                         </div>
+                        <div class="AdminTransactionRecord__top-details-container">
+                            <div class="AdminTransactionRecord__details-list">
+                                <p class="AdminTransactionRecord__detail-name1">
+                                    Transaction ID
+                                    <span class="AdminTransactionRecord__detail-name-dash">:</span>
+                                </p>
+                                <p class="AdminTransactionRecord__detail-value" ><span id="modalTransactionId">1</span></p>
+                            </div>
+                            <div class="AdminTransactionRecord__details-list">
+                                <p class="AdminTransactionRecord__detail-name">
+                                    Payment Method
+                                    <span class="AdminTransactionRecord__detail-name-dash">:</span>
+                                </p>
+                                <p class="AdminTransactionRecord__detail-value" id="modalPaymentMethod">GCash <span class="AdminTransactionRecord__reference-number" id="modalReferenceNumber">REF20250410A</span></p>
+                            </div>
+                        </div>
+
                     </div>
 
-                    <div class="AdminTransactionRecord__modal-right">
-                        <div class="AdminTransactionRecord__details-list">
-                            <p class="AdminTransactionRecord__detail-name">
-                                Cashier Name<span>:</span>
-                            </p>
-                            <div class='AdminTransactionRecord__item-with-image'>
-                                <img id="modalCashierImage" class='AdminTransactionRecords__modal-item-image' src='../../assets/images/avatars/1744201927_Picture.jpg' alt='Item Image'>
-                                <span id="modalCashierName">Celmin Shane Quizon</span>
-                            </div>
-                        </div>
-
-                        <div class="AdminTransactionRecord__details-list">
-                            <p class="AdminTransactionRecord__detail-name">
-                                Item Name<span>:</span>
-                            </p>
-                            <p class="AdminTransactionRecord__detail-value" id="modalItemName">Dark Choco Milk</p>
-                        </div>
-
-                        <div class="AdminTransactionRecord__details-list">
-                            <p class="AdminTransactionRecord__detail-name">
-                                Item Category<span>:</span>
-                            </p>
-                            <p class="AdminTransactionRecord__detail-value" id="modalItemCategory">Iced Non-Coffee</p>
-                        </div>
-                        <div class="AdminTransactionRecord__details-list">
-                            <p class="AdminTransactionRecord__detail-name">
-                                Item Price<span>:</span>
-                            </p>
-                            <p class="AdminTransactionRecord__detail-value" id="modalItemPrice">₱89.00 / Venti</p>
-                        </div>
-                        <div class="AdminTransactionRecord__details-list">
-                            <p class="AdminTransactionRecord__detail-name">
-                                Quantity<span>:</span>
-                            </p>
-                            <p class="AdminTransactionRecord__detail-value" id="modalItemQuantity">2</p>
-                        </div>
-                        <div class="AdminTransactionRecord__details-list">
-                            <p class="AdminTransactionRecord__detail-name">
-                                Total Amount<span>:</span>
-                            </p>
-                            <p class="AdminTransactionRecord__detail-value" id="modalItemAmount">₱173.00</p>
-                        </div>
-                        <div class="AdminTransactionRecord__details-list">
-                            <p class="AdminTransactionRecord__detail-name">
-                                Payment Method<span>:</span>
-                            </p>
-                            <p class="AdminTransactionRecord__detail-value" id="modalPaymentMethod">GCash <span class="AdminTransactionRecord__reference-number" id="modalReferenceNumber">REF20250410A</span></p>
+                    <div class="AdminTransactionRecord__modal-bottom">
+                        <div class="AdminTransactionRecord__transaction-items-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Item Name</th>
+                                        <th>Item Category</th>
+                                        <th>Item Size</th>
+                                        <th>Unit Price</th>
+                                        <th>Quantity</th>
+                                        <th>Total Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- <tr>
+                                        <td>
+                                            <div class='AdminTransactionRecord__modal-item-with-image'>
+                                                <img class='AdminTransactionRecords__item-image' src='../../assets/images/products/1744201275_spanish-latte.png' alt='Item Image'>
+                                                <span>Spanish Latte</span>
+                                            </div> 
+                                        </td>
+                                        <td>Beverages</td>
+                                        <td>Medium</td>
+                                        <td>$3.50</td>
+                                        <td>2</td>
+                                        <td>$7.00</td>
+                                    </tr> -->
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
-
                 <div class="AdminTransactionRecord__modal-footer-container">
                     <button type="button" class="AdminTransactionRecord__modal-cancel-button" id="closeModal">
                         Close
@@ -406,7 +524,7 @@
             </div>
         </div>
 
-        <script src="../../assets/js/admin/admin_transaction_recorder.js"></script>
+        <script src="../../assets/js/admin/admin_transaction_recordy.js"></script>
         <script>
             const successModal = document.getElementById('ErrorExportModal');
             const icons = document.querySelectorAll('.ErrorPayment__modal-content-header-container img');
