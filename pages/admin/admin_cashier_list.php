@@ -105,22 +105,52 @@
         } else {
             header("Content-Type: application/vnd.ms-excel");
             header('Content-Disposition: attachment; filename="cashiers_list_' . date('Y-m-d') . '.xls"');
-        
+            date_default_timezone_set('Asia/Manila');
+
+             // Create the Excel content
+             echo '
+             <html>
+             <head>
+                 <style>
+                     td, th {
+                         border: 1px solid #000000;
+                         padding: 5px;
+                     }
+                     .transaction-header {
+                         background-color: #f0f0f0;
+                     }
+                     .transaction-separator {
+                         background-color: #cccccc;
+                         height: 3px;
+                     }
+                     .item-row {
+                         background-color: #ffffff;
+                     }
+                     .total-row {
+                         background-color: #e6e6e6;
+                         font-weight: bold;
+                     }
+                 </style>
+             </head>
+             <body>
+                 <table>
+                     <tr>
+                         <th colspan="7" style="font-size: 16pt; text-align: center; background-color: #656D4A; color: white;">JoeBean Cashiers List</th>
+                     </tr>
+                     <tr>
+                         <th colspan="7" style="font-size: 11pt; text-align: center;">Generated on: ' . date('Y-m-d - h:i A') . '</th>
+                     </tr>
+                     <tr>
+                         <th style="background-color: #656D4A; color: white;">Cashier ID</th>
+                         <th style="background-color: #656D4A; color: white;">Username</th>
+                         <th style="background-color: #656D4A; color: white;">Full Name</th>
+                         <th style="background-color: #656D4A; color: white;">Gender</th>
+                         <th style="background-color: #656D4A; color: white;">Age</th>
+                         <th style="background-color: #656D4A; color: white;">Birthdate</th>
+                         <th style="background-color: #656D4A; color: white;">Account Created</th>
+                     </tr>';
+            
             $export_result = mysqli_query($conn, "SELECT * FROM users WHERE role='cashier' ORDER BY id ASC");
-        
-            echo "<table border='1'>";
-            echo "<thead>";
-            echo "<tr>
-                    <th style='background-color: #656D4A; color: white; font-size: 21px;'>Cashier ID</th>
-                    <th style='background-color: #656D4A; color: white; font-size: 21px;'>Username</th>
-                    <th style='background-color: #656D4A; color: white; font-size: 21px;'>Full Name</th>
-                    <th style='background-color: #656D4A; color: white; font-size: 21px;'>Gender</th>
-                    <th style='background-color: #656D4A; color: white; font-size: 21px;'>Age</th>
-                    <th style='background-color: #656D4A; color: white; font-size: 21px;'>Birthdate</th>
-                    <th style='background-color: #656D4A; color: white; font-size: 21px;'>Account Created</th>
-                </tr>";
-            echo "</thead>";
-            echo "<tbody>";
         
             while ($row = mysqli_fetch_assoc($export_result)) {
                 $fullname = ucwords(strtolower($row['firstname'])) . ' ' .
@@ -129,23 +159,25 @@
                 
                 $age = calculateAge($row['birth_year'], $row['birth_month'], $row['birth_day']);
                 $birthdate = date("F d, Y", strtotime("{$row['birth_year']}-{$row['birth_month']}-{$row['birth_day']}"));
-                $created_at = date("F d, Y - h:i A", strtotime($row['created_at']));
+                $created_at = date("Y-m-d - h:i A", strtotime($row['created_at']));
                 
                 // Determine status
                 $status = ($row['deleted_at'] === NULL) ? "Active" : "Deactivated";
                 echo "<tr>";
-                    echo "<td style='font-size: 20px;'>" . $row['id'] . "</td>";
-                    echo "<td style='font-size: 20px;'>" . $row['username'] . "</td>";
-                    echo "<td style='font-size: 20px;'>" . $fullname . "</td>";
-                    echo "<td style='font-size: 20px;'>" . ucwords(strtolower($row['gender'])) . "</td>";
-                    echo "<td style='font-size: 20px;'>" . $age . "</td>";
-                    echo "<td style='font-size: 20px;'>" . $birthdate . "</td>";
-                    echo "<td style='font-size: 20px;'>" . $created_at . "</td>";
+                    echo "<td style='text-align: center; vertical-align: middle; font-weight: bold;'>" . $row['id'] . "</td>";
+                    echo "<td>" . $row['username'] . "</td>";
+                    echo "<td>" . $fullname . "</td>";
+                    echo "<td>" . ucwords(strtolower($row['gender'])) . "</td>";
+                    echo "<td>" . $age . "</td>";
+                    echo "<td>" . $birthdate . "</td>";
+                    echo "<td>" . $created_at . "</td>";
                 echo "</tr>";
             }
        
-            echo "</tbody>";
-            echo "</table>";
+            echo '
+                </table>
+            </body>
+            </html>';
             exit; 
         }
 

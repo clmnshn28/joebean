@@ -204,85 +204,113 @@ if (isset($_POST['export_excel'])) {
     } else {
         header("Content-Type: application/vnd.ms-excel");
         header('Content-Disposition: attachment; filename="item_lists_' . date('Y-m-d') . '.xls"');
+        date_default_timezone_set('Asia/Manila');
 
-        $export_result = mysqli_query($conn, "
+        // Create the Excel content
+        echo '
+        <html>
+        <head>
+            <style>
+                td, th {
+                    border: 1px solid #000000;
+                    padding: 5px;
+                }
+                .item-header {
+                    background-color: #f0f0f0;
+                }
+                .variant-row {
+                    background-color: #ffffff;
+                }
+                .item-separator {
+                    background-color: #cccccc;
+                    height: 3px;
+                }
+            </style>
+        </head>
+        <body>
+            <table>
+                <tr>
+                    <th colspan="7" style="font-size: 16pt; text-align: center; background-color: #656D4A; color: white;">JoeBean Item Lists</th>
+                </tr>
+                <tr>
+                    <th colspan="7" style="font-size: 11pt; text-align: center;">Generated on: ' . date('Y-m-d - h:i A') . '</th>
+                </tr>
+                <tr>
+                    <th style="background-color: #656D4A; color: white;">Item ID</th>
+                    <th style="background-color: #656D4A; color: white;">Item Name</th>
+                    <th style="background-color: #656D4A; color: white;">Item Size</th>
+                    <th style="background-color: #656D4A; color: white;">Item Price</th>
+                    <th style="background-color: #656D4A; color: white;">Item Category</th>
+                    <th style="background-color: #656D4A; color: white;">Item Stock</th>
+                    <th style="background-color: #656D4A; color: white;">Date</th>
+                </tr>';
+
+        // First, get all products
+        $products_result = mysqli_query($conn, "
             SELECT 
                 p.id AS item_id, 
                 p.item_name, 
                 p.item_category,
-                p.created_at,
-                GROUP_CONCAT(v.item_size SEPARATOR ', ') AS sizes,
-                GROUP_CONCAT(v.item_price SEPARATOR ', ') AS prices,
-                GROUP_CONCAT(v.item_stock SEPARATOR ', ') AS stocks
+                p.created_at
             FROM products p
-            JOIN product_variants v ON p.id = v.product_id
             WHERE p.status = 'active'
-            GROUP BY p.id
             ORDER BY p.id ASC
         ");
-
-        echo "<table border='1'>";
-        echo "<thead>";
-        echo "<tr>
-                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Item ID</th>
-                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Item Name</th>
-                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Item Size</th>
-                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Item Price</th>
-                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Item Category</th>
-                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Item Stock</th>
-                <th style='background-color: #656D4A; color: white; font-size: 21px;'>Date</th>
-            </tr>";
-        echo "</thead>";
-        echo "<tbody>";
        
-        while ($row = mysqli_fetch_assoc($export_result)) {
-            echo "<tr style='font-size: 20px;'>";
-            echo "<td>" . $row['item_id'] . "</td>";
-            echo "<td>" . ucwords(strtolower($row['item_name'])) . "</td>";
+       
+        // Loop through each product
+        while ($product = mysqli_fetch_assoc($products_result)) {
+            $item_id = $product['item_id'];
+        
+            // Get all variants for this product
+            $variants_query = mysqli_query($conn, "
+                SELECT 
+                    v.item_size, 
+                    v.item_price, 
+                    v.item_stock
+                FROM product_variants v
+                WHERE v.product_id = '$item_id'
+                ORDER BY v.item_size ASC
+            ");
+            
+            $variant_count = mysqli_num_rows($variants_query);
+       
+            if ($variant_count > 0) {
+                // Item header row
+                echo '<tr class="item-header">';
+                echo '<td rowspan="' . ($variant_count + 1) . '" style="text-align: center; vertical-align: middle; font-weight: bold;">' . $item_id . '</td>';
+                echo '<td rowspan="' . ($variant_count + 1) . '" style="vertical-align: middle;">' . ucwords(strtolower($product['item_name'])) . '</td>';
+                echo '<td rowspan="' . ($variant_count + 1) . '" style="vertical-align: middle;">' . ucwords(strtolower($product['item_category'])) . '</td>';
+                echo '<td colspan="3" style="background-color:rgba(194, 197, 170, 0.63);"><strong>Product Variants:</strong></td>';
+                echo '<td rowspan="' . ($variant_count + 1) . '" style="text-align: center; vertical-align: middle;">' . date("Y-m-d- h:i A", strtotime($product['created_at'])) . '</td>';
+                echo '</tr>';
+                
+                // Variant rows
+                while ($variant = mysqli_fetch_assoc($variants_query)) {
+                    $size = htmlspecialchars($variant['item_size']);
+                    $size_display = !empty($size) ? $size : '-';
 
-            // Process sizes
-            $sizes = explode(',', $row['sizes']);
-            $sizes_str = '';
-            foreach ($sizes as $size) {
-                $size = trim($size);
-                if (!empty($size)) {
-                    $sizes_str .= ucwords(strtolower($size)) . " | ";
+                    $price = htmlspecialchars($variant['item_price']);
+                    $price_display = ($price != 0 && $price !== '') ? '&#8369;' . $price : '-';
+
+                    $stock = htmlspecialchars($variant['item_stock']);
+                    $stock_display = ($stock != 0 && $stock !== '') ? $stock : '-';
+
+                    echo '<tr class="variant-row">';
+                    echo '<td style="text-align: center;">' . $size_display . '</td>';
+                    echo '<td style="text-align: center;">' . $price_display . '</td>';
+                    echo '<td style="text-align: center;">' . $stock_display . '</td>';
+                    echo '</tr>';
                 }
+                
+                // Separator row
+                echo '<tr><td colspan="7" class="item-separator"></td></tr>';
             }
-            $sizes_str = rtrim($sizes_str, " | ");
-            echo "<td>" . $sizes_str . "</td>";
-
-            // Process prices
-            $prices = explode(',', $row['prices']);
-            $prices_str = '';
-            foreach ($prices as $price) {
-                $price = trim($price);
-                if (floatval($price) > 0) {
-                    $prices_str .= '&#8369;' . $price . " | ";
-                }
-            }
-            $prices_str = rtrim($prices_str, " | ");
-            echo "<td>" . $prices_str . "</td>";
-
-            echo "<td>" . ucwords(strtolower($row['item_category'])) . "</td>";
-
-            // Process stocks
-            $stocks = explode(',', $row['stocks']);
-            $stocks_str = '';
-            foreach ($stocks as $stock) {
-                $stock = trim($stock);
-                if (intval($stock) > 0) {
-                    $stocks_str .= $stock . " | ";
-                }
-            }
-            $stocks_str = rtrim($stocks_str, " | ");
-            echo "<td>" . $stocks_str . "</td>";
-            echo "<td>" . date("F d, Y - h:i A", strtotime($row['created_at'])) . "</td>";
-            echo "</tr>";
         }
-       
-        echo "</tbody>";
-        echo "</table>";
+        
+        echo '</table>
+        </body>
+        </html>';
         exit();
     }
 }

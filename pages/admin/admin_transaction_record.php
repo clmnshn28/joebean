@@ -85,7 +85,7 @@
         } else {
             header('Content-Type: application/vnd.ms-excel');
             header('Content-Disposition: attachment; filename="transaction_records_' . date('Y-m-d') . '.xls"');
-            
+            date_default_timezone_set('Asia/Manila');
             // Create the Excel content
             echo '
             <html>
@@ -117,11 +117,10 @@
                         <th colspan="11" style="font-size: 16pt; text-align: center; background-color: #656D4A; color: white;">JoeBean Transaction Records</th>
                     </tr>
                     <tr>
-                        <th colspan="11" style="font-size: 11pt; text-align: center;">Generated on: ' . date('Y-m-d H:i:s') . '</th>
+                        <th colspan="11" style="font-size: 11pt; text-align: center;">Generated on: ' . date('Y-m-d - h:i A') . '</th>
                     </tr>
                     <tr>
                         <th style="background-color: #656D4A; color: white;">Transaction ID</th>
-                        <th style="background-color: #656D4A; color: white;">Date</th>
                         <th style="background-color: #656D4A; color: white;">Cashier</th>
                         <th style="background-color: #656D4A; color: white;">Payment Method</th>
                         <th style="background-color: #656D4A; color: white;">Reference No.</th>
@@ -131,9 +130,9 @@
                         <th style="background-color: #656D4A; color: white;">Quantity</th>
                         <th style="background-color: #656D4A; color: white;">Unit Price</th>
                         <th style="background-color: #656D4A; color: white;">Item Total</th>
+                        <th style="background-color: #656D4A; color: white;">Date</th>
                     </tr>';
-            
-            // Get all transactions without pagination
+        
             $all_transactions = mysqli_query($conn, "
                 SELECT 
                     t.id AS transaction_id, 
@@ -178,11 +177,11 @@
                     // Transaction summary row
                     echo '<tr class="transaction-header">'; 
                     echo '<td rowspan="' . ($item_count + 2) . '" style="text-align: center; vertical-align: middle; font-weight: bold;">' . $transaction_id . '</td>';
-                    echo '<td rowspan="' . ($item_count + 2) . '" style="text-align: center; vertical-align: middle;">' . $created_at_formatted . '</td>';
-                    echo '<td rowspan="' . ($item_count + 2) . '" style="text-align: center; vertical-align: middle;">' . $cashier_name . '</td>';
+                    echo '<td rowspan="' . ($item_count + 2) . '" style=" vertical-align: middle;">' . $cashier_name . '</td>';
                     echo '<td rowspan="' . ($item_count + 2) . '" style="text-align: center; vertical-align: middle;">' .  $payment_info . '</td>';
                     echo '<td rowspan="' . ($item_count + 2) . '" style="text-align: center; vertical-align: middle;">' . $ref_display . '</td>';
                     echo '<td colspan="6" style="background-color:rgba(194, 197, 170, 0.63);"><strong>Transaction Items:</strong></td>';
+                    echo '<td rowspan="' . ($item_count + 2) . '" style="text-align: center; vertical-align: middle;">' .  date("Y-m-d - h:i A", strtotime($row['created_at'])) . '</td>';
                     echo '</tr>';
                     
                     // Item rows
@@ -199,8 +198,8 @@
                             echo '<td style="text-align: center; vertical-align: middle;"> - </td>';
                         } 
                         echo '<td style="text-align: center; vertical-align: middle;">' . htmlspecialchars($item['quantity']) . '</td>';
-                        echo '<td>₱' . htmlspecialchars($item['unit_price']) . '</td>';
-                        echo '<td>₱' . htmlspecialchars($item['item_total']) . '</td>';
+                        echo '<td>&#8369;' . htmlspecialchars($item['unit_price']) . '</td>';
+                        echo '<td>&#8369;' . htmlspecialchars($item['item_total']) . '</td>';
                         echo '</tr>';
                         
                         // $item_number++;
@@ -208,8 +207,8 @@
                     
                     // Transaction total row
                     echo '<tr class="total-row">';
-                    echo '<td colspan="5" style="text-align: right;">Transaction Total:</td>';
-                    echo '<td>₱' . htmlspecialchars($row['total_amount']) . '</td>';
+                        echo '<td colspan="5" style="text-align: right;">Transaction Total:</td>';
+                        echo '<td>&#8369;' . htmlspecialchars($row['total_amount']) . '</td>';
                     echo '</tr>';
                     
                     // Separator row
