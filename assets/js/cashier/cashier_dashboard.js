@@ -536,10 +536,15 @@ doneBtn.addEventListener('click', function(e) {
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
-            cart = [];
-            localStorage.removeItem('joebean_cart');
-            updateOrderDisplay();
-            updateTotal();
+            const cartCopy = [...cart]; 
+            const paymentInfo = {
+                totalAmount: parseFloat(totalValueElement.textContent) || 0,
+                paymentAmount: parseFloat(paymentInput.value) || 0,
+                paymentMethod: gcashBtn.querySelector('.CashierDashboard__check-payment').style.display === 'flex' ? 'GCash' : 'Cash',
+                referenceNumber: refInput.value.trim(),
+                changeAmount: parseFloat(changeValueElement.textContent) || 0
+            };
+
             
             errorModal.style.display = 'flex';
             errorModalHeader.textContent = 'Payment Successful';
@@ -547,8 +552,18 @@ doneBtn.addEventListener('click', function(e) {
             errorModalText.textContent = data.message;
             errorIcon.style.display = 'none';
             successIcon.style.display = 'block';
+
+            cart = [];
+            localStorage.removeItem('joebean_cart');
+            updateOrderDisplay();
+            updateTotal();
             placeOrderModal.style.display = 'none';
             resetPaymentSelections();
+
+            setTimeout(() => {
+                errorModal.style.display = 'none';
+                showReceipt(data, cartCopy, paymentInfo);
+            }, 1500);
         } else {
             // Show error message
             errorModal.style.display = 'flex';
@@ -586,3 +601,85 @@ document.querySelector('.ErrorPayment__modal-cancel-button').addEventListener('c
         }
     }
 });
+
+
+// ========================================================================
+const receiptModal = document.getElementById('receiptModal');
+const receiptCloseBtnFooter = document.querySelector('.Receipt__close-btn');
+const receiptPrintBtn = document.querySelector('.Receipt__print-btn');
+
+receiptCloseBtnFooter.addEventListener('click', function() {
+    receiptModal.style.display = 'none';
+});
+
+// Print receipt when clicking Print button
+receiptPrintBtn.addEventListener('click', function() {
+    window.print();
+});
+
+
+
+// Function to show receipt after successful transaction
+function showReceipt(transactionData, cartItems, paymentInfo) {
+    // Set transaction details
+    document.getElementById('receiptTransactionId').textContent = transactionData.transaction_id;
+    document.getElementById('receiptDate').textContent = formatDateTime(new Date().toLocaleString());
+    document.getElementById('receiptCashier').textContent = document.querySelector(".CashierDashboard__cashier-name span:first-child").textContent;
+
+    // Populate items
+    const itemsList = document.getElementById('receiptItemsList');
+    itemsList.innerHTML = '';
+
+    cartItems.forEach(item => {
+        const row = document.createElement('tr');
+        const subtotal = item.price * item.quantity;
+        
+        row.innerHTML = `
+            <td>${item.quantity}</td>
+            <td>${item.name}</td>
+            <td>${item.size ? item.size : "-"}</td>
+            <td>₱${item.price.toFixed(2)}</td>
+            <td>₱${subtotal.toFixed(2)}</td>
+        `;
+        
+        itemsList.appendChild(row);
+    });
+
+    // Set payment details
+    document.getElementById('receiptTotal').textContent = `₱${paymentInfo.totalAmount.toFixed(2)}`;
+    document.getElementById('receiptPaymentMethod').textContent = paymentInfo.paymentMethod;
+
+    const refRow = document.getElementById('receiptRefRow');
+    if (paymentInfo.paymentMethod === 'GCash' && paymentInfo.referenceNumber) {
+        document.getElementById('receiptRefNo').textContent = paymentInfo.referenceNumber;
+        refRow.style.display = 'flex';
+    } else {
+        refRow.style.display = 'none';
+    }
+
+    document.getElementById('receiptAmountPaid').textContent = `₱${paymentInfo.paymentAmount.toFixed(2)}`;
+    document.getElementById('receiptChange').textContent = `₱${paymentInfo.changeAmount.toFixed(2)}`;
+
+    // Show the receipt modal
+    receiptModal.style.display = 'flex';
+
+
+}
+
+function formatDateTime(dateTimeStr) {
+    const date = new Date(dateTimeStr);
+
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    const month = months[date.getMonth()];
+    const day = date.getDate();
+    const year = date.getFullYear();
+
+    let hour = date.getHours();
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    hour = hour % 12 || 12;
+
+    return `${month} ${day}, ${year} — ${hour}:${minutes} ${ampm}`;
+}

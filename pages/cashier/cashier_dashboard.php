@@ -280,7 +280,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Cashier Dashboard | JoeBean</title>
         <link rel="stylesheet" href="../../assets/css/indexs.css">
-        <link rel="stylesheet" href="../../assets/css/cashier/cashier_dashboardes.css">
+        <link rel="stylesheet" href="../../assets/css/cashier/cashier_dashboarda.css">
         <link rel="stylesheet" href="../../assets/css/modall.css">
     </head>
     <body>
@@ -743,7 +743,87 @@
             </div>
         </div>
 
-        <script src="../../assets/js/cashier/cashier_dashboardet.js"></script>
+        <div class="modal" id="receiptModal">
+            <div class="Modal_fade-in Receipt__modal-content">
+                <div class="Receipt__modal-header">
+                    <h3>Transaction Receipt</h3>
+                </div>
+                <div class="Receipt__modal-body">
+                    <div class="Receipt__modal-body-container">
+                        <div class="Receipt__branding">
+                            <img src="../../assets/images/joebean-logo.png" alt="JoeBean Logo" class="Receipt__logo" />
+                            <div class="Receipt__company-info">
+                                <h4>JoeBean Coffee Shop</h4>
+                                <p>123 Coffee Street, Bean City</p>
+                                <p>Cel: 0912-345-6789</p>
+                            </div>
+                        </div>
+                        <div class="Receipt__details">
+                            <div class="Receipt__transaction-info">
+                                <p>Transaction #: <span id="receiptTransactionId">1</span></p>
+                                <p>Date: <span id="receiptDate">2025-04-16</span></p>
+                                <p>Cashier: <span id="receiptCashier">Celmin Shane Quizon</span></p>
+                            </div>
+                            <div class="Receipt__items-container">
+                                <table class="Receipt__items-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Qty</th>
+                                            <th>Item</th>
+                                            <th>Size</th>
+                                            <th>Price</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="receiptItemsList">
+                                        <tr>
+                                            <td>1</td>
+                                            <td>Spanish latte</td>
+                                            <td>Venti</td>
+                                            <td>₱89.00</td>
+                                            <td>₱89.00</td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="Receipt__summary">
+                                <div class="Receipt__summary-row">
+                                    <span>Total:</span>
+                                    <span id="receiptTotal">267</span>
+                                </div>
+                                <div class="Receipt__summary-row">
+                                    <span>Payment Method:</span>
+                                    <span id="receiptPaymentMethod">GCash</span>
+                                </div>
+                                <div class="Receipt__summary-row" id="receiptRefRow">
+                                    <span>Reference No:</span>
+                                    <span id="receiptRefNo">AJFDUSHAWDU234</span>
+                                </div>
+                                <div class="Receipt__summary-row">
+                                    <span>Amount Paid:</span>
+                                    <span id="receiptAmountPaid">500</span>
+                                </div>
+                                <div class="Receipt__summary-row">
+                                    <span>Change:</span>
+                                    <span id="receiptChange">233</span>
+                                </div>
+                            </div>
+                            <div class="Receipt__footer">
+                                <p>Thank you for your purchase!</p>
+                                <p>Please come again</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="Receipt__modal-footer">
+                    <button class="Receipt__print-btn">Print Receipt</button>
+                    <button class="Receipt__close-btn">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <script src="../../assets/js/cashier/cashier_dashboard.js"></script>
     
     </body>
 </html>

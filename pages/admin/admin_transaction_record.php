@@ -458,7 +458,7 @@
                                         <th>Item Size</th>
                                         <th>Unit Price</th>
                                         <th>Quantity</th>
-                                        <th>Total Price</th>
+                                        <th>Item Total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
