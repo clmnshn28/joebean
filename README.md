@@ -33,7 +33,11 @@ Import the SQL file provided (if any) or create a new database:
 ```sql
 CREATE DATABASE joebean;
 ```
-Update your database credentials in the config file:
+Then, create the necessary tables based on the `ERD (Entity Relationship Diagram)` below:
+![ERD](assets/images/readme/erd.png)
+**💡 The ERD illustrates how tables like `admins`, `cashiers`, `products`, and `transactions` are related.**
+
+After that, update your database credentials in the config file:
  - Open `config/db.php`
  - If there is a custom port like `3307`, remove it to use the default MySQL port.
   
@@ -50,7 +54,7 @@ $conn = new mysqli("localhost", "root", "", "joebean");
 
 If you're using XAMPP, MAMP, or any local server:
 
-1. Move the project folder to the `htdocs` (XAMPP) or equivalent
+1. Move the project folder to the htdocs directory (or your server's root folder)
 2. Start Apache and MySQL
 3. Visit `http://localhost/joebean` in your browser
 ## 🔎 Overview
