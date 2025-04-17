@@ -760,9 +760,9 @@
                         </div>
                         <div class="Receipt__details">
                             <div class="Receipt__transaction-info">
-                                <p>Transaction #: <span id="receiptTransactionId">1</span></p>
-                                <p>Date: <span id="receiptDate">2025-04-16</span></p>
-                                <p>Cashier: <span id="receiptCashier">Celmin Shane Quizon</span></p>
+                                <p>Transaction #: <span id="receiptTransactionId"></span></p>
+                                <p>Date: <span id="receiptDate"></span></p>
+                                <p>Cashier: <span id="receiptCashier"></span></p>
                             </div>
                             <div class="Receipt__items-container">
                                 <table class="Receipt__items-table">
@@ -776,13 +776,13 @@
                                         </tr>
                                     </thead>
                                     <tbody id="receiptItemsList">
-                                        <tr>
+                                        <!-- <tr>
                                             <td>1</td>
                                             <td>Spanish latte</td>
                                             <td>Venti</td>
                                             <td>₱89.00</td>
                                             <td>₱89.00</td>
-                                        </tr>
+                                        </tr> -->
                                         
                                     </tbody>
                                 </table>
@@ -790,23 +790,23 @@
                             <div class="Receipt__summary">
                                 <div class="Receipt__summary-row">
                                     <span>Total:</span>
-                                    <span id="receiptTotal">267</span>
+                                    <span id="receiptTotal"></span>
                                 </div>
                                 <div class="Receipt__summary-row">
                                     <span>Payment Method:</span>
-                                    <span id="receiptPaymentMethod">GCash</span>
+                                    <span id="receiptPaymentMethod"></span>
                                 </div>
                                 <div class="Receipt__summary-row" id="receiptRefRow">
                                     <span>Reference No:</span>
-                                    <span id="receiptRefNo">AJFDUSHAWDU234</span>
+                                    <span id="receiptRefNo"></span>
                                 </div>
                                 <div class="Receipt__summary-row">
                                     <span>Amount Paid:</span>
-                                    <span id="receiptAmountPaid">500</span>
+                                    <span id="receiptAmountPaid"></span>
                                 </div>
                                 <div class="Receipt__summary-row">
                                     <span>Change:</span>
-                                    <span id="receiptChange">233</span>
+                                    <span id="receiptChange"></span>
                                 </div>
                             </div>
                             <div class="Receipt__footer">
