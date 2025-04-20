@@ -10,63 +10,6 @@
     });
 
 
-
-    // =================================================================================
-
-
-    // Get search input element
-    const searchInput = document.querySelector('.AdminItemList__header-search-container input');
-
-    searchInput.addEventListener('input', function() {
-        const searchTerm = this.value.toLowerCase().trim();
-        filterTable(searchTerm);
-    });
-
-    // Function to filter table rows
-    function filterTable(searchTerm) {
-        const tableBody = document.getElementById('transactionTableBody');
-        const tableRows = tableBody.querySelectorAll('tr:not(.no-results-row)');
-        let matchFound = false;
-        
-        // Remove any existing "no results" row
-        const existingNoResultsRow = tableBody.querySelector('.no-results-row');
-        if (existingNoResultsRow) {
-            existingNoResultsRow.remove();
-        }
-        
-        // If search is empty like show all rows
-        if (searchTerm === '') {
-            tableRows.forEach(row => {
-                row.style.display = '';
-            });
-            return;
-        }
-
-        // Loop through all table rows
-        tableRows.forEach(row => {
-            // Get text content
-            const transactionCashierName = row.querySelector('td:first-child span')?.textContent.toLowerCase() || '';
-            const transactionPaymentMethod = row.querySelector('td:nth-child(3) p')?.textContent.toLowerCase() || '';
-            
-            // Check if row contains the search term
-            if (transactionCashierName.includes(searchTerm) || transactionPaymentMethod.includes(searchTerm)) {
-                row.style.display = '';
-                matchFound = true;
-            } else {
-                row.style.display = 'none';
-            }
-        });
-
-        // Show no-results message if no matches found
-        if (!matchFound) {
-            const noResultsRow = document.createElement('tr');
-            noResultsRow.className = 'no-results-row';
-            noResultsRow.innerHTML = `<td colspan="5"><div class="no-data-message" style="text-transform: none;">No items match your search for "${searchTerm}"</div></td>`;
-            tableBody.appendChild(noResultsRow);
-        }
-    }
-
-
     // =================================================================================
 
     const modal = document.getElementById("itemModal");
@@ -173,12 +116,23 @@
     // Current page from URL or default to 1
     const urlParams = new URLSearchParams(window.location.search);
     const currentPage = parseInt(urlParams.get('page')) || 1;
+    const currentSearch = urlParams.get('search') || '';
+        
+    // Set search input value from URL parameter if it exists
+    const searchInput = document.querySelector('.AdminItemList__header-search-container input');
+    if (currentSearch) {
+        searchInput.value = decodeURIComponent(currentSearch);
+            
+        const length = searchInput.value.length;
+        searchInput.setSelectionRange(length, length);
+    }
 
     // Handle left pagination button click
     leftPaginationBtn.addEventListener('click', function() {
         if (currentPage > 1) {
             const newPage = currentPage - 1;
-            window.location.href = `admin_transaction_record.php?page=${newPage}`;
+            // window.location.href = `admin_transaction_record.php?page=${newPage}`;
+            navigateToPage(newPage);
         }
     });
 
@@ -187,9 +141,33 @@
         const totalPages = parseInt(paginationNumber.textContent.split(' of ')[1]);
         if (currentPage < totalPages) {
             const newPage = currentPage + 1;
-            window.location.href = `admin_transaction_record.php?page=${newPage}`;
+            // window.location.href = `admin_transaction_record.php?page=${newPage}`;
+            navigateToPage(newPage);
         }
     });
+
+     // Function to navigate to a specific page while preserving search
+     function navigateToPage(page) {
+        const searchTerm = searchInput.value.trim();
+        let url = `admin_transaction_record.php?page=${page}`;
+        
+        if (searchTerm) {
+            url += `&search=${encodeURIComponent(searchTerm)}`;
+        }
+        window.location.href = url;
+    }
+
+    // Search input handler
+    searchInput.addEventListener('input', function() {
+    
+        clearTimeout(this.searchTimer);
+
+        this.searchTimer = setTimeout(() => {
+            navigateToPage(1); // Reset to page 1 when search changes
+        }, 800);
+    });
+
+    searchInput.focus();
 
     // Hide pagination if there's only one page
     const totalPages = parseInt(paginationNumber.textContent.split(' of ')[1]) || 1;

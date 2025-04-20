@@ -9,7 +9,9 @@ document.querySelector('#logoutBtnModal').addEventListener('click', function() {
     logoutSideBarModal.style.display = "flex";
 });
 
-
+document.querySelector('.Logout__modal-confirm-button').addEventListener('click', function() {
+    localStorage.removeItem('joebean_cart');
+});
 // ==========================================================================================
 
 

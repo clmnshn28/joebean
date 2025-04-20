@@ -186,7 +186,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 50px;
-    padding: 20px 5px 20px 30px;
+    padding: 20px 5px 20px 10px;
     /* background-color: #414833; */
     border-radius: 20px;
     height: 100%;
@@ -238,7 +238,7 @@
 .CashierDashboard__wrap-menu-sub-category-content{
     display: flex;
     flex-wrap: wrap;
-    gap: 28px;
+    gap: 26px;
 }
 
 
@@ -248,14 +248,14 @@
 
 .CashierDashboard__product-item-container{
     background-color: #D9D9D9;
-    width: 265px;
+    width: 275px;
     padding: 15px 15px;
     border-radius: 10px;
     color: #656D4A;
     display: flex;
     flex-direction: column;
     cursor: default;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 8px rgba(28, 28, 28, 0.4);
 }
 
 
@@ -267,20 +267,24 @@
 
 .CashierDashboard__product-top-content h3{
     font-size: 22px;
-    flex: 1;
+    /* flex: 1; */
+    width: 100%;                
+    white-space: normal;        
+    word-break: break-word;      
+    text-align: left;  
     /* background-color: #262725; */
 }
 
 .CashierDashboard__product-top-content img{
-    width: 88px;
-    height: 88px;
+    width: 85px;
+    height: 85px;
     object-fit: contain;
     border: 2px solid #797979;
     border-radius: 10px;
 }
 
 .CashierDashboard__product-bottom-content{
-    margin-top: 17px;
+    margin-top: 20px;
     display: flex;
     flex-direction: column;
     gap: 10px;

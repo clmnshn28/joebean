@@ -570,6 +570,8 @@
 
 
 
+
+
 /* items groups */
 .AdminItemList__modal-items-group{
     border: 2px solid #5a5a5ac6;
@@ -700,6 +702,16 @@
     transform: translateY(-50%) rotate(180deg);
 }
 
+/* error category */
+.category-error-message{
+    position: absolute;
+    right: 1%;
+    top: -40%;
+    color: red;
+    font-size: 13px;
+    font-weight: 600;
+    display: none;
+}
 
 
 

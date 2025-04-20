@@ -34,8 +34,10 @@ Import the SQL file provided (if any) or create a new database:
 CREATE DATABASE joebean;
 ```
 Then, create the necessary tables based on the `ERD (Entity Relationship Diagram)` below:
-![ERD](assets/images/readme/erd.png)
 <br>
+<br>
+![ERD](assets/images/readme/erd.png)
+<br><br>
 **💡 The ERD illustrates how tables like `admins`, `cashiers`, `products`, and `transactions` are related.**
 
 After that, update your database credentials in the config file:

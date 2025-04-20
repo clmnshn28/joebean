@@ -229,8 +229,14 @@
     $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int) $_GET['page'] : 1;
     $offset = ($page - 1) * $limit;
     
+    $search_term = isset($_GET['search']) ? mysqli_real_escape_string($conn, $_GET['search']) : '';
+
     // Get the total number of transactions
-    $count_result = mysqli_query($conn, "SELECT COUNT(*) as total FROM transactions");
+    $count_result = mysqli_query($conn, "SELECT COUNT(*) as total 
+                    FROM transactions t
+                    JOIN users u ON t.user_id = u.id
+                    WHERE (CONCAT(u.firstname, ' ', u.lastname) LIKE '%$search_term%' OR t.payment_method LIKE '%$search_term%')");
+                    
     $total_transactions = mysqli_fetch_assoc($count_result)['total'];
     $total_pages = ceil($total_transactions / $limit);
     
@@ -246,6 +252,7 @@
             u.image AS cashier_image
         FROM transactions t
         JOIN users u ON t.user_id = u.id
+        WHERE (CONCAT(u.firstname, ' ', u.lastname) LIKE '%$search_term%' OR t.payment_method LIKE '%$search_term%')
         ORDER BY t.created_at DESC
         LIMIT $limit OFFSET $offset
     ");
@@ -260,7 +267,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Admin Item List | JoeBean</title>
         <link rel="stylesheet" href="../../assets/css/indexs.css">
-        <link rel="stylesheet" href="../../assets/css/admin/admin_item_lists.css">
+        <link rel="stylesheet" href="../../assets/css/admin/admin_item_list.css">
         <link rel="stylesheet" href="../../assets/css/admin/admin_transaction_record.css">
         <link rel="stylesheet" href="../../assets/css/modall.css">
     </head>
@@ -523,7 +530,7 @@
             </div>
         </div>
 
-        <script src="../../assets/js/admin/admin_transaction_recordy.js"></script>
+        <script src="../../assets/js/admin/admin_transaction_record.js"></script>
         <script>
             const successModal = document.getElementById('ErrorExportModal');
             const icons = document.querySelectorAll('.ErrorPayment__modal-content-header-container img');

@@ -320,8 +320,14 @@ $items_per_page = 7;
 $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
 $offset = ($page - 1) * $items_per_page;
 
+$search_term = isset($_GET['search']) ? mysqli_real_escape_string($conn, $_GET['search']) : '';
+
 // Count total items for pagination
-$count_query = "SELECT COUNT(*) as total FROM products WHERE status='active'";
+// $count_query = "SELECT COUNT(*) as total FROM products WHERE status='active'";
+$count_query = "SELECT COUNT(*) as total FROM products 
+               WHERE status='active' 
+               AND (item_name LIKE '%$search_term%' OR item_category LIKE '%$search_term%')";
+
 $count_result = mysqli_query($conn, $count_query);
 $count_row = mysqli_fetch_assoc($count_result);
 $total_items = $count_row['total'];
@@ -340,6 +346,7 @@ $query = "
     FROM products p
     JOIN product_variants v ON p.id = v.product_id
     WHERE p.status = 'active'
+    AND (p.item_name LIKE '%$search_term%' OR p.item_category LIKE '%$search_term%')
     GROUP BY p.id
     ORDER BY p.id DESC
     LIMIT $offset, $items_per_page
@@ -358,7 +365,7 @@ $result = mysqli_query($conn, $query);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Item List | JoeBean</title>
     <link rel="stylesheet" href="../../assets/css/indexs.css">
-    <link rel="stylesheet" href="../../assets/css/admin/admin_item_lists.css">
+    <link rel="stylesheet" href="../../assets/css/admin/admin_item_list.css">
     <link rel="stylesheet" href="../../assets/css/modall.css">
 </head>
 
@@ -406,7 +413,7 @@ $result = mysqli_query($conn, $query);
                     <div class="AdminItemList__header-search-container">
 
                         <div class="AdminItemList__search-content">
-                            <input type="text" autocomplete="off" placeholder="Search">
+                            <input type="text" autocomplete="off" placeholder="Search" value="<?php echo htmlspecialchars($search_term); ?>">
                             <span></span>
                             <img src="../../assets/images/search-icon.svg" alt="search icon">
                         </div>
@@ -562,6 +569,7 @@ $result = mysqli_query($conn, $query);
 
                             </div>
                         </div>
+                        <span class="category-error-message">Item category is required.</span>
                     </div>
                     <div class="AdminItemList__modal-items-group">
                         <div class="AdminItemList__modal-item-price-container">
@@ -643,13 +651,22 @@ $result = mysqli_query($conn, $query);
                                 <img src="../../assets/images/dropdown-icon.svg" alt="dropdown icon">
                             </div>
                             <div class="custom-options">
-                                <div class="custom-edit-option" data-value="Hot Beverage">Hot Beverage</div>
-                                <div class="custom-edit-option" data-value="Cold Beverage">Cold Beverage</div>
+                                <div class="custom-edit-option" data-value="Iced Coffee">Iced Coffee</div>
+                                <div class="custom-edit-option" data-value="Hot Coffee">Hot Coffee</div>
+                                <div class="custom-edit-option" data-value="Frappe Coffee">Frappe Coffee</div>
+                                <div class="custom-edit-option" data-value="Iced Non-Coffee">Iced Non-Coffee</div>
+                                <div class="custom-edit-option" data-value="Hot Non-Coffee">Hot Non-Coffee</div>
+                                <div class="custom-edit-option" data-value="Frappe Non-Coffee">Frappe Non-Coffee</div>
+
                                 <div class="custom-edit-option" data-value="Rice Meal">Rice Meal</div>
-                                <div class="custom-edit-option" data-value="Snack">Snack</div>
-                                <div class="custom-edit-option" data-value="Dessert">Dessert</div>
+                                <div class="custom-edit-option" data-value="Ala Carte">Ala Carte</div>
+                                <div class="custom-edit-option" data-value="Croffle">Croffle</div>
+                                <div class="custom-edit-option" data-value="Pasta & Fries">Pasta & Fries</div>
+                                <div class="custom-edit-option" data-value="Pizza Barkada">Pizza Barkada</div>
+                                <div class="custom-edit-option" data-value="Add-Ons">Add-Ons</div>
                             </div>
                         </div>
+                        <span class="category-error-message">Item category is required.</span>
                     </div>
                     <div class="AdminItemList__modal-items-group">
                         <div class="AdminItemList__modal-item-price-container">
@@ -756,7 +773,7 @@ $result = mysqli_query($conn, $query);
         </div>
     </div>
 
-    <script src="../../assets/js/admin/admin_item_lister.js"></script>
+    <script src="../../assets/js/admin/admin_item_lists.js"></script>
     <script>
         const successModal = document.getElementById('ErrorExportModal');
         const icons = document.querySelectorAll('.ErrorPayment__modal-content-header-container img');

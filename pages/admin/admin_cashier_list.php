@@ -189,13 +189,21 @@
     $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int) $_GET['page'] : 1;
     $offset = ($page - 1) * $limit;
 
+    $search_term = isset($_GET['search']) ? mysqli_real_escape_string($conn, $_GET['search']) : '';
+
     // Get the total number of cashier users (including deactivated ones)
-    $count_result = mysqli_query($conn, "SELECT COUNT(*) as total FROM users WHERE role='cashier'");
+    $count_result = mysqli_query($conn, "SELECT COUNT(*) as total FROM users 
+                            WHERE role='cashier'
+                            AND (username LIKE '%$search_term%' OR firstname LIKE '%$search_term%' OR lastname LIKE '%$search_term%' OR middlename LIKE '%$search_term%')");
     $total_users = mysqli_fetch_assoc($count_result)['total'];
     $total_pages = ceil($total_users / $limit);
 
     // Fetch only the current page's data
-    $result = mysqli_query($conn, "SELECT * FROM users WHERE role='cashier' ORDER BY id DESC LIMIT $limit OFFSET $offset");
+    $result = mysqli_query($conn, "SELECT * FROM users 
+            WHERE role='cashier'
+            AND (username LIKE '%$search_term%' OR firstname LIKE '%$search_term%' OR lastname LIKE '%$search_term%' OR middlename LIKE '%$search_term%') 
+            ORDER BY id DESC 
+            LIMIT $limit OFFSET $offset");
 
     ?>
 
@@ -207,7 +215,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Admin Item List | JoeBean</title>
         <link rel="stylesheet" href="../../assets/css/indexs.css">
-        <link rel="stylesheet" href="../../assets/css/admin/admin_item_lists.css">
+        <link rel="stylesheet" href="../../assets/css/admin/admin_item_list.css">
         <link rel="stylesheet" href="../../assets/css/admin/admin_cashier_lists.css">
         <link rel="stylesheet" href="../../assets/css/modall.css">
     </head>
@@ -335,7 +343,7 @@
                                 }
                             } else {
                                 echo '<tr class="no-data-row">
-                                        <td colspan="5">
+                                        <td colspan="6">
                                             <div class="no-data-message">
                                                 No Cashier List
                                             </div>
@@ -577,7 +585,7 @@
         </div>
 
 
-        <script src="../../assets/js/admin/admin_cashier_lister.js"></script>
+        <script src="../../assets/js/admin/admin_cashier_list.js"></script>
 
         <script>
             const successModal = document.getElementById('successResetPasswordModal');

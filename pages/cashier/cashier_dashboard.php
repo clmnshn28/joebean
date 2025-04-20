@@ -196,7 +196,7 @@
                 FROM products p 
                 JOIN product_variants pv ON p.id = pv.product_id 
                 WHERE p.item_category = ? AND p.status = 'active'
-                ORDER BY p.item_name DESC";
+                  ORDER BY pv.item_price, p.id ASC"; 
                 
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("s", $category);
@@ -280,7 +280,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Cashier Dashboard | JoeBean</title>
         <link rel="stylesheet" href="../../assets/css/indexs.css">
-        <link rel="stylesheet" href="../../assets/css/cashier/cashier_dashboarda.css">
+        <link rel="stylesheet" href="../../assets/css/cashier/cashier_dashboardq.css">
         <link rel="stylesheet" href="../../assets/css/modall.css">
     </head>
     <body>
@@ -431,7 +431,7 @@
                                                 <?php 
                                                     foreach ($product['sizes'] as $size) { 
                                                     
-                                                    if (empty($size['size']) && $size['price'] == 0 && $size['stock'] == 0) {
+                                                    if ($size['price'] == 0 && $size['stock'] == 0) {
                                                         continue;
                                                     }    
                                                 ?>
@@ -823,7 +823,7 @@
             </div>
         </div>
 
-        <script src="../../assets/js/cashier/cashier_dashboard.js"></script>
+        <script src="../../assets/js/cashier/cashier_dashboardq.js"></script>
     
     </body>
 </html>

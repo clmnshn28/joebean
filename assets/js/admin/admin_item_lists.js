@@ -25,9 +25,20 @@ function showModal() {
 function hideModal() {
     modal.style.display = 'none';
     const form = document.querySelector('#itemModal form'); 
+    
     form.reset();
+   
     const imagePreview = document.getElementById('item-preview');
     imagePreview.src = '../../assets/images/image-preview.jpg';
+    
+    const categoryError = document.querySelector('.category-error-message');
+    categoryError.style.display = "none";
+   
+    const imageError = document.querySelector('.error-image-message');
+    imageError.style.display = "none";
+
+    const categoryTrigger = document.getElementById('category-trigger');
+    categoryTrigger.innerHTML = 'Select category <img src="../../assets/images/dropdown-icon.svg" alt="dropdown icon">';
 }
 
 openModalBtn.addEventListener('click', showModal);
@@ -73,12 +84,23 @@ const paginationNumber = document.querySelector('.AdminItemList__pagination-numb
 // Current page from URL or default to 1
 const urlParams = new URLSearchParams(window.location.search);
 const currentPage = parseInt(urlParams.get('page')) || 1;
+const currentSearch = urlParams.get('search') || '';
+
+// Set search input value from URL parameter if it exists
+const searchInput = document.querySelector('.AdminItemList__header-search-container input');
+if (currentSearch) {
+    searchInput.value = decodeURIComponent(currentSearch);
+        
+    const length = searchInput.value.length;
+    searchInput.setSelectionRange(length, length);
+}
 
 // Handle left pagination button click
 leftPaginationBtn.addEventListener('click', function() {
     if (currentPage > 1) {
         const newPage = currentPage - 1;
-        window.location.href = `admin_item_list.php?page=${newPage}`;
+        // window.location.href = `admin_item_list.php?page=${newPage}`;
+        navigateToPage(newPage);
     }
 });
 
@@ -87,9 +109,33 @@ rightPaginationBtn.addEventListener('click', function() {
     const totalPages = parseInt(paginationNumber.textContent.split(' of ')[1]);
     if (currentPage < totalPages) {
         const newPage = currentPage + 1;
-        window.location.href = `admin_item_list.php?page=${newPage}`;
+        // window.location.href = `admin_item_list.php?page=${newPage}`;
+        navigateToPage(newPage);
     }
 });
+
+// Function to navigate to a specific page while preserving search
+function navigateToPage(page) {
+    const searchTerm = searchInput.value.trim();
+    let url = `admin_item_list.php?page=${page}`;
+    
+    if (searchTerm) {
+        url += `&search=${encodeURIComponent(searchTerm)}`;
+    }
+    window.location.href = url;
+}
+
+// Search input handler
+searchInput.addEventListener('input', function() {
+  
+    clearTimeout(this.searchTimer);
+
+    this.searchTimer = setTimeout(() => {
+        navigateToPage(1); // Reset to page 1 when search changes
+    }, 800);
+});
+
+searchInput.focus();
 
 // Hide pagination if there's only one page
 const totalPages = parseInt(paginationNumber.textContent.split(' of ')[1]) || 1;
@@ -98,62 +144,6 @@ if (totalPages <= 1) {
 } else {
     document.getElementById('paginationContainer').style.display = 'flex';
 }
-
-// =================================================================================
-
-
-// Get search input element
-const searchInput = document.querySelector('.AdminItemList__header-search-container input');
-
-searchInput.addEventListener('input', function() {
-    const searchTerm = this.value.toLowerCase().trim();
-    filterTable(searchTerm);
-});
-
-// Function to filter table rows
-function filterTable(searchTerm) {
-    const tableBody = document.getElementById('itemTableBody');
-    const tableRows = tableBody.querySelectorAll('tr:not(.no-results-row)');
-    let matchFound = false;
-    
-    // Remove any existing "no results" row
-    const existingNoResultsRow = tableBody.querySelector('.no-results-row');
-    if (existingNoResultsRow) {
-        existingNoResultsRow.remove();
-    }
-    
-    // If search is empty like show all rows
-    if (searchTerm === '') {
-        tableRows.forEach(row => {
-            row.style.display = '';
-        });
-        return;
-    }
-
-    // Loop through all table rows
-    tableRows.forEach(row => {
-        // Get text content
-        const itemName = row.querySelector('td:first-child span')?.textContent.toLowerCase() || '';
-        const itemCategory = row.querySelector('td:nth-child(4)')?.textContent.toLowerCase() || '';
-        
-        // Check if row contains the search term
-        if (itemName.includes(searchTerm) || itemCategory.includes(searchTerm)) {
-            row.style.display = '';
-            matchFound = true;
-        } else {
-            row.style.display = 'none';
-        }
-    });
-
-    // Show no-results message if no matches found
-    if (!matchFound) {
-        const noResultsRow = document.createElement('tr');
-        noResultsRow.className = 'no-results-row';
-        noResultsRow.innerHTML = `<td colspan="6"><div class="no-data-message" style="text-transform: none;">No items match your search for "${searchTerm}"</div></td>`;
-        tableBody.appendChild(noResultsRow);
-    }
-}
-
 
 // =================================================================================
 
@@ -168,12 +158,20 @@ addItemBtn.addEventListener("click", function (event) {
         form.reportValidity();  // Triggers the browser's built-in validation UI
         return;
     }
+    let isValid = true;
+
+    const categoryValue = document.getElementById('item-category').value;
+    const categoryError = document.querySelector('.category-error-message');
+
+    if (!categoryValue) {
+        categoryError.style.display = "block";
+        isValid = false;
+    }
  
     const avatarFile = itemImageInput.files[0];
     const imageError = document.querySelector('.error-image-message');
     // Reset image error message
     imageError.textContent = "";
-    let isValid = true;
 
     // Check if image is selected
     const defaultPreview = "../../assets/images/image-preview.jpg";
