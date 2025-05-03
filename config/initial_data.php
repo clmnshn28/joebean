@@ -27,8 +27,8 @@
 
     // Only add admin if it doesn't exist
     if (!usernameExists($conn, $adminUsername)) {
-        $sql = "INSERT INTO users (username, password, firstname, lastname, middlename, gender, birth_day, birth_month, birth_year, image, role,admin_id, created_at) 
-                VALUES ('$adminUsername', '$adminPassword', 'System', 'Administrator', 'AdSys', 'male', 1, 1, 2000, 'default.jpg', 'admin', NULL, NOW())";
+        $sql = "INSERT INTO users (username, password, firstname, lastname, middlename, email, gender, birth_day, birth_month, birth_year, image, role,admin_id, created_at) 
+                VALUES ('$adminUsername', '$adminPassword', 'System', 'Administrator', 'AdSys', 'celminshanequizon@gmail.com', 'male', 1, 1, 2000, 'default.jpg', 'admin', NULL, NOW())";
         
         if ($conn->query($sql) === TRUE) {
             echo "Admin user created successfully<br>";
@@ -49,8 +49,8 @@
 
     // Only add cashier if it doesn't exist
     if (!usernameExists($conn, $cashierUsername)) {
-        $sql = "INSERT INTO users (username, password, firstname, lastname, middlename, gender, birth_day, birth_month, birth_year, image, role,admin_id, created_at) 
-                VALUES ('$cashierUsername', '$cashierPassword', 'Default', 'Cashier', 'CasSys', 'female', 1, 1, 2000, 'default.jpg', 'cashier', $adminId, NOW())";
+        $sql = "INSERT INTO users (username, password, firstname, lastname, middlename, email, gender, birth_day, birth_month, birth_year, image, role,admin_id, created_at) 
+                VALUES ('$cashierUsername', '$cashierPassword', 'Default', 'Cashier', 'CasSys', 'shanearceo2829@gmail.com', 'female', 1, 1, 2000, 'default.jpg', 'cashier', $adminId, NOW())";
         
         if ($conn->query($sql) === TRUE) {
             echo "Cashier user created successfully<br>";

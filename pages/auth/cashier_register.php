@@ -11,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $firstName = $_POST['firstName'];
     $middleName = $_POST['middleName'];
     $lastName = $_POST['lastName'];
+    $email = $_POST['email'];
     $gender = $_POST['gender'];
     $birthDay = $_POST['day'];
     $birthMonth = $_POST['month'];
@@ -42,8 +43,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $checkStmt->close();
 
-    // Proceed only if username is unique
-    if (empty($usernameError)) {
+    // Check if email already exists
+    $checkEmailStmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
+    $checkEmailStmt->bind_param("s", $email);
+    $checkEmailStmt->execute();
+    $checkEmailStmt->store_result();
+
+    if ($checkEmailStmt->num_rows > 0) {
+        $emailError = "Email already exists.";
+    }
+
+    $checkEmailStmt->close();
+    
+    // Proceed only if username and email are unique
+    if (empty($usernameError) && empty($emailError)) {
         // Handle image upload
         $imagePath = null;
         if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
@@ -72,8 +85,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Insert into database
-        $stmt = $conn->prepare("INSERT INTO users (username, password, firstname, lastname, middlename, gender, birth_day, birth_month, birth_year, image, role, admin_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
-        $stmt->bind_param("ssssssiiisss", $username, $password, $firstName, $lastName, $middleName, $gender, $birthDay, $birthMonth, $birthYear, $imagePath, $role, $adminId);
+        $stmt = $conn->prepare("INSERT INTO users (username, password, firstname, lastname, middlename, email, gender, birth_day, birth_month, birth_year, image, role, admin_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+        $stmt->bind_param("sssssssiiisss", $username, $password, $firstName, $lastName, $middleName, $email, $gender, $birthDay, $birthMonth, $birthYear, $imagePath, $role, $adminId);
     
         if ($stmt->execute()) {
             $registrationSuccess = true;
@@ -146,6 +159,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
 
                         <div class="CashierRegister__form-group">
+                            <label for="email">
+                                Email
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" id="email" name="email" value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>" autocomplete="off" required>
+                            <span class="error-username-message">
+                                <?php if (!empty($emailError)) echo $emailError; ?>
+                            </span>
+                        </div>
+
+                        <div class="CashierRegister__form-group">
                             <label>
                                 Gender
                                 <span class="required">*</span>
@@ -179,13 +203,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="CashierRegister__right-form">
                         <div class="CashierRegister__avatar-container">
                             <div class="CashierRegister__avatar-div">
-                                <img id="preview" src="<?php 
-                                    if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
-                                        echo '../../assets/images/avatars/' . $imagePath;
-                                    } else {
-                                        echo '../../assets/images/profile-icon.svg';
-                                    }
-                                ?>" alt="image avatar" class="avatar-icon">
+                                <img id="preview" src="../../assets/images/profile-icon.svg" alt="image avatar" class="avatar-icon">
                             </div>
                             <input type="file" name="avatar" id="avatar" accept="image/*" style="display: none;">
                             <button type="button" class="CashierRegister__select-image-btn" onclick="document.getElementById('avatar').click();">SELECT IMAGE</button>
