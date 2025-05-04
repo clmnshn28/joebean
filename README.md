@@ -52,14 +52,23 @@ $conn = new mysqli("localhost", "root", "", "joebean", 3307);
 ```sql
 $conn = new mysqli("localhost", "root", "", "joebean");
 ```
+### 3️⃣ Set Up Environment Variables
+Create a .env file in the root of your project and add your email credentials. These will be used to send password recovery emails:
+```bash
+EMAIL_USERNAME=your_email@example.com
+EMAIL_PASSWORD=your_email_password_or_app_key
+```
+**🔒 Important: Never commit your .env file to version control. This file should remain private.**
 
-### 3️⃣ Launch Locally
+### 4️⃣ Launch Locally
 
 If you're using XAMPP, MAMP, or any local server:
 
 1. Move the project folder to the htdocs directory (or your server's root folder)
 2. Start Apache and MySQL
 3. Visit `http://localhost/joebean` in your browser
+  
+
 ## 🔎 Overview
 
 ### 👤 Admin Screens
@@ -89,6 +98,10 @@ If you're using XAMPP, MAMP, or any local server:
 ![Transaction Modal 1](assets/images/readme/admin-transaction-record-modal1.png)
 ![Transaction Modal 2](assets/images/readme/admin-transaction-record-modal2.png)
 
+#### Admin Daily Sales 
+![Daily Sales](assets/images/readme/admin-daily-sales.png)
+![Daily Sales Modal 1](assets/images/readme/admin-daily-sales-modal1.png)
+
 ---
 
 ### 👨‍💼 Cashier Screens
@@ -106,7 +119,13 @@ If you're using XAMPP, MAMP, or any local server:
 ![Dashboard Modal 1](assets/images/readme/cashier-dashboard-modal1.png)
 ![Dashboard Modal 2](assets/images/readme/cashier-dashboard-modal2.png)
 
+---
 
+#### Forgot Password (Both Roles)
+![Forgot Recover Email Modal](assets/images/readme/forgot-recover-email.png)
+![Forgot Confirm Code Modal](assets/images/readme/forgot-confirm-code.png)
+![Forgot Change Password Modal](assets/images/readme/forgot-change-password.png)
+![Forgot Successful Modal](assets/images/readme/forgot-successful.png)
 
 ## 💡 Let's build something useful together! 🚀
 
