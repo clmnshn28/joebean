@@ -243,6 +243,10 @@
                         <img src="../../assets/images/time-icon.svg" alt="time-icon">
                         Transaction Records
                     </a>
+                    <a href="admin_daily_sales.php">
+                        <img src="../../assets/images/chart-sales-icon.svg" alt="daily-sales-icon">
+                        Daily Sales
+                    </a>
                 </nav>
                 <div class="AdminItemList__logout-container">
                     <button class="AdminItemList__logout">

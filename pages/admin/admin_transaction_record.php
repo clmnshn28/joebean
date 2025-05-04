@@ -294,6 +294,10 @@
                         <img src="../../assets/images/time-icon.svg" alt="time-icon">
                         Transaction Records
                     </a>
+                    <a href="admin_daily_sales.php">
+                        <img src="../../assets/images/chart-sales-icon.svg" alt="daily-sales-icon">
+                        Daily Sales
+                    </a>
                 </nav>
                 <div class="AdminItemList__logout-container">
                     <button class="AdminItemList__logout">
@@ -469,19 +473,6 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <!-- <tr>
-                                        <td>
-                                            <div class='AdminTransactionRecord__modal-item-with-image'>
-                                                <img class='AdminTransactionRecords__item-image' src='../../assets/images/products/1744201275_spanish-latte.png' alt='Item Image'>
-                                                <span>Spanish Latte</span>
-                                            </div> 
-                                        </td>
-                                        <td>Beverages</td>
-                                        <td>Medium</td>
-                                        <td>$3.50</td>
-                                        <td>2</td>
-                                        <td>$7.00</td>
-                                    </tr> -->
                                 </tbody>
                             </table>
                         </div>
